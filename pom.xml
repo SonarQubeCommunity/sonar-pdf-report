@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.codehaus.sonarplugins</groupId>
     <artifactId>parent</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1</version>
     <relativePath>../parent</relativePath>
   </parent>
   <artifactId>pdf-report</artifactId>
