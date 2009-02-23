@@ -103,7 +103,7 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
   }
 
   // TODO: tendency info
-  private void printDashboard(Project project, Section section) throws DocumentException, IOException {
+  private void printDashboard(Project project, Section section) throws DocumentException {
 
     // Dashboard special fonts
     Font titleFont = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.BLACK);
@@ -198,7 +198,7 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printTocTitle(Toc tocDocument) throws com.lowagie.text.DocumentException, IOException {
+  protected void printTocTitle(Toc tocDocument) throws com.lowagie.text.DocumentException {
     Paragraph tocTitle = new Paragraph(super.getTextProperty("main.table.of.contents"), FontStyle.tocTitleFont);
     tocTitle.setAlignment(Element.ALIGN_CENTER);
     tocDocument.getTocDocument().add(tocTitle);

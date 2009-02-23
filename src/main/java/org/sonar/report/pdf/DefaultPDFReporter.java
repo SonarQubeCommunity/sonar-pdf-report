@@ -84,7 +84,7 @@ public class DefaultPDFReporter extends PDFReporter {
     }
   }
 
-  private void printDashboard(Project project, Section section) throws DocumentException, IOException {
+  private void printDashboard(Project project, Section section) throws DocumentException{
     PdfPTable dashboard = new PdfPTable(3);
     dashboard.getDefaultCell().setBorderColor(Color.WHITE);
     Font titleFont = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.BLACK);
@@ -147,7 +147,7 @@ public class DefaultPDFReporter extends PDFReporter {
     }
   }
 
-  private void printMeasures(Measures measures, Section section) throws IOException, org.dom4j.DocumentException,
+  private void printMeasures(Measures measures, Section section) throws org.dom4j.DocumentException,
       DocumentException {
 
     PdfPTable versioningTable = new PdfPTable(2);
@@ -197,7 +197,7 @@ public class DefaultPDFReporter extends PDFReporter {
     table.setSpacingBefore(20);
   }
 
-  private void printProjectInfo(Project project, Section section) throws DocumentException, IOException,
+  private void printProjectInfo(Project project, Section section) throws DocumentException,
       org.dom4j.DocumentException {
     List data = new List();
     data.add(new ListItem(super.getTextProperty("general.name") + ": " + project.getName()));
@@ -236,7 +236,7 @@ public class DefaultPDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printTocTitle(Toc tocDocument) throws IOException, DocumentException {
+  protected void printTocTitle(Toc tocDocument) throws DocumentException {
     Paragraph tocTitle = new Paragraph(super.getTextProperty("main.table.of.contents"), FontStyle.tocTitleFont);
     tocTitle.setAlignment(Element.ALIGN_CENTER);
     tocDocument.getTocDocument().add(tocTitle);

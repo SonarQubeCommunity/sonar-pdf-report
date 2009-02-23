@@ -71,7 +71,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
         <configuration>
-          <formats> 
+          <formats>
             <format>html</format>
           </formats>
         </configuration>
@@ -82,4 +82,16 @@
       </plugin>
     </plugins>
   </reporting>
+  <developers>
+    <developer>
+      <id>amuniz</id>
+      <name>Antonio Manuel Muñiz</name>
+      <email>ammuniz@gmv.com</email>
+      <organization>GMV</organization>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
 </project>
