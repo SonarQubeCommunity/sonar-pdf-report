@@ -115,7 +115,12 @@ public abstract class PDFReporter {
   }
 
   public Image getCCNDistribution(Project project) {
-    String data = project.getMeasureValue("ccn_classes_count_distribution");
+    String data;
+    if(project.getMeasure("ccn_classes_count_distribution").getTextValue() != null) {
+      data = project.getMeasure("ccn_classes_count_distribution").getTextValue();
+    } else {
+      data = "N/A";
+    }
     ComplexityDistribution ccnDist = new ComplexityDistribution(data, getSonarUrl());
     return ccnDist.getGraphic();
   }
@@ -151,7 +156,7 @@ public abstract class PDFReporter {
   }
 
   public Image getTendencyImage(int tendencyQualitative, int tendencyCuantitative) {
-    // The parameter tendency is t_qual tag retruned by webservices api
+    // tendency parameters are t_qual and t_quant tags returned by webservices api
     String baseUrl = getConfigProperty("sonar.base.url") + "/images/tendency/";
     String iconName;
     if (tendencyQualitative == 0) {

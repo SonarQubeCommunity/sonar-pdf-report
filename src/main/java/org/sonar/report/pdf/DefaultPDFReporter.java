@@ -94,41 +94,41 @@ public class DefaultPDFReporter extends PDFReporter {
     PdfPTable linesOfCode = new PdfPTable(1);
     linesOfCode.getDefaultCell().setBorderColor(Color.WHITE);
     linesOfCode.addCell(new Phrase(getTextProperty("general.lines_of_code"), titleFont));
-    linesOfCode.addCell(new Phrase(project.getMeasureValue("ncss"), dataFont));
-    linesOfCode.addCell(new Phrase(project.getMeasureValue("packages_count") + " packages", dataFont2));
-    linesOfCode.addCell(new Phrase(project.getMeasureValue("classes_count") + " classes", dataFont2));
-    linesOfCode.addCell(new Phrase(project.getMeasureValue("functions_count") + " methods", dataFont2));
-    linesOfCode.addCell(new Phrase(project.getMeasureValue("duplicated_lines_ratio") + " duplicated lines", dataFont2));
+    linesOfCode.addCell(new Phrase(project.getMeasure("ncss").getFormatValue(), dataFont));
+    linesOfCode.addCell(new Phrase(project.getMeasure("packages_count").getFormatValue() + " packages", dataFont2));
+    linesOfCode.addCell(new Phrase(project.getMeasure("classes_count").getFormatValue() + " classes", dataFont2));
+    linesOfCode.addCell(new Phrase(project.getMeasure("functions_count").getFormatValue() + " methods", dataFont2));
+    linesOfCode.addCell(new Phrase(project.getMeasure("duplicated_lines_ratio").getFormatValue() + " duplicated lines", dataFont2));
 
     PdfPTable comments = new PdfPTable(1);
     comments.getDefaultCell().setBorderColor(Color.WHITE);
     comments.addCell(new Phrase(getTextProperty("general.comments"), titleFont));
-    comments.addCell(new Phrase(project.getMeasureValue("comment_ratio"), dataFont));
-    comments.addCell(new Phrase(project.getMeasureValue("comment_lines") + " comment lines", dataFont2));
+    comments.addCell(new Phrase(project.getMeasure("comment_ratio").getFormatValue(), dataFont));
+    comments.addCell(new Phrase(project.getMeasure("comment_lines").getFormatValue() + " comment lines", dataFont2));
 
     PdfPTable codeCoverage = new PdfPTable(1);
     codeCoverage.getDefaultCell().setBorderColor(Color.WHITE);
     codeCoverage.addCell(new Phrase(getTextProperty("general.test_count"), titleFont));
-    codeCoverage.addCell(new Phrase(project.getMeasureValue("test_count"), dataFont));
-    codeCoverage.addCell(new Phrase(project.getMeasureValue("test_success_percentage") + " success", dataFont2));
-    codeCoverage.addCell(new Phrase(project.getMeasureValue("code_coverage") + " coverage", dataFont2));
+    codeCoverage.addCell(new Phrase(project.getMeasure("test_count").getFormatValue(), dataFont));
+    codeCoverage.addCell(new Phrase(project.getMeasure("test_success_percentage").getFormatValue() + " success", dataFont2));
+    codeCoverage.addCell(new Phrase(project.getMeasure("code_coverage").getFormatValue() + " coverage", dataFont2));
 
     PdfPTable complexity = new PdfPTable(1);
     complexity.getDefaultCell().setBorderColor(Color.WHITE);
     complexity.addCell(new Phrase(getTextProperty("general.complexity"), titleFont));
-    complexity.addCell(new Phrase(project.getMeasureValue("ccn_function"), dataFont));
-    complexity.addCell(new Phrase(project.getMeasureValue("ccn_class") + " /class", dataFont2));
-    complexity.addCell(new Phrase(project.getMeasureValue("ccn") + " decision points", dataFont2));
+    complexity.addCell(new Phrase(project.getMeasure("ccn_function").getFormatValue(), dataFont));
+    complexity.addCell(new Phrase(project.getMeasure("ccn_class").getFormatValue() + " /class", dataFont2));
+    complexity.addCell(new Phrase(project.getMeasure("ccn").getFormatValue() + " decision points", dataFont2));
 
     PdfPTable rulesCompliance = new PdfPTable(1);
     rulesCompliance.getDefaultCell().setBorderColor(Color.WHITE);
     rulesCompliance.addCell(new Phrase(getTextProperty("general.rules_compliance"), titleFont));
-    rulesCompliance.addCell(new Phrase(project.getMeasureValue("rules_compliance"), dataFont));
+    rulesCompliance.addCell(new Phrase(project.getMeasure("rules_compliance").getFormatValue(), dataFont));
 
     PdfPTable violations = new PdfPTable(1);
     violations.getDefaultCell().setBorderColor(Color.WHITE);
     violations.addCell(new Phrase(getTextProperty("general.violations"), titleFont));
-    violations.addCell(new Phrase(project.getMeasureValue("rules_violations"), dataFont));
+    violations.addCell(new Phrase(project.getMeasure("rules_violations").getFormatValue(), dataFont));
 
     dashboard.addCell(linesOfCode);
     dashboard.addCell(comments);
@@ -179,7 +179,7 @@ public class DefaultPDFReporter extends PDFReporter {
         measuresTable.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
         measuresTable.addCell(super.getTextProperty("metrics." + measureKey));
         measuresTable.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_CENTER);
-        measuresTable.addCell(measures.getMeasure(measureKey));
+        measuresTable.addCell(measures.getMeasure(measureKey).getFormatValue());
       }
     }
     measuresTable.setHeaderRows(1);

@@ -24,7 +24,7 @@ import org.dom4j.io.SAXReader;
  */
 public class Measures {
 
-  private Hashtable<String, String> measuresTable = new Hashtable<String, String>();
+  private Hashtable<String, Measure> measuresTable = new Hashtable<String, Measure>();
   private Date date;
   private String version;
 
@@ -57,11 +57,11 @@ public class Measures {
     return measuresTable.keySet();
   }
 
-  public String getMeasure(String key) {
+  public Measure getMeasure(String key) {
     return measuresTable.get(key);
   }
 
-  public void addMeasure(String name, String value) {
+  public void addMeasure(String name, Measure value) {
     measuresTable.put(name, value);
   }
 
@@ -92,11 +92,7 @@ public class Measures {
     Iterator<Node> it = measuresNodes.iterator();
     while (it.hasNext()) {
       Node n = it.next();
-      if (n.selectSingleNode("text_value") != null) {
-        measures.addMeasure(n.selectSingleNode("metric").getText(), n.selectSingleNode("text_value").getText());
-      } else {
-        measures.addMeasure(n.selectSingleNode("metric").getText(), n.selectSingleNode("f_value").getText());
-      }
+      measures.addMeasure(n.selectSingleNode("metric").getText(), Measure.createMeasureFromNode(n));
     }
     return measures;
   }

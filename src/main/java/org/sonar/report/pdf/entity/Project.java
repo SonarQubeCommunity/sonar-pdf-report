@@ -54,11 +54,11 @@ public class Project {
     return project;
   }
 
-  public String getMeasureValue(String measureKey) {
+  public Measure getMeasure(String measureKey) {
     if (measures.containsMeasure(measureKey)) {
       return measures.getMeasure(measureKey);
     } else {
-      return "N/A";
+      return new Measure(null, "N/A");
     }
 
   }
