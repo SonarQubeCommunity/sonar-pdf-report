@@ -2,7 +2,6 @@ package org.sonar.report.pdf;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
@@ -76,9 +75,9 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
       String dateRow = df.format(super.getProject().getMeasures().getDate());
       String descriptionRow = super.getProject().getDescription();
 
-      title.addCell(new Phrase(projectRow, FontStyle.frontPageFont1));
-      title.addCell(new Phrase(descriptionRow, FontStyle.frontPageFont2));
-      title.addCell(new Phrase(dateRow, FontStyle.frontPageFont3));
+      title.addCell(new Phrase(projectRow, Style.frontPageFont1));
+      title.addCell(new Phrase(descriptionRow, Style.frontPageFont2));
+      title.addCell(new Phrase(dateRow, Style.frontPageFont3));
       title.setTotalWidth(pageSize.getWidth() - frontPageDocument.leftMargin() - frontPageDocument.rightMargin());
       title.writeSelectedRows(0, -1, frontPageDocument.leftMargin(),
           pageSize.getHeight() - logoImage.getHeight() - 150, frontPageWriter.getDirectContent());
@@ -96,9 +95,9 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
   protected void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException {
     // Chapter 1: Report Overview
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(getTextProperty("general.report_overview"),
-        FontStyle.chapterFont));
+        Style.chapterFont));
     Project project = super.getProject();
-    chapter1.add(new Paragraph(getTextProperty("main.text.misc.overview"), FontStyle.normalFont));
+    chapter1.add(new Paragraph(getTextProperty("main.text.misc.overview"), Style.normalFont));
     printDashboard(project, chapter1);
     document.add(chapter1);
   }
@@ -112,32 +111,42 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     Font dataFont2 = new Font(Font.TIMES_ROMAN, 10, Font.BOLD, new Color(100, 150, 190));
 
     // Static Analysis
-    Paragraph staticAnalysis = new Paragraph(getTextProperty("general.static_analysis"), FontStyle.underlinedFont);
+    Paragraph staticAnalysis = new Paragraph(getTextProperty("general.static_analysis"), Style.underlinedFont);
     PdfPTable staticAnalysisTable = new PdfPTable(3);
     staticAnalysisTable.getDefaultCell().setBorderColor(Color.WHITE);
 
     PdfPTable linesOfCode = new PdfPTable(1);
-    linesOfCode.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(linesOfCode);
     linesOfCode.addCell(new Phrase(getTextProperty("general.lines_of_code"), titleFont));
-    PdfPTable withTendency = new PdfPTable(2);
-    withTendency.addCell(new Phrase(project.getMeasure("ncss").getFormatValue(), dataFont));
-    withTendency.addCell(getTendencyImage(project.getMeasure("ncss").getQualitativeTendency(), project.getMeasure("ncss").getQuantitativeTendency()));
+    PdfPTable linesOfCodeTendency = new PdfPTable(2);
+    Style.noBorderTable(linesOfCodeTendency);
+    linesOfCodeTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    linesOfCodeTendency.addCell(new Phrase(project.getMeasure("ncss").getFormatValue(), dataFont));
+    linesOfCodeTendency.addCell(getTendencyImage(project.getMeasure("ncss").getQualitativeTendency(), project.getMeasure("ncss").getQuantitativeTendency()));
     
-    linesOfCode.addCell(withTendency);
+    linesOfCode.addCell(linesOfCodeTendency);
     linesOfCode.addCell(new Phrase(project.getMeasure("packages_count").getFormatValue() + " packages", dataFont2));
     linesOfCode.addCell(new Phrase(project.getMeasure("classes_count").getFormatValue() + " classes", dataFont2));
     linesOfCode.addCell(new Phrase(project.getMeasure("functions_count").getFormatValue() + " methods", dataFont2));
     linesOfCode.addCell(new Phrase(project.getMeasure("duplicated_lines_ratio").getFormatValue() + " duplicated lines", dataFont2));
 
     PdfPTable comments = new PdfPTable(1);
-    comments.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(comments);
     comments.addCell(new Phrase(getTextProperty("general.comments"), titleFont));
-    comments.addCell(new Phrase(project.getMeasure("comment_ratio").getFormatValue(), dataFont));
+    PdfPTable commentsTendency = new PdfPTable(2);
+    commentsTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    Style.noBorderTable(commentsTendency);
+    commentsTendency.addCell(new Phrase(project.getMeasure("comment_ratio").getFormatValue(), dataFont));
+    commentsTendency.addCell(getTendencyImage(project.getMeasure("comment_ratio").getQualitativeTendency(), project.getMeasure("comment_ratio").getQuantitativeTendency()));
     comments.addCell(new Phrase(project.getMeasure("comment_lines").getFormatValue() + " comment lines", dataFont2));
 
     PdfPTable complexity = new PdfPTable(1);
-    complexity.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(complexity);
     complexity.addCell(new Phrase(getTextProperty("general.complexity"), titleFont));
+    PdfPTable complexityTendency = new PdfPTable(2);
+    complexityTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    Style.noBorderTable(complexityTendency);
+    // TODO: tendency
     complexity.addCell(new Phrase(project.getMeasure("ccn_function").getFormatValue(), dataFont));
     complexity.addCell(new Phrase(project.getMeasure("ccn_class").getFormatValue() + " /class", dataFont2));
     complexity.addCell(new Phrase(project.getMeasure("ccn").getFormatValue() + " decision points", dataFont2));
@@ -149,18 +158,20 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     staticAnalysisTable.setSpacingAfter(20);
 
     // Dynamic Analysis
-    Paragraph dynamicAnalysis = new Paragraph(getTextProperty("general.dynamic_analysis"), FontStyle.underlinedFont);
+    Paragraph dynamicAnalysis = new Paragraph(getTextProperty("general.dynamic_analysis"), Style.underlinedFont);
     PdfPTable dynamicAnalysisTable = new PdfPTable(3);
-    dynamicAnalysisTable.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(dynamicAnalysisTable);
 
     PdfPTable codeCoverage = new PdfPTable(1);
-    codeCoverage.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(codeCoverage);
+    // TODO: tendency
     codeCoverage.addCell(new Phrase(getTextProperty("general.code_coverage"), titleFont));
     codeCoverage.addCell(new Phrase(project.getMeasure("code_coverage").getFormatValue() + " coverage", dataFont));
     codeCoverage.addCell(new Phrase(project.getMeasure("test_count").getFormatValue() + " tests", dataFont2));
 
     PdfPTable testSuccess = new PdfPTable(1);
-    testSuccess.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(testSuccess);
+    // TODO: tendency
     testSuccess.addCell(new Phrase(getTextProperty("general.test_success"), titleFont));
     testSuccess.addCell(new Phrase(project.getMeasure("test_success_percentage").getFormatValue(), dataFont));
     testSuccess.addCell(new Phrase(project.getMeasure("test_failures_count").getFormatValue() + " failures", dataFont2));
@@ -173,17 +184,19 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     dynamicAnalysisTable.setSpacingAfter(20);
 
     Paragraph codingRulesViolations = new Paragraph(getTextProperty("general.coding_rules_violations"),
-        FontStyle.underlinedFont);
+        Style.underlinedFont);
     PdfPTable codingRulesViolationsTable = new PdfPTable(3);
-    codingRulesViolationsTable.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(codingRulesViolationsTable);
 
     PdfPTable rulesCompliance = new PdfPTable(1);
-    rulesCompliance.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(rulesCompliance);
+    // TODO: tendency
     rulesCompliance.addCell(new Phrase(getTextProperty("general.rules_compliance"), titleFont));
     rulesCompliance.addCell(new Phrase(project.getMeasure("rules_compliance").getFormatValue(), dataFont));
 
     PdfPTable violations = new PdfPTable(1);
-    violations.getDefaultCell().setBorderColor(Color.WHITE);
+    Style.noBorderTable(violations);
+    // TODO: tendency
     violations.addCell(new Phrase(getTextProperty("general.violations"), titleFont));
     violations.addCell(new Phrase(project.getMeasure("rules_violations").getFormatValue(), dataFont));
 
@@ -200,21 +213,11 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     section.add(dynamicAnalysisTable);
     section.add(codingRulesViolations);
     section.add(codingRulesViolationsTable);
-    try {
-      section.add(Image.getInstance("http://nemo.sonar.codehaus.org/images/tendency/2-black.png"));
-      
-    } catch (MalformedURLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
   @Override
   protected void printTocTitle(Toc tocDocument) throws com.lowagie.text.DocumentException {
-    Paragraph tocTitle = new Paragraph(super.getTextProperty("main.table.of.contents"), FontStyle.tocTitleFont);
+    Paragraph tocTitle = new Paragraph(super.getTextProperty("main.table.of.contents"), Style.tocTitleFont);
     tocTitle.setAlignment(Element.ALIGN_CENTER);
     tocDocument.getTocDocument().add(tocTitle);
     tocDocument.getTocDocument().add(Chunk.NEWLINE);
