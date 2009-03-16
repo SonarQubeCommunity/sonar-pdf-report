@@ -15,6 +15,9 @@ public class Measure {
   public Measure(String measureKey, String measureFValue) {
     this.key = measureKey;
     this.formatValue = measureFValue;
+    this.qualitativeTendency = 0;
+    this.quantitativeTendency = 0;
+    
   }
 
   public String getKey() {

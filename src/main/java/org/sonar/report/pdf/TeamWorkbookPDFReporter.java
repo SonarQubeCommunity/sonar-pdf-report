@@ -122,13 +122,15 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     Style.noBorderTable(linesOfCodeTendency);
     linesOfCodeTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
     linesOfCodeTendency.addCell(new Phrase(project.getMeasure("ncss").getFormatValue(), dataFont));
-    linesOfCodeTendency.addCell(getTendencyImage(project.getMeasure("ncss").getQualitativeTendency(), project.getMeasure("ncss").getQuantitativeTendency()));
-    
+    linesOfCodeTendency.addCell(getTendencyImage(project.getMeasure("ncss").getQualitativeTendency(), project
+        .getMeasure("ncss").getQuantitativeTendency()));
+
     linesOfCode.addCell(linesOfCodeTendency);
     linesOfCode.addCell(new Phrase(project.getMeasure("packages_count").getFormatValue() + " packages", dataFont2));
     linesOfCode.addCell(new Phrase(project.getMeasure("classes_count").getFormatValue() + " classes", dataFont2));
     linesOfCode.addCell(new Phrase(project.getMeasure("functions_count").getFormatValue() + " methods", dataFont2));
-    linesOfCode.addCell(new Phrase(project.getMeasure("duplicated_lines_ratio").getFormatValue() + " duplicated lines", dataFont2));
+    linesOfCode.addCell(new Phrase(project.getMeasure("duplicated_lines_ratio").getFormatValue() + " duplicated lines",
+        dataFont2));
 
     PdfPTable comments = new PdfPTable(1);
     Style.noBorderTable(comments);
@@ -137,7 +139,9 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     commentsTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
     Style.noBorderTable(commentsTendency);
     commentsTendency.addCell(new Phrase(project.getMeasure("comment_ratio").getFormatValue(), dataFont));
-    commentsTendency.addCell(getTendencyImage(project.getMeasure("comment_ratio").getQualitativeTendency(), project.getMeasure("comment_ratio").getQuantitativeTendency()));
+    commentsTendency.addCell(getTendencyImage(project.getMeasure("comment_ratio").getQualitativeTendency(), project
+        .getMeasure("comment_ratio").getQuantitativeTendency()));
+    comments.addCell(commentsTendency);
     comments.addCell(new Phrase(project.getMeasure("comment_lines").getFormatValue() + " comment lines", dataFont2));
 
     PdfPTable complexity = new PdfPTable(1);
@@ -146,8 +150,10 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     PdfPTable complexityTendency = new PdfPTable(2);
     complexityTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
     Style.noBorderTable(complexityTendency);
-    // TODO: tendency
-    complexity.addCell(new Phrase(project.getMeasure("ccn_function").getFormatValue(), dataFont));
+    complexityTendency.addCell(new Phrase(project.getMeasure("ccn_function").getFormatValue(), dataFont));
+    complexityTendency.addCell(getTendencyImage(project.getMeasure("ccn_function").getQualitativeTendency(), project
+        .getMeasure("ccn_function").getQuantitativeTendency()));
+    complexity.addCell(complexityTendency);
     complexity.addCell(new Phrase(project.getMeasure("ccn_class").getFormatValue() + " /class", dataFont2));
     complexity.addCell(new Phrase(project.getMeasure("ccn").getFormatValue() + " decision points", dataFont2));
 
@@ -164,17 +170,30 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
 
     PdfPTable codeCoverage = new PdfPTable(1);
     Style.noBorderTable(codeCoverage);
-    // TODO: tendency
     codeCoverage.addCell(new Phrase(getTextProperty("general.code_coverage"), titleFont));
-    codeCoverage.addCell(new Phrase(project.getMeasure("code_coverage").getFormatValue() + " coverage", dataFont));
+    PdfPTable codeCoverageTendency = new PdfPTable(2);
+    Style.noBorderTable(codeCoverageTendency);
+    codeCoverageTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    codeCoverageTendency.addCell(new Phrase(project.getMeasure("code_coverage").getFormatValue() + " coverage",
+        dataFont));
+    codeCoverageTendency.addCell(getTendencyImage(project.getMeasure("code_coverage").getQualitativeTendency(), project
+        .getMeasure("code_coverage").getQuantitativeTendency()));
+    codeCoverage.addCell(codeCoverageTendency);
     codeCoverage.addCell(new Phrase(project.getMeasure("test_count").getFormatValue() + " tests", dataFont2));
 
     PdfPTable testSuccess = new PdfPTable(1);
     Style.noBorderTable(testSuccess);
-    // TODO: tendency
     testSuccess.addCell(new Phrase(getTextProperty("general.test_success"), titleFont));
-    testSuccess.addCell(new Phrase(project.getMeasure("test_success_percentage").getFormatValue(), dataFont));
-    testSuccess.addCell(new Phrase(project.getMeasure("test_failures_count").getFormatValue() + " failures", dataFont2));
+    PdfPTable testSuccessTendency = new PdfPTable(2);
+    Style.noBorderTable(testSuccessTendency);
+    testSuccessTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    testSuccessTendency.addCell(new Phrase(project.getMeasure("test_success_percentage").getFormatValue(), dataFont));
+    testSuccessTendency.addCell(getTendencyImage(
+        project.getMeasure("test_success_percentage").getQualitativeTendency(), project.getMeasure(
+            "test_success_percentage").getQuantitativeTendency()));
+    testSuccess.addCell(testSuccessTendency);
+    testSuccess
+        .addCell(new Phrase(project.getMeasure("test_failures_count").getFormatValue() + " failures", dataFont2));
     testSuccess.addCell(new Phrase(project.getMeasure("test_errors_count").getFormatValue() + " errors", dataFont2));
 
     dynamicAnalysisTable.setSpacingBefore(10);
@@ -190,15 +209,27 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
 
     PdfPTable rulesCompliance = new PdfPTable(1);
     Style.noBorderTable(rulesCompliance);
-    // TODO: tendency
     rulesCompliance.addCell(new Phrase(getTextProperty("general.rules_compliance"), titleFont));
-    rulesCompliance.addCell(new Phrase(project.getMeasure("rules_compliance").getFormatValue(), dataFont));
+    PdfPTable rulesComplianceTendency = new PdfPTable(2);
+    Style.noBorderTable(rulesComplianceTendency);
+    rulesComplianceTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    rulesComplianceTendency.addCell(new Phrase(project.getMeasure("rules_compliance").getFormatValue(), dataFont));
+    rulesComplianceTendency.addCell(getTendencyImage(
+        project.getMeasure("rules_compliance").getQualitativeTendency(), project.getMeasure(
+            "rules_compliance").getQuantitativeTendency()));
+    rulesCompliance.addCell(rulesComplianceTendency);
 
     PdfPTable violations = new PdfPTable(1);
     Style.noBorderTable(violations);
-    // TODO: tendency
     violations.addCell(new Phrase(getTextProperty("general.violations"), titleFont));
-    violations.addCell(new Phrase(project.getMeasure("rules_violations").getFormatValue(), dataFont));
+    PdfPTable violationsTendency = new PdfPTable(2);
+    Style.noBorderTable(violationsTendency);
+    violationsTendency.getDefaultCell().setFixedHeight(Style.tendencyIconsHeight);
+    violationsTendency.addCell(new Phrase(project.getMeasure("rules_violations").getFormatValue(), dataFont));
+    violationsTendency.addCell(getTendencyImage(
+        project.getMeasure("rules_violations").getQualitativeTendency(), project.getMeasure(
+            "rules_violations").getQuantitativeTendency()));
+    violations.addCell(violationsTendency);
 
     codingRulesViolationsTable.setSpacingBefore(10);
     codingRulesViolationsTable.addCell(rulesCompliance);
