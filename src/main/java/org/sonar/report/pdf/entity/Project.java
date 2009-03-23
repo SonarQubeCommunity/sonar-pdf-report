@@ -5,15 +5,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
+import org.sonar.report.pdf.util.SonarAccess;
 
 /**
  * This class encapsulates the Project info.
@@ -27,32 +23,10 @@ public class Project {
   private Measures measures;
   private List<Project> subprojects;
 
-  private static final String PROJECTS = "//projects/project";
-
-  @SuppressWarnings("unchecked")
-  public static Project parse(String url) throws HttpException, IOException, DocumentException {
-    Project project = null;
-    HttpClient client = new HttpClient();
-    HttpMethod method = new GetMethod(url);
-    int status = 0;
-
-    status = client.executeMethod(method);
-    if (!(status == HttpStatus.SC_OK)) {
-      return null;
-    }
-    SAXReader reader = new SAXReader();
-    Document document = reader.read(method.getResponseBodyAsStream());
-    List<Node> allProjectsNode = document.selectNodes(PROJECTS);
-    Iterator<Node> it = allProjectsNode.iterator();
-    Node projectNode = it.next();
-    project = createProjectFromNode(projectNode);
-    while (it.hasNext()) {
-      projectNode = it.next();
-      project.getSubprojects().add(createProjectFromNode(projectNode));
-    }
-
-    return project;
-  }
+  private static final String PROJECT = "//resources/resource";
+  private static final String KEY = "key";
+  private static final String NAME = "name";
+  private static final String DESCRIPTION = "description";
 
   public Measure getMeasure(String measureKey) {
     if (measures.containsMeasure(measureKey)) {
@@ -60,30 +34,34 @@ public class Project {
     } else {
       return new Measure(null, "N/A");
     }
-
   }
 
-  @SuppressWarnings("unchecked")
-  private static Project createProjectFromNode(Node projectNode) {
-    Project project = new Project();
-    Node name = projectNode.selectSingleNode("name");
+  public void initFromDocuments(Document projectDoc, Document childsDoc) {
+    initFromNode(projectDoc.selectSingleNode(PROJECT), childsDoc.selectNodes(PROJECT));
+  }
+  
+  public void initFromNode(Node projectNode, List<Node> childsNodes) {
+    Node name = projectNode.selectSingleNode(NAME);
     if (name != null) {
-      project.setName(name.getText());
+      this.setName(name.getText());
     }
-    Node description = projectNode.selectSingleNode("description");
+    Node description = projectNode.selectSingleNode(DESCRIPTION);
     if (description != null) {
-      project.setDescription(description.getText());
+      this.setDescription(description.getText());
     }
-    project.setKey(projectNode.selectSingleNode("key").getText());
-    project.setLinks(new LinkedList<String>());
-    List<Node> linksNode = projectNode.selectNodes("links");
-    Iterator<Node> it = linksNode.iterator();
-    while (it.hasNext()) {
-      project.getLinks().add(it.next().selectSingleNode("url").getText());
+    this.setKey(projectNode.selectSingleNode(KEY).getText());
+    this.setLinks(new LinkedList<String>());
+    this.setSubprojects(new LinkedList<Project>());
+    if(childsNodes != null) {
+      Iterator<Node> it = childsNodes.iterator();
+      Node subprojectNode;
+      while (it.hasNext()) {
+        subprojectNode = it.next();
+        Project childProject = new Project();
+        childProject.initFromNode(subprojectNode, null);
+        this.getSubprojects().add(childProject);
+      }
     }
-    project.setSubprojects(new LinkedList<Project>());
-    return project;
-
   }
 
   public void setId(short id) {

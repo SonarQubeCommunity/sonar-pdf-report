@@ -27,7 +27,7 @@ public class ReporterTest {
     Properties config = new Properties();
     config.load(resource.openStream());
 
-    PDFReporter reporter = new DefaultPDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
+    PDFReporter reporter = new TeamWorkbookPDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
         "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"));
 
     ByteArrayOutputStream baos = reporter.getReport();

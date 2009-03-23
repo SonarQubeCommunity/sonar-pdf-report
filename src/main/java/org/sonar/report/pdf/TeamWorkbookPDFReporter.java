@@ -102,7 +102,6 @@ public class TeamWorkbookPDFReporter extends PDFReporter {
     document.add(chapter1);
   }
 
-  // TODO: tendency info
   private void printDashboard(Project project, Section section) throws DocumentException {
 
     // Dashboard special fonts

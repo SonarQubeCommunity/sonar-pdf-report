@@ -7,12 +7,16 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpException;
+import org.dom4j.Node;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.util.SonarAccess;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
@@ -35,6 +39,7 @@ public abstract class PDFReporter {
   private Properties textProperties;
   private Properties configProperties;
   private Project project = null;
+  private String measuresKeys;
 
   public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException {
     // Creation of documents
@@ -87,8 +92,10 @@ public abstract class PDFReporter {
 
   public Project getProject() throws HttpException, IOException, org.dom4j.DocumentException {
     if (project == null) {
-      project = Project.parse(getSonarUrl() + "/api/projects/" + getProjectKey()
-          + "?includelinks=true&format=xml&includechildren=true");
+      SonarAccess sonarAccess = new SonarAccess();
+      project = new Project();
+      project.initFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey() + "&depth=0&format=xml"), 
+          sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey() + "&depth=1&format=xml"));
 
       project.setMeasures(getMeasures(project.getKey()));
       Iterator<Project> it = project.getSubprojects().iterator();
@@ -101,9 +108,29 @@ public abstract class PDFReporter {
   }
 
   private Measures getMeasures(String projectKey) throws HttpException, IOException, org.dom4j.DocumentException {
-    Measures measures = Measures.parse(getSonarUrl() + "/api/projects/" + projectKey
-        + "/measures?includeparams=true&format=xml");
+    if (measuresKeys == null) {
+      measuresKeys = getAllMetricKeys();
+    }
+    Measures measures = new Measures();
+    SonarAccess sonarAccess = new SonarAccess();
+    String urlAllMesaures = getSonarUrl() + "/api/resources?resource=" + projectKey + "&depth=0&format=xml&includetrends=true"
+          + "&metrics=" + measuresKeys;
+    measures.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
     return measures;
+  }
+
+  public String getAllMetricKeys() throws HttpException, IOException, org.dom4j.DocumentException {
+    String urlAllMetrics = getSonarUrl() + "/api/metrics?format=xml";
+    SonarAccess sonarAccess = new SonarAccess();
+    org.dom4j.Document allMetricsDocument = sonarAccess.getUrlAsDocument(urlAllMetrics);
+    List<Node> allMetricKeysNodes = allMetricsDocument.selectNodes("//metrics/metric/key");
+    String allMetricKeys= "";
+    Iterator<Node> it = allMetricKeysNodes.iterator();
+    allMetricKeys += it.next().getText();
+    while(it.hasNext()) {
+      allMetricKeys += "," + it.next().getText();
+    }
+    return allMetricKeys;
   }
 
   // TODO: add xradar graphic (need ISO9126 measures for this, SONAR-563).
@@ -116,7 +143,7 @@ public abstract class PDFReporter {
 
   public Image getCCNDistribution(Project project) {
     String data;
-    if(project.getMeasure("ccn_classes_count_distribution").getTextValue() != null) {
+    if (project.getMeasure("ccn_classes_count_distribution").getTextValue() != null) {
       data = project.getMeasure("ccn_classes_count_distribution").getTextValue();
     } else {
       data = "N/A";

@@ -11,12 +11,21 @@ public class Measure {
   private Integer qualitativeTendency;
   private Integer quantitativeTendency;
   private String alert;
+  
+  private static final String KEY = "key";
+  private static final String VALUE = "val";
+  private static final String FORMAT_VALUE = "frmt_val";
+  private static final String TREND = "trend";
+  private static final String VAR = "var";
 
   public Measure(String measureKey, String measureFValue) {
     this.key = measureKey;
     this.formatValue = measureFValue;
     this.qualitativeTendency = 0;
     this.quantitativeTendency = 0;
+  }
+  
+  public Measure() {
     
   }
 
@@ -76,33 +85,32 @@ public class Measure {
     this.alert = alert;
   }
 
-  public static Measure createMeasureFromNode(Node measureNode) {
-    Measure measure = new Measure(measureNode.selectSingleNode("metric").getText(), measureNode.selectSingleNode(
-        "f_value").getText());
-    measure.setValue(measureNode.selectSingleNode("value").getText());
-    if (measureNode.selectSingleNode("alert") != null) {
-      measure.setAlert(measureNode.selectSingleNode("alert").getText());
+  /**
+   * Init measurr from XML node. The root node must be "msr".
+   * 
+   * @param measureNode
+   */
+  public void initFromNode(Node measureNode) {
+    this.setKey(measureNode.selectSingleNode(KEY).getText());
+    this.setFormatValue(measureNode.selectSingleNode(FORMAT_VALUE).getText());
+    this.setValue(measureNode.selectSingleNode(VALUE).getText());
+
+    if (measureNode.selectSingleNode(TREND) != null) {
+      this.setQualitativeTendency(Integer.parseInt(measureNode.selectSingleNode(TREND).getText()));
     } else {
-      measure.setAlert(null);
+      this.setQualitativeTendency(null);
     }
 
-    if (measureNode.selectSingleNode("t_qual") != null) {
-      measure.setQualitativeTendency(Integer.parseInt(measureNode.selectSingleNode("t_qual").getText()));
+    if (measureNode.selectSingleNode(VAR) != null) {
+      this.setQuantitativeTendency(Integer.parseInt(measureNode.selectSingleNode(VAR).getText()));
     } else {
-      measure.setQualitativeTendency(null);
-    }
-
-    if (measureNode.selectSingleNode("t_quant") != null) {
-      measure.setQuantitativeTendency(Integer.parseInt(measureNode.selectSingleNode("t_quant").getText()));
-    } else {
-      measure.setQuantitativeTendency(null);
+      this.setQuantitativeTendency(null);
     }
     
-    if(measureNode.selectSingleNode("text_value") != null) {
-      measure.setTextValue(measureNode.selectSingleNode("text_value").getText());
+    if(measureNode.selectSingleNode(VALUE) != null) {
+      this.setTextValue(measureNode.selectSingleNode(VALUE).getText());
     } else {
-      measure.setTextValue(null);
+      this.setTextValue(null);
     }
-    return measure;
   }
 }
