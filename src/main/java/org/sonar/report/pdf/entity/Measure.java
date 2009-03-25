@@ -98,19 +98,19 @@ public class Measure {
     if (measureNode.selectSingleNode(TREND) != null) {
       this.setQualitativeTendency(Integer.parseInt(measureNode.selectSingleNode(TREND).getText()));
     } else {
-      this.setQualitativeTendency(null);
+      this.setQualitativeTendency(0);
     }
 
     if (measureNode.selectSingleNode(VAR) != null) {
       this.setQuantitativeTendency(Integer.parseInt(measureNode.selectSingleNode(VAR).getText()));
     } else {
-      this.setQuantitativeTendency(null);
+      this.setQuantitativeTendency(0);
     }
     
     if(measureNode.selectSingleNode(VALUE) != null) {
       this.setTextValue(measureNode.selectSingleNode(VALUE).getText());
     } else {
-      this.setTextValue(null);
+      this.setTextValue("");
     }
   }
 }
