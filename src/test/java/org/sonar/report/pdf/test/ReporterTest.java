@@ -27,7 +27,7 @@ public class ReporterTest {
     config.load(resource.openStream());
 
     PDFReporter reporter = new TeamWorkbookPDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
-        "es.juntadeandalucia.copt.transportes:autoriza", config.getProperty("sonar.base.url"));
+        "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"));
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;
