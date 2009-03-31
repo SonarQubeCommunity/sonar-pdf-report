@@ -17,6 +17,9 @@ import org.dom4j.Node;
 public class Measures {
 
   private final static String MEASURES = "//resources/resource/msr";
+  private final static String DATE = "//resources/resource/date";
+  private final static String VERSION = "//resources/resource/version";
+  
 
   private Hashtable<String, Measure> measuresTable = new Hashtable<String, Measure>();
   private Date date;
@@ -75,10 +78,9 @@ public class Measures {
     while (it.hasNext()) {
       addMesaureFromNode(it.next());
     }
-    
-    // TODO: delete when web service API provide date
     try {
-      setDate("now");
+      setDate(allMeasuresNode.selectSingleNode(DATE).getText());
+      setVersion(allMeasuresNode.selectSingleNode(VERSION).getText());
     } catch (ParseException e) {
       e.printStackTrace();
     }
