@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.Properties;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.DefaultPDFReporter;
+import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 
 public class ReportController extends HttpServlet {
 

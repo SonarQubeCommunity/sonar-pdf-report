@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.dom4j.DocumentException;
+import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.util.MetricKeys;
@@ -20,7 +21,7 @@ public class MetricsTest {
     Properties config = new Properties();
     config.load(resource.openStream());
     
-    PDFReporter reporter = new TeamWorkbookPDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
+    PDFReporter reporter = new ExecutivePDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
         "es.juntadeandalucia.copt.transportes:autoriza", config.getProperty("sonar.base.url"));
     String allMetricsKeys = reporter.getAllMetricKeys();
     

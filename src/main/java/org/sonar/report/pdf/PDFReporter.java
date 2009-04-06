@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,6 +99,14 @@ public abstract class PDFReporter {
           sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey() + "&depth=1&format=xml"));
 
       project.setMeasures(getMeasures(project.getKey()));
+      project.setCategoriesViolationsFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
+          + "&metrics=rules_violations&depth=0&filter_rules_cats=false&format=xml"), 
+          sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
+              + "&metrics=rules_violations&depth=1&filter_rules_cats=false&format=xml"));
+      project.setMostViolatedRulesFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
+          + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=0"),
+          sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
+              + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=1"));
       Iterator<Project> it = project.getSubprojects().iterator();
       while (it.hasNext()) {
         Project subproject = it.next();
@@ -124,7 +133,7 @@ public abstract class PDFReporter {
     SonarAccess sonarAccess = new SonarAccess();
     org.dom4j.Document allMetricsDocument = sonarAccess.getUrlAsDocument(urlAllMetrics);
     List<Node> allMetricKeysNodes = allMetricsDocument.selectNodes("//metrics/metric/key");
-    String allMetricKeys= "";
+    String allMetricKeys= ""; 
     Iterator<Node> it = allMetricKeysNodes.iterator();
     allMetricKeys += it.next().getText();
     while(it.hasNext()) {

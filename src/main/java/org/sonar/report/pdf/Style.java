@@ -53,9 +53,24 @@ public class Style {
   public final static Font frontPageFont3 = new Font(Font.HELVETICA, 16, Font.BOLDITALIC, Color.GRAY);
   
   /**
-   * Underlined Font
+   * Underlined font
    */
   public final static Font underlinedFont = new Font(Font.HELVETICA, 14, Font.UNDERLINE, Color.BLACK);
+  
+  /**
+   * Dashboard metric title font
+   */
+  public final static Font dashboardTitleFont = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.BLACK);
+  
+  /**
+   * Dashboard metric value font
+   */
+  public final static Font dashboardDataFont = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.GRAY);
+  
+  /**
+   * Dashboard metric details font
+   */
+  public final static Font dashboardDataFont2 = new Font(Font.TIMES_ROMAN, 10, Font.BOLD, new Color(100, 150, 190));
   
   /**
    * Tendency icons height + 2 (used in tables style)
