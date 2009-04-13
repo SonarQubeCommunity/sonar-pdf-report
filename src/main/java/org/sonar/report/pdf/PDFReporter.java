@@ -15,6 +15,7 @@ import java.util.Properties;
 import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Node;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
+import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.util.SonarAccess;
@@ -104,13 +105,17 @@ public abstract class PDFReporter {
           sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
               + "&metrics=rules_violations&depth=1&filter_rules_cats=false&format=xml"));
       project.setMostViolatedRulesFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-          + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=0"),
+          + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=0&format=xml"),
           sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-              + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=1"));
+              + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=1&format=xml"));
+      project.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
+          + "&metrics=rules_violations&scopes=FIL&depth=-1&limit=5&format=xml")));
       Iterator<Project> it = project.getSubprojects().iterator();
       while (it.hasNext()) {
         Project subproject = it.next();
         subproject.setMeasures(getMeasures(subproject.getKey()));
+        subproject.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + subproject.getKey()
+            + "&metrics=rules_violations&scopes=FIL&depth=-1&limit=5&format=xml")));
       }
     }
     return project;
@@ -142,7 +147,7 @@ public abstract class PDFReporter {
     return allMetricKeys;
   }
 
-  // TODO: add xradar graphic (need ISO9126 measures for this, SONAR-563).
+  // TODO: SONAR-563 is closed. This can be done.
   public void getRadarGraphic() {
 
     // RadarGraphic graphics = new RadarGraphic();

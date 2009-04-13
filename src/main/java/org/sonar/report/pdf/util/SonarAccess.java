@@ -33,6 +33,7 @@ public class SonarAccess {
       logger.error("Can´t access to Sonar. HTTP KO to {}", url);
       return null;
     }
+    logger.debug("Received response.", url);
     SAXReader reader = new SAXReader();
     return reader.read(method.getResponseBodyAsStream());
   }

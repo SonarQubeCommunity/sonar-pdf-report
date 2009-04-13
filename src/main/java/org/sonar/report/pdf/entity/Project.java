@@ -13,27 +13,39 @@ import org.dom4j.Node;
  * This class encapsulates the Project info.
  */
 public class Project {
+  
+  // Project info
   private short id;
   private String key;
   private String name;
   private String description;
   private List<String> links;
+  
+  // Measures
   private Measures measures;
+  
+  // Child projects
   private List<Project> subprojects;
+  
+  // Most violated rules
   private HashMap<String, String> mostViolatedRules;
   
+  // Most violated files
+  private List<FileInfo> mostViolatedFiles;
+  
+  // Rules categories violations
   private Integer maintainabilityViolations;
   private Integer reliabilityViolations;
   private Integer efficiencyViolations;
   private Integer portabilityViolations;
   private Integer usabilityViolations;
 
-  // PROJECT INFO
+  // PROJECT INFO XPATH
   private static final String PROJECT = "//resources/resource";
   private static final String KEY = "key";
   private static final String NAME = "name";
   
-  // RULES INFO
+  // RULES INFO XPATH
   private static final String ALL_MEASURES = "msr";
   private static final String MEASURE_FRMT_VAL = "frmt_val";
   private static final String RULE_NAME = "rule/name";
@@ -72,6 +84,7 @@ public class Project {
     this.setKey(projectNode.selectSingleNode(KEY).getText());
     this.setLinks(new LinkedList<String>());
     this.setSubprojects(new LinkedList<Project>());
+    this.setMostViolatedRules(new HashMap<String, String>());
     if(childsNodes != null) {
       Iterator<Node> it = childsNodes.iterator();
       Node subprojectNode;
@@ -215,6 +228,18 @@ public class Project {
     return usabilityViolations;
   }
 
+  public HashMap<String, String> getMostViolatedRules() {
+    return mostViolatedRules;
+  }
+  
+  public List<FileInfo> getMostViolatedFiles() {
+    return mostViolatedFiles;
+  }
+  
+  public void setMostViolatedRules(HashMap<String, String> mostViolatedRules) {
+    this.mostViolatedRules = mostViolatedRules;
+  }
+
   public void setMaintainabilityViolations(Integer maintainabilityViolations) {
     this.maintainabilityViolations = maintainabilityViolations;
   }
@@ -233,5 +258,9 @@ public class Project {
 
   public void setUsabilityViolations(Integer usabilityValue) {
     this.usabilityViolations = usabilityValue;
+  }
+
+  public void setMostViolatedFiles(List<FileInfo> mostViolatedFiles) {
+    this.mostViolatedFiles = mostViolatedFiles;
   }
 }

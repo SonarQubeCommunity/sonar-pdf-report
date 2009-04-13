@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.util.MetricKeys;
 
@@ -102,7 +106,11 @@ public class ExecutivePDFReporter extends PDFReporter {
     Section section11 = chapter1.addSection(new Paragraph(getTextProperty("general.report_overview"),
         Style.titleFont));
     printDashboard(project, section11);
-    printRulesCategories(project, section11);
+    Section section12 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
+        Style.titleFont));
+    printRulesCategories(project, section12);
+    printMostViolatedRules(project, section12);
+    printMostViolatedFiles(project, section12);
     document.add(chapter1);
     
     Iterator<Project> it = project.getSubprojects().iterator();
@@ -110,10 +118,16 @@ public class ExecutivePDFReporter extends PDFReporter {
       Project subproject = it.next();
       ChapterAutoNumber chapterN = new ChapterAutoNumber(new Paragraph(subproject.getName(),
           Style.chapterFont));
+      
       Section sectionN1 = chapterN.addSection(new Paragraph(getTextProperty("general.report_overview"),
           Style.titleFont));
       printDashboard(subproject, sectionN1);
-      printRulesCategories(subproject, sectionN1);
+      
+      Section sectionN2 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
+          Style.titleFont));
+      printRulesCategories(subproject, sectionN2);
+      printMostViolatedRules(subproject, sectionN2);
+      printMostViolatedFiles(subproject, sectionN2);
       document.add(chapterN);
     }
   }
@@ -258,6 +272,56 @@ public class ExecutivePDFReporter extends PDFReporter {
   
   private void printMostViolatedRules(Project project, Section section) {
     // PDFing the info allocated in Project.mostViolatedRules
+    Set<Entry <String, String>> mostViolatedRules = project.getMostViolatedRules().entrySet();
+    Iterator<Entry<String, String>> it = mostViolatedRules.iterator();
+    PdfPTable mostViolatedRulesTable = new PdfPTable(2);
+    mostViolatedRulesTable.getDefaultCell().setColspan(2);
+    mostViolatedRulesTable.addCell(new Phrase(getTextProperty("general.most_violated_rules"), Style.dashboardTitleFont));
+    mostViolatedRulesTable.getDefaultCell().setBackgroundColor(Color.GRAY);
+    mostViolatedRulesTable.addCell("");
+    mostViolatedRulesTable.getDefaultCell().setColspan(1);
+    mostViolatedRulesTable.getDefaultCell().setBackgroundColor(Color.WHITE);
+    
+    while(it.hasNext()) {
+      Entry<String, String> entry = it.next();
+      mostViolatedRulesTable.addCell(entry.getKey());
+      mostViolatedRulesTable.addCell(entry.getValue());
+    }
+    if(project.getMostViolatedRules().isEmpty()) {
+      mostViolatedRulesTable.getDefaultCell().setColspan(2);
+      mostViolatedRulesTable.addCell(getTextProperty("general.no_violated_rules"));
+    }
+    
+    mostViolatedRulesTable.setSpacingBefore(20);
+    mostViolatedRulesTable.setSpacingAfter(20);
+    section.add(mostViolatedRulesTable);
+  }
+  
+
+  public void printMostViolatedFiles(Project project, Section section) {
+    List<FileInfo> mostViolatedFiles = project.getMostViolatedFiles();
+    Iterator<FileInfo> it = mostViolatedFiles.iterator();
+    PdfPTable mostViolatedFilesTable = new PdfPTable(2);
+    mostViolatedFilesTable.getDefaultCell().setColspan(2);
+    mostViolatedFilesTable.addCell(new Phrase(getTextProperty("general.most_violated_files"), Style.dashboardTitleFont));
+    mostViolatedFilesTable.getDefaultCell().setBackgroundColor(Color.GRAY);
+    mostViolatedFilesTable.addCell("");
+    mostViolatedFilesTable.getDefaultCell().setColspan(1);
+    mostViolatedFilesTable.getDefaultCell().setBackgroundColor(Color.WHITE);
+    
+    while(it.hasNext()) {
+      FileInfo fileInfo = it.next();
+      mostViolatedFilesTable.addCell(fileInfo.getName());
+      mostViolatedFilesTable.addCell(fileInfo.getViolations().toString());
+    }
+    if(project.getMostViolatedFiles().isEmpty()) {
+      mostViolatedFilesTable.getDefaultCell().setColspan(2);
+      mostViolatedFilesTable.addCell(getTextProperty("general.no_violated_files"));
+    }
+    
+    mostViolatedFilesTable.setSpacingBefore(20);
+    mostViolatedFilesTable.setSpacingAfter(20);
+    section.add(mostViolatedFilesTable);
   }
   
   private void printRulesCategories(Project project, Section section) {
@@ -265,7 +329,6 @@ public class ExecutivePDFReporter extends PDFReporter {
     categoriesTable.getDefaultCell().setColspan(2);
     categoriesTable.addCell(new Phrase(getTextProperty("general.violations_by_category"), Style.dashboardTitleFont));
     categoriesTable.getDefaultCell().setBackgroundColor(Color.GRAY);
-    categoriesTable.getDefaultCell().setColspan(2);
     categoriesTable.addCell("");
     categoriesTable.getDefaultCell().setColspan(1);
     categoriesTable.getDefaultCell().setBackgroundColor(Color.WHITE);
@@ -279,8 +342,9 @@ public class ExecutivePDFReporter extends PDFReporter {
     categoriesTable.addCell(project.getPortabilityViolations().toString());
     categoriesTable.addCell("Usability");
     categoriesTable.addCell(project.getUsabilityViolations().toString());
+    categoriesTable.setSpacingBefore(10);
+    categoriesTable.setSpacingAfter(20);
     section.add(categoriesTable);
-    
   }
 
   @Override

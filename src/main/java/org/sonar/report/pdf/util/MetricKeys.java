@@ -29,7 +29,6 @@ public class MetricKeys {
   public static final String COMMENT_RATIO = "comment_ratio";
   public static final String RULES_COMPLIANCE = "rules_compliance";
   public static final String OPTIONAL_RULES_COMPLIANCE = "optional_rules_compliance";
-  // TODO: What is this?
   public static final String RULES_INDEX = "rules_index";
   public static final String CCN_CLASSES_PERCENT_DISTRIBUTION = "ccn_classes_percent_distribution";
   public static final String CCN_VS_CC = "ccn_vs_cc";
