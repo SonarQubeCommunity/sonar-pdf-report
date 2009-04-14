@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
@@ -37,16 +38,20 @@ public class DefaultPDFReporter extends PDFReporter {
   private URL logo;
   private String projectKey;
   private String sonarUrl;
+  private Properties configProperties;
+  private Properties langProperties;
 
   private final static int indentation = 18;
   private final static int tablePaddingBottom = 5;
 
   private Document document;
 
-  public DefaultPDFReporter(URL logo, String projectKey, String sonarUrl) {
+  public DefaultPDFReporter(URL logo, String projectKey, String sonarUrl, Properties configProperties, Properties langProperties) {
     this.logo = logo;
     this.projectKey = projectKey;
     this.sonarUrl = sonarUrl;
+    this.configProperties = configProperties;
+    this.langProperties = langProperties;
   }
 
   @Override
@@ -283,4 +288,14 @@ public class DefaultPDFReporter extends PDFReporter {
       e.printStackTrace();
     }
   }
+
+  @Override
+  protected Properties getLangProperties() {
+    return langProperties;
+  }
+
+  @Override
+  protected Properties getReportProperties() {
+    return configProperties;
+  } 
 }

@@ -30,8 +30,8 @@ public class SonarAccess {
     logger.debug("Accessing Sonar: {}", url);
     status = client.executeMethod(method);
     if (!(status == HttpStatus.SC_OK)) {
-      logger.error("Can´t access to Sonar. HTTP KO to {}", url);
-      return null;
+      logger.error("Can´t access to Sonar or project doesn't exist on Sonar instance. HTTP KO to {}", url);
+      throw new IOException("Can´t access to Sonar or project doesn't exist on Sonar instance.");
     }
     logger.debug("Received response.", url);
     SAXReader reader = new SAXReader();

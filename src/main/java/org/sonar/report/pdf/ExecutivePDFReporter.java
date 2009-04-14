@@ -6,6 +6,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -33,11 +34,15 @@ public class ExecutivePDFReporter extends PDFReporter {
   private URL logo;
   private String projectKey;
   private String sonarUrl;
+  private Properties configProperties;
+  private Properties langProperties;
 
-  public ExecutivePDFReporter(URL logo, String projectKey, String sonarUrl) {
+  public ExecutivePDFReporter(URL logo, String projectKey, String sonarUrl, Properties configProperties, Properties langProperties) {
     this.logo = logo;
     this.projectKey = projectKey;
     this.sonarUrl = sonarUrl;
+    this.configProperties = configProperties;
+    this.langProperties = langProperties;
   }
 
   @Override
@@ -54,7 +59,17 @@ public class ExecutivePDFReporter extends PDFReporter {
   protected String getSonarUrl() {
     return this.sonarUrl;
   }
+  
+  @Override
+  protected Properties getLangProperties() {
+    return langProperties;
+  }
 
+  @Override
+  protected Properties getReportProperties() {
+    return configProperties;
+  } 
+  
   @Override
   protected void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
       throws org.dom4j.DocumentException {
@@ -353,5 +368,5 @@ public class ExecutivePDFReporter extends PDFReporter {
     tocTitle.setAlignment(Element.ALIGN_CENTER);
     tocDocument.getTocDocument().add(tocTitle);
     tocDocument.getTocDocument().add(Chunk.NEWLINE);
-  } 
+  }
 }

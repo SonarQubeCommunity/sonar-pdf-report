@@ -25,9 +25,13 @@ public class ReporterTest {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
     config.load(resource.openStream());
+    
+    URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
+    Properties configText = new Properties();
+    configText.load(resourceText.openStream());
 
     PDFReporter reporter = new ExecutivePDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
-        "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"));
+        "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"), config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;

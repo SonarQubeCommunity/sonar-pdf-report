@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -38,10 +36,15 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public abstract class PDFReporter {
 
-  private Properties textProperties;
-  private Properties configProperties;
   private Project project = null;
   private String measuresKeys;
+  
+  private static final String RESOURCES = "/api/resources?resource=";
+  private static final String PARENT_PROJECT = "&depth=0&format=xml";
+  private static final String CHILD_PROJECTS = "&depth=1&format=xml";
+  private static final String CATEGORIES_VIOLATIONS = "&metrics=rules_violations&filter_rules_cats=false";
+  private static final String MOST_VIOLATED_RULES = "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true";
+  private static final String MOST_VIOLATED_FILES = "&metrics=rules_violations&scopes=FIL&depth=-1&limit=5&format=xml";
 
   public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException {
     // Creation of documents
@@ -96,26 +99,26 @@ public abstract class PDFReporter {
     if (project == null) {
       SonarAccess sonarAccess = new SonarAccess();
       project = new Project();
-      project.initFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey() + "&depth=0&format=xml"), 
-          sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey() + "&depth=1&format=xml"));
+      project.initFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey() + PARENT_PROJECT), 
+          sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey() + "&depth=1&format=xml"));
 
       project.setMeasures(getMeasures(project.getKey()));
-      project.setCategoriesViolationsFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-          + "&metrics=rules_violations&depth=0&filter_rules_cats=false&format=xml"), 
-          sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-              + "&metrics=rules_violations&depth=1&filter_rules_cats=false&format=xml"));
-      project.setMostViolatedRulesFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-          + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=0&format=xml"),
-          sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-              + "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true&depth=1&format=xml"));
-      project.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + getProjectKey()
-          + "&metrics=rules_violations&scopes=FIL&depth=-1&limit=5&format=xml")));
+      project.setCategoriesViolationsFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
+          + PARENT_PROJECT + CATEGORIES_VIOLATIONS), 
+          sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
+              + CHILD_PROJECTS + CATEGORIES_VIOLATIONS));
+      project.setMostViolatedRulesFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
+          + PARENT_PROJECT + MOST_VIOLATED_RULES),
+          sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
+              + CHILD_PROJECTS + MOST_VIOLATED_RULES));
+      project.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
+          + MOST_VIOLATED_FILES)));
       Iterator<Project> it = project.getSubprojects().iterator();
       while (it.hasNext()) {
         Project subproject = it.next();
         subproject.setMeasures(getMeasures(subproject.getKey()));
-        subproject.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + "/api/resources?resource=" + subproject.getKey()
-            + "&metrics=rules_violations&scopes=FIL&depth=-1&limit=5&format=xml")));
+        subproject.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + subproject.getKey()
+            + MOST_VIOLATED_FILES)));
       }
     }
     return project;
@@ -127,7 +130,7 @@ public abstract class PDFReporter {
     }
     Measures measures = new Measures();
     SonarAccess sonarAccess = new SonarAccess();
-    String urlAllMesaures = getSonarUrl() + "/api/resources?resource=" + projectKey + "&depth=0&format=xml&includetrends=true"
+    String urlAllMesaures = getSonarUrl() + RESOURCES + projectKey + "&depth=0&format=xml&includetrends=true"
           + "&metrics=" + measuresKeys;
     measures.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
     return measures;
@@ -167,33 +170,11 @@ public abstract class PDFReporter {
   }
 
   public String getTextProperty(String key) {
-    if (textProperties == null) {
-      textProperties = new Properties();
-      URL resource = this.getClass().getClassLoader().getResource("report-texts-en.properties");
-      try {
-        textProperties.load(new FileInputStream(resource.getFile()));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return textProperties.getProperty(key);
+    return getLangProperties().getProperty(key);
   }
 
   public String getConfigProperty(String key) {
-    if (configProperties == null) {
-      configProperties = new Properties();
-      URL resource = this.getClass().getClassLoader().getResource("report.properties");
-      try {
-        configProperties.load(new FileInputStream(resource.getFile()));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return configProperties.getProperty(key);
+    return getReportProperties().getProperty(key);
   }
 
   public Image getTendencyImage(int tendencyQualitative, int tendencyCuantitative) {
@@ -261,5 +242,9 @@ public abstract class PDFReporter {
 
   protected abstract void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
       throws org.dom4j.DocumentException;
+  
+  protected abstract Properties getReportProperties();
+  
+  protected abstract Properties getLangProperties();
 
 }

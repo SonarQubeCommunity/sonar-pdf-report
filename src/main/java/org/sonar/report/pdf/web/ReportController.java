@@ -44,9 +44,13 @@ public class ReportController extends HttpServlet {
     resp.setHeader("Pragma", "public");
 
     Properties config = new Properties();
+    Properties configText = new Properties();
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
+    URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
+    
     try {
       config.load(resource.openStream());
+      configText.load(resourceText.openStream());
     } catch (IOException ex) {
       Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, "Can not read report config file", ex);
     }
@@ -61,7 +65,7 @@ public class ReportController extends HttpServlet {
       }
 
       // TODO: set the name of the return file
-      PDFReporter reporter = new DefaultPDFReporter(new URL(sonarUrl + "/images/sonar-120.png"), projectKey, sonarUrl);
+      PDFReporter reporter = new DefaultPDFReporter(new URL(sonarUrl + "/images/sonar-120.png"), projectKey, sonarUrl, config, configText);
       ByteArrayOutputStream baos = reporter.getReport();
       resp.setContentLength(baos.size());
       ServletOutputStream out = resp.getOutputStream();

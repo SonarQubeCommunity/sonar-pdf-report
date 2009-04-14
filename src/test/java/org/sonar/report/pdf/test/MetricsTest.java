@@ -21,8 +21,12 @@ public class MetricsTest {
     Properties config = new Properties();
     config.load(resource.openStream());
     
+    URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
+    Properties configText = new Properties();
+    configText.load(resourceText.openStream());
+
     PDFReporter reporter = new ExecutivePDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
-        "es.juntadeandalucia.copt.transportes:autoriza", config.getProperty("sonar.base.url"));
+        "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"), config, configText);
     String allMetricsKeys = reporter.getAllMetricKeys();
     
     System.out.println("Checking metrics consistency...");
