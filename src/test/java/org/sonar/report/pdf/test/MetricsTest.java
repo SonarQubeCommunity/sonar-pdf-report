@@ -6,10 +6,9 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.dom4j.DocumentException;
-import org.sonar.report.pdf.ExecutivePDFReporter;
-import org.sonar.report.pdf.PDFReporter;
-import org.sonar.report.pdf.TeamWorkbookPDFReporter;
+import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.util.MetricKeys;
+import org.sonar.report.pdf.util.SonarAccess;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -25,9 +24,9 @@ public class MetricsTest {
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    PDFReporter reporter = new ExecutivePDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
-        "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"), config, configText);
-    String allMetricsKeys = reporter.getAllMetricKeys();
+    SonarAccess sonarAccess = new SonarAccess(config.getProperty("sonar.base.url"));
+    Measures measures = new Measures();
+    String allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
     
     System.out.println("Checking metrics consistency...");
     Field[] fields = MetricKeys.class.getFields();

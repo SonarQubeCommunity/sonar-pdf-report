@@ -1,5 +1,6 @@
 package org.sonar.report.pdf.entity;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,8 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.sonar.report.pdf.util.SonarAccess;
+import org.sonar.report.pdf.util.UrlPath;
 
 /**
  *This class encapsulates the measures info.
@@ -19,12 +24,36 @@ public class Measures {
   private final static String MEASURES = "//resources/resource/msr";
   private final static String DATE = "//resources/resource/date";
   private final static String VERSION = "//resources/resource/version";
+  private static String measuresKeys = null;
   
 
   private Hashtable<String, Measure> measuresTable = new Hashtable<String, Measure>();
   private Date date;
   private String version = "N/A";
 
+  public void initMeasuresByProjectKey(SonarAccess sonarAccess, String projectKey) throws HttpException, IOException, DocumentException {
+    if (measuresKeys == null) {
+      measuresKeys = getAllMetricKeys(sonarAccess);
+    }
+    String urlAllMesaures = UrlPath.RESOURCES + projectKey + "&depth=0&format=xml&includetrends=true"
+          + "&metrics=" + measuresKeys;
+    this.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
+  }
+  
+  public String getAllMetricKeys(SonarAccess sonarAccess) throws HttpException, IOException, org.dom4j.DocumentException {
+    String urlAllMetrics = "/api/metrics?format=xml";
+    org.dom4j.Document allMetricsDocument = sonarAccess.getUrlAsDocument(urlAllMetrics);
+    List<Node> allMetricKeysNodes = allMetricsDocument.selectNodes("//metrics/metric/key");
+    String allMetricKeys= ""; 
+    Iterator<Node> it = allMetricKeysNodes.iterator();
+    allMetricKeys += it.next().getText();
+    while(it.hasNext()) {
+      allMetricKeys += "," + it.next().getText();
+    }
+    return allMetricKeys;
+  }
+  
+  
   public Date getDate() {
     return date;
   }

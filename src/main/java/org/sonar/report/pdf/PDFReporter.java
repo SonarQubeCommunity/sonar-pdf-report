@@ -1,8 +1,6 @@
 package org.sonar.report.pdf;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,14 +35,6 @@ import com.lowagie.text.pdf.PdfWriter;
 public abstract class PDFReporter {
 
   private Project project = null;
-  private String measuresKeys;
-  
-  private static final String RESOURCES = "/api/resources?resource=";
-  private static final String PARENT_PROJECT = "&depth=0&format=xml";
-  private static final String CHILD_PROJECTS = "&depth=1&format=xml";
-  private static final String CATEGORIES_VIOLATIONS = "&metrics=rules_violations&filter_rules_cats=false";
-  private static final String MOST_VIOLATED_RULES = "&metrics=rules_violations&limit=5&filter_rules=false&filter_rules_cats=true";
-  private static final String MOST_VIOLATED_FILES = "&metrics=rules_violations&scopes=FIL&depth=-1&limit=5&format=xml";
 
   public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException {
     // Creation of documents
@@ -97,57 +87,11 @@ public abstract class PDFReporter {
 
   public Project getProject() throws HttpException, IOException, org.dom4j.DocumentException {
     if (project == null) {
-      SonarAccess sonarAccess = new SonarAccess();
-      project = new Project();
-      project.initFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey() + PARENT_PROJECT), 
-          sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey() + "&depth=1&format=xml"));
-
-      project.setMeasures(getMeasures(project.getKey()));
-      project.setCategoriesViolationsFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
-          + PARENT_PROJECT + CATEGORIES_VIOLATIONS), 
-          sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
-              + CHILD_PROJECTS + CATEGORIES_VIOLATIONS));
-      project.setMostViolatedRulesFromDocuments(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
-          + PARENT_PROJECT + MOST_VIOLATED_RULES),
-          sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
-              + CHILD_PROJECTS + MOST_VIOLATED_RULES));
-      project.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + getProjectKey()
-          + MOST_VIOLATED_FILES)));
-      Iterator<Project> it = project.getSubprojects().iterator();
-      while (it.hasNext()) {
-        Project subproject = it.next();
-        subproject.setMeasures(getMeasures(subproject.getKey()));
-        subproject.setMostViolatedFiles(FileInfo.initFromDocument(sonarAccess.getUrlAsDocument(getSonarUrl() + RESOURCES + subproject.getKey()
-            + MOST_VIOLATED_FILES)));
-      }
+      SonarAccess sonarAccess = new SonarAccess(getSonarUrl());
+      project = new Project(getProjectKey());
+      project.initializeProject(sonarAccess);
     }
     return project;
-  }
-
-  private Measures getMeasures(String projectKey) throws HttpException, IOException, org.dom4j.DocumentException {
-    if (measuresKeys == null) {
-      measuresKeys = getAllMetricKeys();
-    }
-    Measures measures = new Measures();
-    SonarAccess sonarAccess = new SonarAccess();
-    String urlAllMesaures = getSonarUrl() + RESOURCES + projectKey + "&depth=0&format=xml&includetrends=true"
-          + "&metrics=" + measuresKeys;
-    measures.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
-    return measures;
-  }
-
-  public String getAllMetricKeys() throws HttpException, IOException, org.dom4j.DocumentException {
-    String urlAllMetrics = getSonarUrl() + "/api/metrics?format=xml";
-    SonarAccess sonarAccess = new SonarAccess();
-    org.dom4j.Document allMetricsDocument = sonarAccess.getUrlAsDocument(urlAllMetrics);
-    List<Node> allMetricKeysNodes = allMetricsDocument.selectNodes("//metrics/metric/key");
-    String allMetricKeys= ""; 
-    Iterator<Node> it = allMetricKeysNodes.iterator();
-    allMetricKeys += it.next().getText();
-    while(it.hasNext()) {
-      allMetricKeys += "," + it.next().getText();
-    }
-    return allMetricKeys;
   }
 
   // TODO: SONAR-563 is closed. This can be done.

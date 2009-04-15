@@ -1,38 +1,43 @@
 package org.sonar.report.pdf.entity;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-
+import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.sonar.report.pdf.util.SonarAccess;
+import org.sonar.report.pdf.util.UrlPath;
 
 /**
  * This class encapsulates the Project info.
  */
 public class Project {
-  
+
   // Project info
   private short id;
   private String key;
   private String name;
   private String description;
   private List<String> links;
-  
+
   // Measures
   private Measures measures;
-  
+
   // Child projects
   private List<Project> subprojects;
-  
+
   // Most violated rules
   private HashMap<String, String> mostViolatedRules;
-  
+
   // Most violated files
   private List<FileInfo> mostViolatedFiles;
-  
+
   // Rules categories violations
   private Integer maintainabilityViolations;
   private Integer reliabilityViolations;
@@ -44,12 +49,12 @@ public class Project {
   private static final String PROJECT = "//resources/resource";
   private static final String KEY = "key";
   private static final String NAME = "name";
-  
+
   // RULES INFO XPATH
   private static final String ALL_MEASURES = "msr";
   private static final String MEASURE_FRMT_VAL = "frmt_val";
   private static final String RULE_NAME = "rule/name";
-  
+
   private static final String DESCRIPTION = "description";
   private static final String MAINTAINABILITY = "msr[rules_categ/name='Maintainability']/frmt_val";
   private static final String RELIABILITY = "msr[rules_categ/name='Reliability']/frmt_val";
@@ -57,22 +62,44 @@ public class Project {
   private static final String PORTABILITY = "msr[rules_categ/name='Portability']/frmt_val";
   private static final String USABILITY = "msr[rules_categ/name='Usability']/frmt_val";
 
-  public Measure getMeasure(String measureKey) {
-    if (measures.containsMeasure(measureKey)) {
-      return measures.getMeasure(measureKey);
-    } else {
-      return new Measure(null, "N/A");
+  public Project(String key) {
+    this.key = key;
+  }
+
+  /**
+   * Initialize: - Project basic data - Project measures - Project categories violations - Project most violated rules -
+   * Project most violated files
+   * 
+   * @param sonarAccess
+   * @throws HttpException
+   * @throws IOException
+   * @throws DocumentException
+   */
+  public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT);
+    initFromNode(parent.selectSingleNode(PROJECT));
+    initMeasures(sonarAccess);
+    initCategories(sonarAccess);
+    initMostViolatedRules(sonarAccess);
+    initMostViolatedFiles(sonarAccess);
+    Document childs = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.CHILD_PROJECTS);
+    List<Node> childNodes = childs.selectNodes(PROJECT);
+    Iterator<Node> it = childNodes.iterator();
+    setSubprojects(new ArrayList<Project>());
+    while (it.hasNext()) {
+      Node childNode = it.next();
+      if (childNode.selectSingleNode("scope").getText().equals("PRJ")) {
+        Project childProject = new Project(childNode.selectSingleNode(KEY).getText());
+        childProject.initializeProject(sonarAccess);
+        getSubprojects().add(childProject);
+      }
     }
   }
 
   /**
    * Initialize project object and his childs (except categories violations).
    */
-  public void initFromDocuments(Document projectDoc, Document childsDoc) {
-    initFromNode(projectDoc.selectSingleNode(PROJECT), childsDoc.selectNodes(PROJECT));
-  }
-  
-  public void initFromNode(Node projectNode, List<Node> childsNodes) {
+  private void initFromNode(Node projectNode) {
     Node name = projectNode.selectSingleNode(NAME);
     if (name != null) {
       this.setName(name.getText());
@@ -85,67 +112,63 @@ public class Project {
     this.setLinks(new LinkedList<String>());
     this.setSubprojects(new LinkedList<Project>());
     this.setMostViolatedRules(new HashMap<String, String>());
-    if(childsNodes != null) {
-      Iterator<Node> it = childsNodes.iterator();
-      Node subprojectNode;
-      while (it.hasNext()) {
-        subprojectNode = it.next();
-        Project childProject = new Project();
-        childProject.initFromNode(subprojectNode, null);
-        this.getSubprojects().add(childProject);
-      }
+  }
+
+  public void initMeasures(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Measures measures = new Measures();
+    measures.initMeasuresByProjectKey(sonarAccess, this.key);
+    this.setMeasures(measures);
+  }
+
+  public void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
+        + UrlPath.MOST_VIOLATED_RULES);
+    initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT));
+  }
+
+  public void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Document mostVilatedFiles = sonarAccess
+        .getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.MOST_VIOLATED_FILES);
+    this.setMostViolatedFiles(FileInfo.initFromDocument(mostVilatedFiles));
+  }
+
+  public Measure getMeasure(String measureKey) {
+    if (measures.containsMeasure(measureKey)) {
+      return measures.getMeasure(measureKey);
+    } else {
+      return new Measure(null, "N/A");
     }
   }
-  
-  /**
-   * Set categories violations in the project and his childs.
-   */
-  public void setCategoriesViolationsFromDocuments(Document categoriesDoc, Document childsCategoriesDoc) {
-    initCategoriesViolationsFromNode(categoriesDoc.selectSingleNode(PROJECT), childsCategoriesDoc.selectNodes(PROJECT));
+
+  private void initCategories(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Document categories = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
+        + UrlPath.CATEGORIES_VIOLATIONS);
+    this.initCategoriesViolationsFromNode(categories.selectSingleNode(PROJECT));
   }
-  
-  private void initCategoriesViolationsFromNode(Node categoriesNode, List<Node> childsCategoriesNodes) {
+
+  private void initCategoriesViolationsFromNode(Node categoriesNode) {
     this.setMaintainabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(MAINTAINABILITY).getText()));
     this.setReliabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(RELIABILITY).getText()));
     this.setEfficiencyViolations(Integer.valueOf(categoriesNode.selectSingleNode(EFFICIENCY).getText()));
     this.setPortabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(PORTABILITY).getText()));
     this.setUsabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(USABILITY).getText()));
-    if(childsCategoriesNodes != null) {
-      Iterator<Node> it = childsCategoriesNodes.iterator();
-      while(it.hasNext()) {
-        Node childNode = it.next();
-        Project subproject = this.getChildByKey(childNode.selectSingleNode(KEY).getText());
-        subproject.initCategoriesViolationsFromNode(childNode, null);
-      }
-    }
   }
-  
-  public void setMostViolatedRulesFromDocuments(Document mostViolatedDoc, Document childsMostViolatedDoc) {
-    initMostViolatedRulesFromNode(mostViolatedDoc.selectSingleNode(PROJECT), childsMostViolatedDoc.selectNodes(PROJECT));
-  }
-  
-  private void initMostViolatedRulesFromNode(Node mostViolatedNode, List<Node> childsMostViolated) {
+
+  private void initMostViolatedRulesFromNode(Node mostViolatedNode) {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       Node measure = it.next();
-      this.mostViolatedRules.put(measure.selectSingleNode(RULE_NAME).getText(), measure.selectSingleNode(MEASURE_FRMT_VAL).getText());
-    }
-    if(childsMostViolated != null) {
-      it = childsMostViolated.iterator();
-      while(it.hasNext()) {
-        Node childNode = it.next();
-        Project subproject = this.getChildByKey(childNode.selectSingleNode(KEY).getText());
-        subproject.initMostViolatedRulesFromNode(childNode, null);
-      }
+      this.mostViolatedRules.put(measure.selectSingleNode(RULE_NAME).getText(), measure.selectSingleNode(
+          MEASURE_FRMT_VAL).getText());
     }
   }
-  
+
   public Project getChildByKey(String key) {
     Iterator<Project> it = this.subprojects.iterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       Project child = it.next();
-      if(child.getKey().equals(key)) {
+      if (child.getKey().equals(key)) {
         return child;
       }
     }
@@ -231,11 +254,11 @@ public class Project {
   public HashMap<String, String> getMostViolatedRules() {
     return mostViolatedRules;
   }
-  
+
   public List<FileInfo> getMostViolatedFiles() {
     return mostViolatedFiles;
   }
-  
+
   public void setMostViolatedRules(HashMap<String, String> mostViolatedRules) {
     this.mostViolatedRules = mostViolatedRules;
   }
