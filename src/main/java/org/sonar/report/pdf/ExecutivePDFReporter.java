@@ -90,12 +90,14 @@ public class ExecutivePDFReporter extends PDFReporter {
       title.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
       title.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 
-      String projectRow = super.getTextProperty("general.project") + ": " + super.getProject().getName();
+      String projectRow = super.getProject().getName();
+      String versionRow = super.getProject().getMeasures().getVersion();
       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
       String dateRow = df.format(super.getProject().getMeasures().getDate());
       String descriptionRow = super.getProject().getDescription();
 
       title.addCell(new Phrase(projectRow, Style.frontPageFont1));
+      title.addCell(new Phrase(versionRow, Style.frontPageFont1));
       title.addCell(new Phrase(descriptionRow, Style.frontPageFont2));
       title.addCell(new Phrase(dateRow, Style.frontPageFont3));
       title.setTotalWidth(pageSize.getWidth() - frontPageDocument.leftMargin() - frontPageDocument.rightMargin());

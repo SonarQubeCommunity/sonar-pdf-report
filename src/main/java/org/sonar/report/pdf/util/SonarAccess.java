@@ -10,14 +10,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.report.pdf.mojo.SonarPDFMojo;
 
 public class SonarAccess {
   
   private String sonarUrl;
-  
-  final Logger logger = LoggerFactory.getLogger(SonarAccess.class);
   
   
   // TODO: provide POST method
@@ -30,13 +27,13 @@ public class SonarAccess {
     HttpMethod method = new GetMethod(this.sonarUrl + urlPath);
     int status = 0;
 
-    logger.debug("Accessing Sonar: {}", this.sonarUrl + urlPath);
+    Logger.debug("Accessing Sonar: " + this.sonarUrl + urlPath);
     status = client.executeMethod(method);
     if (!(status == HttpStatus.SC_OK)) {
-      logger.error("Can´t access to Sonar or project doesn't exist on Sonar instance. HTTP KO to {}", this.sonarUrl + urlPath);
+      Logger.error("Can´t access to Sonar or project doesn't exist on Sonar instance. HTTP KO to " + this.sonarUrl + urlPath);
       throw new IOException("Can´t access to Sonar or project doesn't exist on Sonar instance.");
     }
-    logger.debug("Received response.");
+    Logger.debug("Received response.");
     SAXReader reader = new SAXReader();
     return reader.read(method.getResponseBodyAsStream());
   }

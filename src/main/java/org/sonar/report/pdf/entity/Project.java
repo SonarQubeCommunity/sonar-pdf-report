@@ -11,6 +11,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
 import org.sonar.report.pdf.util.UrlPath;
 
@@ -39,11 +40,11 @@ public class Project {
   private List<FileInfo> mostViolatedFiles;
 
   // Rules categories violations
-  private Integer maintainabilityViolations;
-  private Integer reliabilityViolations;
-  private Integer efficiencyViolations;
-  private Integer portabilityViolations;
-  private Integer usabilityViolations;
+  private String maintainabilityViolations;
+  private String reliabilityViolations;
+  private String efficiencyViolations;
+  private String portabilityViolations;
+  private String usabilityViolations;
 
   // PROJECT INFO XPATH
   private static final String PROJECT = "//resources/resource";
@@ -67,8 +68,12 @@ public class Project {
   }
 
   /**
-   * Initialize: - Project basic data - Project measures - Project categories violations - Project most violated rules -
-   * Project most violated files
+   * Initialize: 
+   * - Project basic data 
+   * - Project measures 
+   * - Project categories violations 
+   * - Project most violated rules 
+   * - Project most violated files
    * 
    * @param sonarAccess
    * @throws HttpException
@@ -76,6 +81,7 @@ public class Project {
    * @throws DocumentException
    */
   public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Logger.info("Retrieving project info for " + this.key);
     Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT);
     initFromNode(parent.selectSingleNode(PROJECT));
     initMeasures(sonarAccess);
@@ -116,17 +122,20 @@ public class Project {
 
   public void initMeasures(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Measures measures = new Measures();
+    Logger.info("    Retrieving measures");
     measures.initMeasuresByProjectKey(sonarAccess, this.key);
     this.setMeasures(measures);
   }
 
   public void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Logger.info("    Retrieving most violated rules");
     Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.MOST_VIOLATED_RULES);
     initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT));
   }
 
   public void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Logger.info("    Retrieving most violated files");
     Document mostVilatedFiles = sonarAccess
         .getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.MOST_VIOLATED_FILES);
     this.setMostViolatedFiles(FileInfo.initFromDocument(mostVilatedFiles));
@@ -147,11 +156,11 @@ public class Project {
   }
 
   private void initCategoriesViolationsFromNode(Node categoriesNode) {
-    this.setMaintainabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(MAINTAINABILITY).getText()));
-    this.setReliabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(RELIABILITY).getText()));
-    this.setEfficiencyViolations(Integer.valueOf(categoriesNode.selectSingleNode(EFFICIENCY).getText()));
-    this.setPortabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(PORTABILITY).getText()));
-    this.setUsabilityViolations(Integer.valueOf(categoriesNode.selectSingleNode(USABILITY).getText()));
+    this.setMaintainabilityViolations(categoriesNode.selectSingleNode(MAINTAINABILITY).getText());
+    this.setReliabilityViolations(categoriesNode.selectSingleNode(RELIABILITY).getText());
+    this.setEfficiencyViolations(categoriesNode.selectSingleNode(EFFICIENCY).getText());
+    this.setPortabilityViolations(categoriesNode.selectSingleNode(PORTABILITY).getText());
+    this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
   }
 
   private void initMostViolatedRulesFromNode(Node mostViolatedNode) {
@@ -159,8 +168,10 @@ public class Project {
     Iterator<Node> it = measures.iterator();
     while (it.hasNext()) {
       Node measure = it.next();
-      this.mostViolatedRules.put(measure.selectSingleNode(RULE_NAME).getText(), measure.selectSingleNode(
-          MEASURE_FRMT_VAL).getText());
+      if(!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
+        this.mostViolatedRules.put(measure.selectSingleNode(RULE_NAME).getText(), measure.selectSingleNode(
+            MEASURE_FRMT_VAL).getText());
+      }
     }
   }
 
@@ -231,23 +242,23 @@ public class Project {
     this.measures = measures;
   }
 
-  public Integer getMaintainabilityViolations() {
+  public String getMaintainabilityViolations() {
     return maintainabilityViolations;
   }
 
-  public Integer getReliabilityViolations() {
+  public String getReliabilityViolations() {
     return reliabilityViolations;
   }
 
-  public Integer getEfficiencyViolations() {
+  public String getEfficiencyViolations() {
     return efficiencyViolations;
   }
 
-  public Integer getPortabilityViolations() {
+  public String getPortabilityViolations() {
     return portabilityViolations;
   }
 
-  public Integer getUsabilityViolations() {
+  public String getUsabilityViolations() {
     return usabilityViolations;
   }
 
@@ -263,23 +274,23 @@ public class Project {
     this.mostViolatedRules = mostViolatedRules;
   }
 
-  public void setMaintainabilityViolations(Integer maintainabilityViolations) {
+  public void setMaintainabilityViolations(String maintainabilityViolations) {
     this.maintainabilityViolations = maintainabilityViolations;
   }
 
-  public void setReliabilityViolations(Integer reliabilityViolations) {
+  public void setReliabilityViolations(String reliabilityViolations) {
     this.reliabilityViolations = reliabilityViolations;
   }
 
-  public void setEfficiencyViolations(Integer efficiencyViolations) {
+  public void setEfficiencyViolations(String efficiencyViolations) {
     this.efficiencyViolations = efficiencyViolations;
   }
 
-  public void setPortabilityViolations(Integer portabilityValue) {
+  public void setPortabilityViolations(String portabilityValue) {
     this.portabilityViolations = portabilityValue;
   }
 
-  public void setUsabilityViolations(Integer usabilityValue) {
+  public void setUsabilityViolations(String usabilityValue) {
     this.usabilityViolations = usabilityValue;
   }
 

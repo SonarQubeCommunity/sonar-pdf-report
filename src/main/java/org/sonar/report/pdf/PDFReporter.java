@@ -4,16 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpException;
-import org.dom4j.Node;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
-import org.sonar.report.pdf.entity.FileInfo;
-import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
 
 import com.lowagie.text.BadElementException;
@@ -53,7 +49,8 @@ public abstract class PDFReporter {
     mainDocument.open();
     tocDocument.getTocDocument().open();
     frontPageDocument.open();
-
+    
+    Logger.info("Generating PDF report...");
     printFrontPage(frontPageDocument, frontPageDocumentWriter);
     printTocTitle(tocDocument);
     printPdfBody(mainDocument);
