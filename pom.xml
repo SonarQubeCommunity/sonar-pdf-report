@@ -10,7 +10,7 @@
   <artifactId>pdf-report</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
-  <name>Sonar PDF Report</name>
+  <name>Sonar PDF Report Maven Plugin</name>
   <build>
     <plugins>
       <plugin>
