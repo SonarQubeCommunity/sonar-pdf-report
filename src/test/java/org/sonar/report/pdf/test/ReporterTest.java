@@ -25,6 +25,7 @@ public class ReporterTest {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
     config.load(resource.openStream());
+    config.setProperty("sonar.base.url", "http://nemo.sonar.codehaus.org");
     
     URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
     Properties configText = new Properties();
