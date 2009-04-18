@@ -30,8 +30,8 @@ public class ReporterTest {
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    PDFReporter reporter = new ExecutivePDFReporter(new URL(config.getProperty("sonar.base.url") + "/images/sonar.png"),
-        "org.codehaus.sonar:sonar", config.getProperty("sonar.base.url"), config, configText);
+    PDFReporter reporter = new ExecutivePDFReporter(new URL("http://nemo.sonar.codehaus.org/images/sonar.png"),
+        "org.codehaus.sonar:sonar", "http://nemo.sonar.codehaus.org", config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;

@@ -24,7 +24,7 @@ public class MetricsTest {
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    SonarAccess sonarAccess = new SonarAccess(config.getProperty("sonar.base.url"));
+    SonarAccess sonarAccess = new SonarAccess("http://nemo.sonar.codehaus.org");
     Measures measures = new Measures();
     String allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
     
