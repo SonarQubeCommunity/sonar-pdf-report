@@ -1,7 +1,6 @@
 /*
  * Sonar, open source software quality management tool.
- * Copyright (C) 2009 SonarSource SA
- * mailto:contact AT sonarsource DOT com
+ * Copyright (C) 2009 GMV-SGI
  *
  * Sonar is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,10 +60,10 @@ public class SonarPDFMojo extends AbstractMojo {
   
   /**
    * Sonar Base URL.
-   * @parameter expression="${sonar.base.url}"
+   * @parameter expression="${sonar.host.url}"
    * @optional
    */
-  private String sonarBaseUrl;
+  private String sonarHostUrl;
 
 
   public void execute() throws MojoExecutionException {
@@ -75,8 +74,8 @@ public class SonarPDFMojo extends AbstractMojo {
     Properties configLang = new Properties();
     
     try {
-      if(sonarBaseUrl != null) {
-        config.put("sonar.base.url", sonarBaseUrl);
+      if(sonarHostUrl != null) {
+        config.put("sonar.base.url", sonarHostUrl);
         config.put("front.page.logo", "sonar-large.png");
       } else {
         config.load(this.getClass().getResourceAsStream("/report.properties"));
