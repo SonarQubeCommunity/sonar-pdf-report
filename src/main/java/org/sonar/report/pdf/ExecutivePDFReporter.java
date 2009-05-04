@@ -383,7 +383,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     while (it.hasNext()) {
       FileInfo file = it.next();
       left.add(file.getName());
-      right.add(file.getComplexity());
+      right.add(file.getViolations());
     }
 
     PdfPTable mostViolatedFilesTable = Style.createSimpleTable(left, right,
