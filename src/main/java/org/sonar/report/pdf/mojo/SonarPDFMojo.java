@@ -65,6 +65,14 @@ public class SonarPDFMojo extends AbstractMojo {
    */
   private String sonarHostUrl;
 
+  /**
+   * Branch to be used
+   * 
+   * @parameter expression="${branch}"
+   * @optional
+   */
+  private String branch;
+
   public void execute() throws MojoExecutionException {
 
     Logger.setLog(getLog());
@@ -81,9 +89,13 @@ public class SonarPDFMojo extends AbstractMojo {
       }
       configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"));
 
-      PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar-large.png"), 
-          project.getGroupId() + ":" + project.getArtifactId(), config.getProperty("sonar.base.url"), 
-          config, configLang);
+      String sonarProjectId = project.getGroupId() + ":" + project.getArtifactId();
+      if (branch != null) {
+        sonarProjectId += ":" + branch;
+      }
+
+      PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar-large.png"), sonarProjectId,
+          config.getProperty("sonar.base.url"), config, configLang);
 
       ByteArrayOutputStream baos = reporter.getReport();
       FileOutputStream fos = null;
