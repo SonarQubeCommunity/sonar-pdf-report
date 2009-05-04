@@ -77,16 +77,16 @@ public class DefaultPDFReporter extends PDFReporter {
     this.document = document;
     // Chapter 1
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(getTextProperty("main.chapter1.title"),
-        Style.chapterFont));
-    chapter1.add(new Paragraph(getTextProperty("main.chapter1.intro"), Style.normalFont));
+        Style.CHAPTER_FONT));
+    chapter1.add(new Paragraph(getTextProperty("main.chapter1.intro"), Style.NORMAL_FONT));
     // Section 1.1
     Section section11 = chapter1.addSection(new Paragraph(getTextProperty("main.chapter1.subtitle1"),
-        Style.titleFont));
+        Style.TITLE_FONT));
     Project project = super.getProject();
     printDashboard(project, section11);
     // Section 1.2
     Section section12 = chapter1.addSection(new Paragraph(getTextProperty("main.chapter1.subtitle2"),
-        Style.titleFont));
+        Style.TITLE_FONT));
     printProjectInfo(project, section12);
 
     document.add(chapter1);
@@ -96,12 +96,12 @@ public class DefaultPDFReporter extends PDFReporter {
     while (it.hasNext()) {
       Project subproject = it.next();
       ChapterAutoNumber subprojectChapter = new ChapterAutoNumber(new Paragraph(getTextProperty("general.module")
-          + ": " + subproject.getName(), Style.titleFont));
+          + ": " + subproject.getName(), Style.TITLE_FONT));
       Section sectionX1 = subprojectChapter.addSection(new Paragraph(getTextProperty("main.chapter2.subtitle2X1"),
-          Style.titleFont));
+          Style.TITLE_FONT));
       printDashboard(subproject, sectionX1);
       Section sectionX2 = subprojectChapter.addSection(new Paragraph(getTextProperty("main.chapter2.subtitle2X2"),
-          Style.titleFont));
+          Style.TITLE_FONT));
       printProjectInfo(subproject, sectionX2);
       document.add(subprojectChapter);
     }
@@ -164,7 +164,7 @@ public class DefaultPDFReporter extends PDFReporter {
     Image ccnDistGraph = getCCNDistribution(project);
     if (ccnDistGraph != null) {
       section.add(ccnDistGraph);
-      Paragraph imageFoot = new Paragraph(getTextProperty("metrics.ccn_classes_count_distribution"), Style.footFont);
+      Paragraph imageFoot = new Paragraph(getTextProperty("metrics.ccn_classes_count_distribution"), Style.FOOT_FONT);
       imageFoot.setAlignment(Paragraph.ALIGN_CENTER);
       section.add(imageFoot);
     }
@@ -176,7 +176,7 @@ public class DefaultPDFReporter extends PDFReporter {
     PdfPTable versioningTable = new PdfPTable(2);
     formatTable(versioningTable);
     versioningTable.getDefaultCell().setColspan(2);
-    versioningTable.addCell(new Phrase(super.getTextProperty("general.versioning_information"), Style.titleFont));
+    versioningTable.addCell(new Phrase(super.getTextProperty("general.versioning_information"), Style.TITLE_FONT));
     versioningTable.addCell(measures.getVersion());
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
     versioningTable.addCell(df.format(measures.getDate()));
@@ -185,8 +185,8 @@ public class DefaultPDFReporter extends PDFReporter {
     formatTable(measuresTable);
 
     Iterator<String> it = measures.getMeasuresKeys().iterator();
-    measuresTable.addCell(new Phrase(super.getTextProperty("general.metric"), Style.titleFont));
-    measuresTable.addCell(new Phrase(super.getTextProperty("general.value"), Style.titleFont));
+    measuresTable.addCell(new Phrase(super.getTextProperty("general.metric"), Style.TITLE_FONT));
+    measuresTable.addCell(new Phrase(super.getTextProperty("general.value"), Style.TITLE_FONT));
     boolean colorEnabled = true;
     while (it.hasNext()) {
       String measureKey = it.next();
@@ -260,7 +260,7 @@ public class DefaultPDFReporter extends PDFReporter {
 
   @Override
   protected void printTocTitle(Toc tocDocument) throws DocumentException {
-    Paragraph tocTitle = new Paragraph(super.getTextProperty("main.table.of.contents"), Style.tocTitleFont);
+    Paragraph tocTitle = new Paragraph(super.getTextProperty("main.table.of.contents"), Style.TOC_TITLE_FONT);
     tocTitle.setAlignment(Element.ALIGN_CENTER);
     tocDocument.getTocDocument().add(tocTitle);
     tocDocument.getTocDocument().add(Chunk.NEWLINE);
@@ -291,9 +291,9 @@ public class DefaultPDFReporter extends PDFReporter {
       String dateRow = df.format(super.getProject().getMeasures().getDate());
       String descriptionRow = super.getProject().getDescription();
       
-      title.addCell(new Phrase(projectRow, Style.frontPageFont1));
-      title.addCell(new Phrase(descriptionRow, Style.frontPageFont2));
-      title.addCell(new Phrase(dateRow, Style.frontPageFont3));
+      title.addCell(new Phrase(projectRow, Style.FRONTPAGE_FONT_1));
+      title.addCell(new Phrase(descriptionRow, Style.FRONTPAGE_FONT_2));
+      title.addCell(new Phrase(dateRow, Style.FRONTPAGE_FONT_3));
       title.setTotalWidth(pageSize.getWidth() - frontPageDocument.leftMargin() - frontPageDocument.rightMargin());
       title.writeSelectedRows(0, -1, frontPageDocument.leftMargin(),
           pageSize.getHeight() - logoImage.getHeight() - 150, frontPageWriter.getDirectContent());

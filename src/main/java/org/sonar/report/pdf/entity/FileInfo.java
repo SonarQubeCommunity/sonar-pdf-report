@@ -26,56 +26,110 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 public class FileInfo {
-  
+
   private String key;
-  private Integer violations;
+  private String violations;
   private String name;
-  
+  private String complexity;
+  private String duplicatedLines;
+
   private static final String ALL_FILES = "/resources/resource";
   private static final String KEY = "key";
   private static final String NAME = "name";
   private static final String VIOLATIONS_NUMBER = "msr/frmt_val";
-  
-  
-  public void initFromNode(Node fileNode) {
+  private static final String CCN = "msr/frmt_val";
+  private static final String DUPLICATED_LINES = "msr/frmt_val";
+
+  public static final int VIOLATIONS_CONTENT = 1;
+  public static final int CCN_CONTENT = 2;
+  public static final int DUPLICATIONS_CONTENT = 3;
+
+  /**
+   * A FileInfo object could contain information about violations,
+   * ccn or duplications, this cases are distinguished in function
+   * of content param, and defined by project context.
+   * 
+   * @param fileNode DOM Node that contains file info
+   * @param content Type of content
+   */
+  public void initFromNode(Node fileNode, int content) {
     this.setKey(fileNode.selectSingleNode(KEY).getText());
     this.setName(fileNode.selectSingleNode(NAME).getText());
-    this.setViolations(Integer.valueOf(fileNode.selectSingleNode(VIOLATIONS_NUMBER).getText()));
+
+    if (content == VIOLATIONS_CONTENT) {
+      this.setViolations(fileNode.selectSingleNode(VIOLATIONS_NUMBER).getText());
+    } else if (content == CCN_CONTENT) {
+      this.setComplexity(fileNode.selectSingleNode(CCN).getText());
+    } else if (content == DUPLICATIONS_CONTENT) {
+      this.setDuplicatedLines(fileNode.selectSingleNode(DUPLICATED_LINES).getText());
+    }
   }
-  
-  public static List<FileInfo> initFromDocument(Document filesDocument) {
+
+  public static List<FileInfo> initFromDocument(Document filesDocument, int content) {
     List<Node> fileNodes = filesDocument.selectNodes(ALL_FILES);
     Iterator<Node> it = fileNodes.iterator();
     List<FileInfo> fileInfoList = new LinkedList<FileInfo>();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       FileInfo file = new FileInfo();
       Node fileNode = it.next();
-      file.initFromNode(fileNode);
-      if(file.getViolations() != 0) {
+      file.initFromNode(fileNode, content);
+      if (file.isContentSet(content)) {
         fileInfoList.add(file);
       }
     }
     return fileInfoList;
   }
-  
+
+  public boolean isContentSet(int content) {
+    boolean result = false;
+    if (content == VIOLATIONS_CONTENT) {
+      result = !this.getViolations().equals("0");
+    } else if (content == CCN_CONTENT) {
+      result = !this.getComplexity().equals("0");
+    } else if (content == DUPLICATIONS_CONTENT) {
+      result = !this.getDuplicatedLines().equals("0");
+    }
+    return result;
+  }
+
   public String getKey() {
     return key;
   }
-  public Integer getViolations() {
+
+  public String getViolations() {
     return violations;
   }
+
+  public String getComplexity() {
+    return complexity;
+  }
+
   public String getName() {
     return name;
   }
+
   public void setKey(String key) {
     this.key = key;
   }
-  public void setViolations(Integer violations) {
+
+  public void setViolations(String violations) {
     this.violations = violations;
   }
+
+  public void setComplexity(String complexity) {
+    this.complexity = complexity;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
+  public String getDuplicatedLines() {
+    return duplicatedLines;
+  }
+
+  public void setDuplicatedLines(String duplicatedLines) {
+    this.duplicatedLines = duplicatedLines;
+  }
 
 }
