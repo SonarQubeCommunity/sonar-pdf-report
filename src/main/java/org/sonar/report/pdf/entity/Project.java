@@ -170,12 +170,14 @@ public class Project {
   }
 
   private void initMostComplexElements(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Logger.info("    Retrieving most complex elements");
     Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.MOST_COMPLEX_FILES);
     this.setMostComplexFiles(FileInfo.initFromDocument(mostComplexFilesDoc, FileInfo.CCN_CONTENT));
   }
   
 
   private void initMostDuplicatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Logger.info("    Retrieving most duplicated files");
     Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.MOST_DUPLICATED_FILES);
     this.setMostDuplicatedFiles(FileInfo.initFromDocument(mostDuplicatedFilesDoc, FileInfo.DUPLICATIONS_CONTENT));
   }

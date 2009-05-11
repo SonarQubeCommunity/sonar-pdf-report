@@ -45,12 +45,13 @@ public class FileInfo {
   public static final int DUPLICATIONS_CONTENT = 3;
 
   /**
-   * A FileInfo object could contain information about violations,
-   * ccn or duplications, this cases are distinguished in function
-   * of content param, and defined by project context.
+   * A FileInfo object could contain information about violations, ccn or duplications, this cases are distinguished in
+   * function of content param, and defined by project context.
    * 
-   * @param fileNode DOM Node that contains file info
-   * @param content Type of content
+   * @param fileNode
+   *          DOM Node that contains file info
+   * @param content
+   *          Type of content
    */
   public void initFromNode(Node fileNode, int content) {
     this.setKey(fileNode.selectSingleNode(KEY).getText());
@@ -72,9 +73,12 @@ public class FileInfo {
     while (it.hasNext()) {
       FileInfo file = new FileInfo();
       Node fileNode = it.next();
-      file.initFromNode(fileNode, content);
-      if (file.isContentSet(content)) {
-        fileInfoList.add(file);
+      // This first condition is a workarround for SONAR-830
+      if (fileNode.selectSingleNode("msr") != null) {
+        file.initFromNode(fileNode, content);
+        if (file.isContentSet(content)) {
+          fileInfoList.add(file);
+        }
       }
     }
     return fileInfoList;
