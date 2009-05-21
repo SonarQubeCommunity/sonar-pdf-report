@@ -138,7 +138,6 @@ public abstract class PDFReporter {
 
   public Image getTendencyImage(int tendencyQualitative, int tendencyCuantitative) {
     // tendency parameters are t_qual and t_quant tags returned by webservices api
-    String baseUrl = getConfigProperty("sonar.base.url") + "/images/tendency/";
     String iconName;
     if (tendencyQualitative == 0) {
       switch (tendencyCuantitative) {
@@ -177,7 +176,7 @@ public abstract class PDFReporter {
     }
     Image tendencyImage = null;
     try {
-      tendencyImage = Image.getInstance(baseUrl + iconName);
+      tendencyImage = Image.getInstance(this.getClass().getResource("/tendency/" + iconName));
     } catch (BadElementException e) {
       e.printStackTrace();
     } catch (MalformedURLException e) {
