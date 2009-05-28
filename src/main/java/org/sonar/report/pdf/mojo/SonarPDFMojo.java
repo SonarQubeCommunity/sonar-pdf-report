@@ -94,7 +94,7 @@ public class SonarPDFMojo extends AbstractMojo {
         sonarProjectId += ":" + branch;
       }
 
-      PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar-large.png"), sonarProjectId,
+      PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
           config.getProperty("sonar.base.url"), config, configLang);
 
       ByteArrayOutputStream baos = reporter.getReport();
