@@ -42,6 +42,7 @@ public class Rule {
   private static final String RULE_VIOLATIONS = "/violations/violation";
   private static final String RESOURCE_LINE = "line";
   private static final String RESOURCE_KEY = "resource/key";
+  private static final String SOURCE = "/source/line/val";
 
   /**
    * Initialize a rule given an XML Node that contains one rule
@@ -67,9 +68,6 @@ public class Rule {
    */
   public void loadViolatedResources(SonarAccess sonarAccess, String projectKey) throws ReportException, HttpException,
       IOException, DocumentException {
-    // TODO: Do request to retrieve violations on resources
-    // http://nemo.sonar.codehaus.org/api/violations?rules=AvoidThrowingRawExceptionTypes&resource=org.codehaus.sonar:
-    // sonar&scopes=FIL&depth=-1&limit=100&format=xml
     if (getKey() == null) {
       throw new ReportException("Rule not initialized. Forget call to initFromNode() previously?");
     } else {
@@ -80,8 +78,12 @@ public class Rule {
       Iterator<Node> it = violatedResources.iterator();
       while (it.hasNext()) {
         Node resource = it.next();
-        topViolatedResources.add(new Violation(resource.selectSingleNode(RESOURCE_LINE).getText(), resource
-            .selectSingleNode(RESOURCE_KEY).getText()));
+        String resourceKey = resource.selectSingleNode(RESOURCE_KEY).getText();
+        String line = resource.selectSingleNode(RESOURCE_LINE).getText();
+        // Document sourceLineDoc = sonarAccess.getUrlAsDocument(UrlPath.SOURCES + resourceKey + UrlPath.XML_SOURCE + "&from=" + line + "&to=" + line);
+        // String sourceLine = sourceLineDoc.selectSingleNode(SOURCE).getText();
+        topViolatedResources.add(new Violation(line , resourceKey, ""));
+        
       }
     }
   }

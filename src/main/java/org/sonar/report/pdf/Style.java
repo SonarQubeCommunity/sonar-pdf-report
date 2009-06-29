@@ -49,9 +49,14 @@ public class Style {
   public final static Font NORMAL_FONT = new Font(Font.TIMES_ROMAN, 12, Font.NORMAL, Color.BLACK);
   
   /**
+   * Font used in code text (bold)
+   */
+  public final static Font MONOSPACED_BOLD_FONT = new Font(Font.COURIER, 12, Font.BOLD, Color.BLACK);
+  
+  /**
    * Font used in code text
    */
-  public final static Font MONOSPACED_FONT = new Font(Font.COURIER, 12, Font.BOLD, Color.BLACK);
+  public final static Font MONOSPACED_FONT = new Font(Font.COURIER, 10, Font.NORMAL, Color.BLACK);
   
   /**
    * Font used in table of contents title
@@ -142,6 +147,25 @@ public class Style {
     table.setSpacingBefore(20);
     table.setSpacingAfter(20);
     
+    return table;
+  }
+  
+  public static PdfPTable createTwoColumnsTitledTable(List<String> titles, List<String> content) {
+    PdfPTable table = new PdfPTable(10);
+    Iterator<String> itLeft = titles.iterator();
+    Iterator<String> itRight = content.iterator();
+    while(itLeft.hasNext()) {
+      String textLeft = itLeft.next();
+      String textRight = itRight.next();
+      table.getDefaultCell().setColspan(1);
+      table.addCell(textLeft);
+      table.getDefaultCell().setColspan(9);
+      table.addCell(textRight);
+    }
+    table.setSpacingBefore(20);
+    table.setSpacingAfter(20);
+    table.setLockedWidth(false);
+    table.setWidthPercentage(90);
     return table;
   }
 }

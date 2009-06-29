@@ -4,10 +4,12 @@ public class Violation {
   
   private String resource;
   private String line;
+  private String source;
   
-  public Violation(String line, String resource) {
+  public Violation(String line, String resource, String source) {
     this.line = line;
     this.resource = resource;
+    this.source = source;
   }
   
   public String getResource() {
@@ -21,6 +23,14 @@ public class Violation {
   }
   public void setLine(String line) {
     this.line = line;
+  }
+
+  public String getSource() {
+    return source;
+  }
+
+  public void setSource(String source) {
+    this.source = source;
   }
 
 }

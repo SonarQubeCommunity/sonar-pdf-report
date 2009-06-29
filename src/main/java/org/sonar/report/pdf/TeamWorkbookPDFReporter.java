@@ -18,19 +18,27 @@
  */
 package org.sonar.report.pdf;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.Rule;
+import org.sonar.report.pdf.entity.Violation;
 import org.sonar.report.pdf.entity.exception.ReportException;
 
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Section;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 
@@ -38,13 +46,15 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
       Properties langProperties) {
     super(logo, projectKey, sonarUrl, configProperties, langProperties);
   }
-  
-  public void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
+
+  public void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
+      ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(project.getName(), Style.CHAPTER_FONT));
     chapter1.add(new Paragraph(getTextProperty("main.text.misc.overview"), Style.NORMAL_FONT));
-    Section section11 = chapter1.addSection(new Paragraph(getTextProperty("general.report_overview"), Style.TITLE_FONT));
+    Section section11 = chapter1
+        .addSection(new Paragraph(getTextProperty("general.report_overview"), Style.TITLE_FONT));
     printDashboard(project, section11);
     Section section12 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
         Style.TITLE_FONT));
@@ -53,11 +63,11 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     printMostViolatedFiles(project, section12);
     printMostComplexFiles(project, section12);
     printMostDuplicatedFiles(project, section12);
-    
-    Section section13 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_detailed"),
+
+    Section section13 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_details"),
         Style.TITLE_FONT));
     printMostViolatedRulesDetails(project, section13);
-    
+
     document.add(chapter1);
 
     Iterator<Project> it = project.getSubprojects().iterator();
@@ -65,8 +75,8 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
       Project subproject = it.next();
       ChapterAutoNumber chapterN = new ChapterAutoNumber(new Paragraph(subproject.getName(), Style.CHAPTER_FONT));
 
-      Section sectionN1 = chapterN
-          .addSection(new Paragraph(getTextProperty("general.report_overview"), Style.TITLE_FONT));
+      Section sectionN1 = chapterN.addSection(new Paragraph(getTextProperty("general.report_overview"),
+          Style.TITLE_FONT));
       printDashboard(subproject, sectionN1);
 
       Section sectionN2 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
@@ -76,7 +86,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
       printMostViolatedFiles(subproject, sectionN2);
       printMostComplexFiles(subproject, sectionN2);
       printMostDuplicatedFiles(subproject, sectionN2);
-      Section sectionN3 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_detailed"),
+      Section sectionN3 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_details"),
           Style.TITLE_FONT));
       printMostViolatedRulesDetails(project, sectionN3);
       document.add(chapterN);
@@ -84,6 +94,57 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
   }
 
   private void printMostViolatedRulesDetails(Project project, Section section13) {
+    Iterator<Rule> it = project.getMostViolatedRules().iterator();
     
+    while(it.hasNext()) {
+      Rule rule = it.next();
+      List<String> files = new LinkedList<String>();
+      List<String> lines = new LinkedList<String>();
+      Iterator<Violation> itViolations = rule.getTopViolations().iterator();
+      while(itViolations.hasNext()) {
+        Violation violation = itViolations.next();
+        String [] components = violation.getResource().split("\\.");
+        files.add(components[components.length - 1]);
+        lines.add(violation.getLine());
+      }
+      section13.add(createViolationsDetailedTable(rule.getName(), files, lines));
+    }
+  }
+  
+  private PdfPTable createViolationsDetailedTable(String ruleName, List<String> files, List<String> lines) {
+    
+    // TODO: internationalize this
+    
+    PdfPTable table = new PdfPTable(10);
+    Iterator<String> itLeft = files.iterator();
+    Iterator<String> itRight = lines.iterator();
+    table.getDefaultCell().setColspan(1);
+    table.getDefaultCell().setBackgroundColor(new Color(255,228,181));
+    table.addCell(new Phrase("Rule", Style.NORMAL_FONT));
+    table.getDefaultCell().setColspan(9);
+    table.getDefaultCell().setBackgroundColor(Color.WHITE);
+    table.addCell(new Phrase(ruleName, Style.NORMAL_FONT));
+    table.getDefaultCell().setColspan(10);
+    table.getDefaultCell().setBackgroundColor(Color.GRAY);
+    table.addCell("");
+    table.getDefaultCell().setColspan(9);
+    table.getDefaultCell().setBackgroundColor(new Color(255,228,181));
+    table.addCell(new Phrase("File", Style.NORMAL_FONT));
+    table.getDefaultCell().setColspan(1);
+    table.addCell(new Phrase("Line", Style.NORMAL_FONT));
+    table.getDefaultCell().setBackgroundColor(Color.WHITE);
+    while(itLeft.hasNext()) {
+      String textLeft = itLeft.next();
+      String textRight = itRight.next();
+      table.getDefaultCell().setColspan(9);
+      table.addCell(textLeft);
+      table.getDefaultCell().setColspan(1);
+      table.addCell(textRight);
+    }
+    table.setSpacingBefore(20);
+    table.setSpacingAfter(20);
+    table.setLockedWidth(false);
+    table.setWidthPercentage(90);
+    return table;
   }
 }
