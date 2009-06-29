@@ -213,14 +213,6 @@ public class Project {
       if (!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
         Rule rule = Rule.initFromNode(measure);
         rule.loadViolatedResources(sonarAccess, this.key);
-        
-        System.out.println("RULE: " + rule.getKey());
-        System.out.println("Violated resources:");
-        Iterator<Violation> it2 = rule.getTopViolations().iterator();
-        while(it2.hasNext()) {
-          System.out.println("\t" + it2.next().getResource());
-        }
-        
         this.mostViolatedRules.add(rule);
       }
     }
