@@ -27,12 +27,34 @@ import org.dom4j.Node;
 
 public class FileInfo {
 
+  /**
+   * Sonar resource key.
+   */
   private String key;
-  private String violations;
+  
+  /**
+   * Resource name (filename).
+   */
   private String name;
+  
+  /**
+   * Number of violations ins this resource (file).
+   */
+  private String violations;
+  
+  /**
+   * Class complexity.
+   */
   private String complexity;
+  
+  /**
+   * Duplicated lines in this resource (file)
+   */
   private String duplicatedLines;
 
+  /**
+   * XPATH
+   */
   private static final String ALL_FILES = "/resources/resource";
   private static final String KEY = "key";
   private static final String NAME = "name";
@@ -40,6 +62,9 @@ public class FileInfo {
   private static final String CCN = "msr/frmt_val";
   private static final String DUPLICATED_LINES = "msr/frmt_val";
 
+  /**
+   * It defines the content of this object: used for violations info, complexity info or duplications info.
+   */
   public static final int VIOLATIONS_CONTENT = 1;
   public static final int CCN_CONTENT = 2;
   public static final int DUPLICATIONS_CONTENT = 3;
@@ -115,11 +140,11 @@ public class FileInfo {
   public void setKey(String key) {
     this.key = key;
   }
-
+  
   public void setViolations(String violations) {
     this.violations = violations;
   }
-
+  
   public void setComplexity(String complexity) {
     this.complexity = complexity;
   }

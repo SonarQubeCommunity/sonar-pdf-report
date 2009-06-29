@@ -27,11 +27,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.util.MetricKeys;
 
 import com.lowagie.text.BadElementException;
@@ -171,7 +170,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     }
   }
 
-  private void printDashboard(Project project, Section section) throws DocumentException {
+  protected void printDashboard(Project project, Section section) throws DocumentException {
 
     // Static Analysis
     Paragraph staticAnalysis = new Paragraph(getTextProperty("general.static_analysis"), Style.UNDERLINED_FONT);
@@ -321,7 +320,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(codingRulesViolationsTable);
   }
 
-  private void printMostDuplicatedFiles(Project project, Section section) {
+  protected void printMostDuplicatedFiles(Project project, Section section) {
     List<FileInfo> files = project.getMostDuplicatedFiles();
     Iterator<FileInfo> it = files.iterator();
     List<String> left = new LinkedList<String>();
@@ -339,7 +338,7 @@ public class ExecutivePDFReporter extends PDFReporter {
   }
   
   
-  private void printMostComplexFiles(Project project, Section section) {
+  protected void printMostComplexFiles(Project project, Section section) {
     List<FileInfo> files = project.getMostComplexFiles();
     Iterator<FileInfo> it = files.iterator();
     List<String> left = new LinkedList<String>();
@@ -356,17 +355,18 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(mostComplexFilesTable);
   }
 
-  private void printMostViolatedRules(Project project, Section section) {
-    Set<Entry<String, String>> mostViolatedRules = project.getMostViolatedRules().entrySet();
-    Iterator<Entry<String, String>> it = mostViolatedRules.iterator();
+  protected void printMostViolatedRules(Project project, Section section) {
+    List<Rule> mostViolatedRules = project.getMostViolatedRules();
+    Iterator<Rule> it = mostViolatedRules.iterator();
     
     List<String> left = new LinkedList<String>();
     List<String> right = new LinkedList<String>();
-
-    while (it.hasNext()) {
-      Entry<String, String> pair = it.next();
-      left.add(pair.getKey());
-      right.add(pair.getValue());
+    int limit = 0;
+    while (it.hasNext() && limit < 5) {
+      Rule rule = it.next();
+      left.add(rule.getName());
+      right.add(String.valueOf(rule.getViolationsNumberFormatted()));
+      limit++;
     }
 
     PdfPTable mostViolatedRulesTable = Style.createSimpleTable(left, right,
@@ -374,7 +374,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(mostViolatedRulesTable);
   }
 
-  private void printMostViolatedFiles(Project project, Section section) {
+  protected void printMostViolatedFiles(Project project, Section section) {
     List<FileInfo> files = project.getMostViolatedFiles();
     Iterator<FileInfo> it = files.iterator();
     List<String> left = new LinkedList<String>();
@@ -391,7 +391,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(mostViolatedFilesTable);
   }
 
-  private void printRulesCategories(Project project, Section section) {
+  protected void printRulesCategories(Project project, Section section) {
     PdfPTable categoriesTable = new PdfPTable(2);
     categoriesTable.getDefaultCell().setColspan(2);
     categoriesTable.addCell(new Phrase(getTextProperty("general.violations_by_category"), Style.DASHBOARD_TITLE_FONT));

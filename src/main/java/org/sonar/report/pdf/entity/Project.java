@@ -20,7 +20,6 @@ package org.sonar.report.pdf.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class Project {
   private List<Project> subprojects;
 
   // Most violated rules
-  private HashMap<String, String> mostViolatedRules;
+  private List<Rule> mostViolatedRules;
 
   // Most complex elements
   private List<FileInfo> mostComplexFiles;
@@ -78,7 +77,6 @@ public class Project {
   // RULES INFO XPATH
   private static final String ALL_MEASURES = "msr";
   private static final String MEASURE_FRMT_VAL = "frmt_val";
-  private static final String RULE_NAME = "rule/name";
 
   private static final String DESCRIPTION = "description";
   private static final String MAINTAINABILITY = "msr[rules_categ/name='Maintainability']/frmt_val";
@@ -144,7 +142,7 @@ public class Project {
     this.setKey(projectNode.selectSingleNode(KEY).getText());
     this.setLinks(new LinkedList<String>());
     this.setSubprojects(new LinkedList<Project>());
-    this.setMostViolatedRules(new HashMap<String, String>());
+    this.setMostViolatedRules(new LinkedList<Rule>());
   }
 
   private void initMeasures(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
@@ -211,8 +209,7 @@ public class Project {
     while (it.hasNext()) {
       Node measure = it.next();
       if (!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
-        this.mostViolatedRules.put(measure.selectSingleNode(RULE_NAME).getText(), measure.selectSingleNode(
-            MEASURE_FRMT_VAL).getText());
+        this.mostViolatedRules.add(Rule.initFromNode(measure));
       }
     }
   }
@@ -304,7 +301,7 @@ public class Project {
     return usabilityViolations;
   }
 
-  public HashMap<String, String> getMostViolatedRules() {
+  public List<Rule> getMostViolatedRules() {
     return mostViolatedRules;
   }
 
@@ -312,7 +309,7 @@ public class Project {
     return mostViolatedFiles;
   }
 
-  public void setMostViolatedRules(HashMap<String, String> mostViolatedRules) {
+  public void setMostViolatedRules(List<Rule> mostViolatedRules) {
     this.mostViolatedRules = mostViolatedRules;
   }
 

@@ -20,7 +20,6 @@ package org.sonar.report.pdf.util;
 
 public class MetricKeys {
   
-  // TODO: update metric keys. See SONAR-802
   public static final String PROFILE = "profile";
   public static final String DUPLICATED_LINES = "duplicated_lines";
   public static final String DUPLICATED_BLOCKS = "duplicated_blocks";

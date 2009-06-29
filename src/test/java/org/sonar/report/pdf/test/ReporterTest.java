@@ -20,19 +20,19 @@ public class ReporterTest {
    * 
    * The key of the project is not place in properties, this is provided in execution time.
    */
-  @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
+  @Test(enabled = false, groups = { "report" }, dependsOnGroups = { "metrics" })
   public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
     config.load(resource.openStream());
-    config.setProperty("sonar.base.url", "http://nemo.sonar.codehaus.org");
+    config.setProperty("sonar.base.url", "http://localhost:9000");
     
     URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
     PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"),
-        "org.codehaus.sonar:sonar", "http://nemo.sonar.codehaus.org", config, configText);
+        "org.codehaus.sonar:sonar", "http://localhost:9000", config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;
