@@ -1,15 +1,24 @@
 package org.sonar.report.pdf.entity;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.httpclient.HttpException;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.SonarAccess;
+import org.sonar.report.pdf.util.UrlPath;
 
 public class Rule {
 
   // Rule key
   private String key;
-  
+
   // Rule name
   private String name;
 
@@ -17,19 +26,22 @@ public class Rule {
   private String description;
 
   // Violations of this rule: <resource key, violation line> (with limit 100)
-  private HashMap<String, String> topViolatedResources;
-  
+  private List<Violation> topViolatedResources;
+
   // Total vilations of this rule
   private float violationsNumber;
-  
-  //Total vilations of this rule
+
+  // Total vilations of this rule
   private String violationsNumberFormatted;
-  
-  
+
   private static final String RULE_NAME = "rule/name";
   private static final String RULE_KEY = "rule/key";
   private static final String RULE_VIOLATIONS_NUMBER = "val";
   private static final String RULE_VIOLATIONS_NUMBER_FORMATTED = "frmt_val";
+
+  private static final String RULE_VIOLATIONS = "/violations/violation";
+  private static final String RESOURCE_LINE = "line";
+  private static final String RESOURCE_KEY = "resource/key";
 
   /**
    * Initialize a rule given an XML Node that contains one rule
@@ -44,16 +56,34 @@ public class Rule {
     rule.setViolationsNumberFormatted(ruleNode.selectSingleNode(RULE_VIOLATIONS_NUMBER_FORMATTED).getText());
     return rule;
   }
-  
+
   /**
-   * This method provide the possibility of init a Rule without init all
-   * violated resources.
+   * This method provide the possibility of init a Rule without init all violated resources.
+   * 
    * @return
+   * @throws DocumentException
+   * @throws IOException
+   * @throws HttpException
    */
-  public void loadViolatedResources(SonarAccess sonarAccess) throws ReportException{
-    //TODO: Do request to retrieve violations on resources
-    //http://nemo.sonar.codehaus.org/api/violations?rules=AvoidThrowingRawExceptionTypes&resource=org.codehaus.sonar:sonar&scopes=FIL&depth=-1&limit=100&format=xml
-    
+  public void loadViolatedResources(SonarAccess sonarAccess, String projectKey) throws ReportException, HttpException,
+      IOException, DocumentException {
+    // TODO: Do request to retrieve violations on resources
+    // http://nemo.sonar.codehaus.org/api/violations?rules=AvoidThrowingRawExceptionTypes&resource=org.codehaus.sonar:
+    // sonar&scopes=FIL&depth=-1&limit=100&format=xml
+    if (getKey() == null) {
+      throw new ReportException("Rule not initialized. Forget call to initFromNode() previously?");
+    } else {
+      Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.VIOLATIONS + projectKey
+          + UrlPath.VIOLATED_RESOURCES_BY_RULE + getKey());
+      List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);
+      topViolatedResources = new LinkedList<Violation>();
+      Iterator<Node> it = violatedResources.iterator();
+      while (it.hasNext()) {
+        Node resource = it.next();
+        topViolatedResources.add(new Violation(resource.selectSingleNode(RESOURCE_LINE).getText(), resource
+            .selectSingleNode(RESOURCE_KEY).getText()));
+      }
+    }
   }
 
   public String getName() {
@@ -64,7 +94,7 @@ public class Rule {
     return description;
   }
 
-  public HashMap<String, String> getTopViolations() {
+  public List<Violation> getTopViolations() {
     return topViolatedResources;
   }
 
@@ -76,7 +106,7 @@ public class Rule {
     this.description = description;
   }
 
-  public void setTopViolations(HashMap<String, String> violations) {
+  public void setTopViolations(List<Violation> violations) {
     this.topViolatedResources = violations;
   }
 

@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.exception.ReportException;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.ChapterAutoNumber;
@@ -73,7 +74,7 @@ public class DefaultPDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException {
+  protected void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     this.document = document;
     // Chapter 1
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(getTextProperty("main.chapter1.title"),
@@ -268,7 +269,7 @@ public class DefaultPDFReporter extends PDFReporter {
 
   @Override
   protected void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
-      throws org.dom4j.DocumentException {
+      throws org.dom4j.DocumentException, ReportException {
     try {
       URL largeLogo;
       if(super.getConfigProperty("front.page.logo").startsWith("http://")) {

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.exception.ReportException;
 
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Document;
@@ -38,7 +39,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     super(logo, projectKey, sonarUrl, configProperties, langProperties);
   }
   
-  public void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException {
+  public void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(project.getName(), Style.CHAPTER_FONT));

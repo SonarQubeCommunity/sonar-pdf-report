@@ -36,6 +36,7 @@ import java.util.Properties;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.DefaultPDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
+import org.sonar.report.pdf.entity.exception.ReportException;
 
 public class ReportController extends HttpServlet {
 
@@ -97,6 +98,9 @@ public class ReportController extends HttpServlet {
       Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, null, ex);
     } catch (org.dom4j.DocumentException ex) {
       Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, "Error parsing response from Sonar", ex);
+    } catch (ReportException ex) {
+      Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, "Internal error", ex);
+      ex.printStackTrace();
     }
   }
 

@@ -31,6 +31,7 @@ import java.util.Properties;
 import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
+import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.MetricKeys;
 
 import com.lowagie.text.BadElementException;
@@ -92,7 +93,7 @@ public class ExecutivePDFReporter extends PDFReporter {
 
   @Override
   protected void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
-      throws org.dom4j.DocumentException {
+      throws org.dom4j.DocumentException, ReportException {
     try {
       URL largeLogo;
       if (super.getConfigProperty("front.page.logo").startsWith("http://")) {
@@ -134,7 +135,7 @@ public class ExecutivePDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException {
+  protected void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(project.getName(), Style.CHAPTER_FONT));

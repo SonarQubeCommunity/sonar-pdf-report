@@ -27,6 +27,7 @@ import java.util.Properties;
 import org.apache.commons.httpclient.HttpException;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
 import org.sonar.report.pdf.entity.Project;
+import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
 
@@ -50,7 +51,7 @@ public abstract class PDFReporter {
 
   private Project project = null;
 
-  public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException {
+  public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     // Creation of documents
     Document mainDocument = new Document(PageSize.A4, 50, 50, 110, 50);
     Toc tocDocument = new Toc();
@@ -100,7 +101,7 @@ public abstract class PDFReporter {
     return finalBaos;
   }
 
-  public Project getProject() throws HttpException, IOException, org.dom4j.DocumentException {
+  public Project getProject() throws HttpException, IOException, org.dom4j.DocumentException, ReportException {
     if (project == null) {
       SonarAccess sonarAccess = new SonarAccess(getSonarUrl());
       project = new Project(getProjectKey());
@@ -190,7 +191,7 @@ public abstract class PDFReporter {
   protected abstract String getSonarUrl();
 
   protected abstract void printPdfBody(Document document) throws DocumentException, IOException,
-      org.dom4j.DocumentException;
+      org.dom4j.DocumentException, ReportException;
 
   protected abstract void printTocTitle(Toc tocDocument) throws DocumentException, IOException;
 
@@ -199,7 +200,7 @@ public abstract class PDFReporter {
   protected abstract String getProjectKey();
 
   protected abstract void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
-      throws org.dom4j.DocumentException;
+      throws org.dom4j.DocumentException, ReportException;
   
   protected abstract Properties getReportProperties();
   

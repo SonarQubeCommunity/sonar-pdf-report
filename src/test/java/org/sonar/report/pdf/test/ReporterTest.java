@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
+import org.sonar.report.pdf.entity.exception.ReportException;
 import org.testng.annotations.Test;
 
 import com.lowagie.text.DocumentException;
@@ -19,9 +20,10 @@ public class ReporterTest {
    * set in report.properties, this file will be provided by the artifact consumer.
    * 
    * The key of the project is not place in properties, this is provided in execution time.
+   * @throws ReportException 
    */
   @Test(enabled = false, groups = { "report" }, dependsOnGroups = { "metrics" })
-  public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException {
+  public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
     config.load(resource.openStream());

@@ -23,6 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
+import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Logger;
 
 import com.lowagie.text.DocumentException;
@@ -115,6 +116,9 @@ public class SonarPDFMojo extends AbstractMojo {
       e.printStackTrace();
     } catch (org.dom4j.DocumentException e) {
       Logger.error("Problem parsing response data.");
+      e.printStackTrace();
+    } catch (ReportException e) {
+      Logger.error("Internal error: " + e.getMessage());
       e.printStackTrace();
     }
   }

@@ -22,6 +22,7 @@ public class UrlPath {
   
   // First level
   public static final String RESOURCES = "/api/resources?resource=";
+  public static final String VIOLATIONS = "/api/violations?resource=";
   
   // Second level
   public static final String PARENT_PROJECT = "&depth=0&format=xml";
@@ -31,5 +32,6 @@ public class UrlPath {
   public static final String MOST_VIOLATED_FILES = "&metrics="+ MetricKeys.MANDATORY_VIOLATIONS +"&scopes=FIL&depth=-1&limit=5&format=xml";
   public static final String MOST_COMPLEX_FILES = "&metrics="+ MetricKeys.COMPLEXITY +"&scopes=FIL&depth=-1&limit=5&format=xml";
   public static final String MOST_DUPLICATED_FILES = "&metrics="+ MetricKeys.DUPLICATED_LINES +"&scopes=FIL&depth=-1&limit=5&format=xml";
+  public static final String VIOLATED_RESOURCES_BY_RULE = "&scopes=FIL&depth=-1&limit=100&format=xml&rules=";
 
 }

@@ -28,6 +28,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
 import org.sonar.report.pdf.util.UrlPath;
@@ -102,8 +103,9 @@ public class Project {
    * @throws HttpException
    * @throws IOException
    * @throws DocumentException
+   * @throws ReportException 
    */
-  public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException, ReportException {
     Logger.info("Retrieving project info for " + this.key);
     Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT);
     initFromNode(parent.selectSingleNode(PROJECT));
@@ -152,11 +154,11 @@ public class Project {
     this.setMeasures(measures);
   }
 
-  private void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException, ReportException {
     Logger.info("    Retrieving most violated rules");
     Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.MOST_VIOLATED_RULES);
-    initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT));
+    initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT), sonarAccess);
   }
 
   private void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
@@ -203,13 +205,23 @@ public class Project {
     this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
   }
 
-  private void initMostViolatedRulesFromNode(Node mostViolatedNode) {
+  private void initMostViolatedRulesFromNode(Node mostViolatedNode, SonarAccess sonarAccess) throws HttpException, ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
     while (it.hasNext()) {
       Node measure = it.next();
       if (!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
-        this.mostViolatedRules.add(Rule.initFromNode(measure));
+        Rule rule = Rule.initFromNode(measure);
+        rule.loadViolatedResources(sonarAccess, this.key);
+        
+        System.out.println("RULE: " + rule.getKey());
+        System.out.println("Violated resources:");
+        Iterator<Violation> it2 = rule.getTopViolations().iterator();
+        while(it2.hasNext()) {
+          System.out.println("\t" + it2.next().getResource());
+        }
+        
+        this.mostViolatedRules.add(rule);
       }
     }
   }
