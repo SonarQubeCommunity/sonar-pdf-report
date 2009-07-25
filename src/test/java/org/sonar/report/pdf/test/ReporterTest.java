@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
+import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.testng.annotations.Test;
 
@@ -22,7 +23,7 @@ public class ReporterTest {
    * The key of the project is not place in properties, this is provided in execution time.
    * @throws ReportException 
    */
-  @Test(enabled = false, groups = { "report" }, dependsOnGroups = { "metrics" })
+  @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
   public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
@@ -33,8 +34,8 @@ public class ReporterTest {
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"),
-        "org.codehaus.sonar:sonar", "http://localhost:9000", config, configText);
+    PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/logo-gmv.gif"),
+        "org.codehaus.sonar-plugins:all", "http://localhost:9000", config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;
