@@ -88,7 +88,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
       printMostDuplicatedFiles(subproject, sectionN2);
       Section sectionN3 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_details"),
           Style.TITLE_FONT));
-      printMostViolatedRulesDetails(project, sectionN3);
+      printMostViolatedRulesDetails(subproject, sectionN3);
       document.add(chapterN);
     }
   }

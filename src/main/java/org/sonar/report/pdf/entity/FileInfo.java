@@ -93,16 +93,18 @@ public class FileInfo {
 
   public static List<FileInfo> initFromDocument(Document filesDocument, int content) {
     List<Node> fileNodes = filesDocument.selectNodes(ALL_FILES);
-    Iterator<Node> it = fileNodes.iterator();
     List<FileInfo> fileInfoList = new LinkedList<FileInfo>();
-    while (it.hasNext()) {
-      FileInfo file = new FileInfo();
-      Node fileNode = it.next();
-      // This first condition is a workarround for SONAR-830
-      if (fileNode.selectSingleNode("msr") != null) {
-        file.initFromNode(fileNode, content);
-        if (file.isContentSet(content)) {
-          fileInfoList.add(file);
+    if(fileNodes != null) {
+      Iterator<Node> it = fileNodes.iterator();
+      while (it.hasNext()) {
+        FileInfo file = new FileInfo();
+        Node fileNode = it.next();
+        // This first condition is a workarround for SONAR-830
+        if (fileNode.selectSingleNode("msr") != null) {
+          file.initFromNode(fileNode, content);
+          if (file.isContentSet(content)) {
+            fileInfoList.add(file);
+          }
         }
       }
     }

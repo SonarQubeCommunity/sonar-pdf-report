@@ -59,16 +59,16 @@ public class Project {
 
   // Most violated files
   private List<FileInfo> mostViolatedFiles;
-  
+
   // Most duplicated files
   private List<FileInfo> mostDuplicatedFiles;
 
   // Rules categories violations
-  private String maintainabilityViolations;
-  private String reliabilityViolations;
-  private String efficiencyViolations;
-  private String portabilityViolations;
-  private String usabilityViolations;
+  private String maintainabilityViolations = "0";
+  private String reliabilityViolations = "0";
+  private String efficiencyViolations = "0";
+  private String portabilityViolations = "0";
+  private String usabilityViolations = "0";
 
   // PROJECT INFO XPATH
   private static final String PROJECT = "//resources/resource";
@@ -80,34 +80,31 @@ public class Project {
   private static final String MEASURE_FRMT_VAL = "frmt_val";
 
   private static final String DESCRIPTION = "description";
-  private static final String MAINTAINABILITY = "msr[rules_categ/name='Maintainability']/frmt_val";
-  private static final String RELIABILITY = "msr[rules_categ/name='Reliability']/frmt_val";
-  private static final String EFFICIENCY = "msr[rules_categ/name='Efficiency']/frmt_val";
-  private static final String PORTABILITY = "msr[rules_categ/name='Portability']/frmt_val";
-  private static final String USABILITY = "msr[rules_categ/name='Usability']/frmt_val";
+  private static final String MAINTAINABILITY = "msr[rule_category='Maintainability']/frmt_val";
+  private static final String RELIABILITY = "msr[rule_category='Reliability']/frmt_val";
+  private static final String EFFICIENCY = "msr[rule_category='Efficiency']/frmt_val";
+  private static final String PORTABILITY = "msr[rule_category='Portability']/frmt_val";
+  private static final String USABILITY = "msr[rule_category='Usability']/frmt_val";
 
   public Project(String key) {
     this.key = key;
   }
 
   /**
-   * Initialize: 
-   * - Project basic data 
-   * - Project measures 
-   * - Project categories violations 
-   * - Project most violated rules 
-   * - Project most violated files
-   * - Project most duplicated files
+   * Initialize: - Project basic data - Project measures - Project categories violations - Project most violated rules -
+   * Project most violated files - Project most duplicated files
    * 
    * @param sonarAccess
    * @throws HttpException
    * @throws IOException
    * @throws DocumentException
-   * @throws ReportException 
+   * @throws ReportException
    */
-  public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException, ReportException {
+  public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
+      ReportException {
     Logger.info("Retrieving project info for " + this.key);
     Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT);
+    //TODO: seguir por aquí (NullPointer cuando no hay resources)
     initFromNode(parent.selectSingleNode(PROJECT));
     initMeasures(sonarAccess);
     initCategories(sonarAccess);
@@ -128,7 +125,7 @@ public class Project {
       }
     }
   }
-  
+
   /**
    * Initialize project object and his childs (except categories violations).
    */
@@ -145,6 +142,9 @@ public class Project {
     this.setLinks(new LinkedList<String>());
     this.setSubprojects(new LinkedList<Project>());
     this.setMostViolatedRules(new LinkedList<Rule>());
+    this.setMostComplexFiles(new LinkedList<FileInfo>());
+    this.setMostDuplicatedFiles(new LinkedList<FileInfo>());
+    this.setMostViolatedFiles(new LinkedList<FileInfo>());
   }
 
   private void initMeasures(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
@@ -154,11 +154,14 @@ public class Project {
     this.setMeasures(measures);
   }
 
-  private void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException, ReportException {
+  private void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
+      ReportException {
     Logger.info("    Retrieving most violated rules");
     Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.MOST_VIOLATED_RULES);
-    initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT), sonarAccess);
+    if(mostViolatedRules.selectSingleNode(PROJECT) != null) {
+      initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT), sonarAccess);
+    }
   }
 
   private void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
@@ -166,22 +169,22 @@ public class Project {
     Document mostViolatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
         + UrlPath.MOST_VIOLATED_FILES);
     this.setMostViolatedFiles(FileInfo.initFromDocument(mostViolatedFilesDoc, FileInfo.VIOLATIONS_CONTENT));
-    
+
   }
 
   private void initMostComplexElements(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most complex elements");
-    Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.MOST_COMPLEX_FILES);
+    Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
+        + UrlPath.MOST_COMPLEX_FILES);
     this.setMostComplexFiles(FileInfo.initFromDocument(mostComplexFilesDoc, FileInfo.CCN_CONTENT));
   }
-  
 
   private void initMostDuplicatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most duplicated files");
-    Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.MOST_DUPLICATED_FILES);
+    Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
+        + UrlPath.MOST_DUPLICATED_FILES);
     this.setMostDuplicatedFiles(FileInfo.initFromDocument(mostDuplicatedFilesDoc, FileInfo.DUPLICATIONS_CONTENT));
   }
-
 
   public Measure getMeasure(String measureKey) {
     if (measures.containsMeasure(measureKey)) {
@@ -194,18 +197,31 @@ public class Project {
   private void initCategories(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Document categories = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.CATEGORIES_VIOLATIONS);
-    this.initCategoriesViolationsFromNode(categories.selectSingleNode(PROJECT));
+    if(categories.selectSingleNode(PROJECT) != null) {
+      this.initCategoriesViolationsFromNode(categories.selectSingleNode(PROJECT));
+    }
   }
 
   private void initCategoriesViolationsFromNode(Node categoriesNode) {
-    this.setMaintainabilityViolations(categoriesNode.selectSingleNode(MAINTAINABILITY).getText());
-    this.setReliabilityViolations(categoriesNode.selectSingleNode(RELIABILITY).getText());
-    this.setEfficiencyViolations(categoriesNode.selectSingleNode(EFFICIENCY).getText());
-    this.setPortabilityViolations(categoriesNode.selectSingleNode(PORTABILITY).getText());
-    this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
+    if (categoriesNode.selectSingleNode(MAINTAINABILITY) != null) {
+      this.setMaintainabilityViolations(categoriesNode.selectSingleNode(MAINTAINABILITY).getText());
+    }
+    if (categoriesNode.selectSingleNode(RELIABILITY) != null) {
+      this.setReliabilityViolations(categoriesNode.selectSingleNode(RELIABILITY).getText());
+    }
+    if (categoriesNode.selectSingleNode(EFFICIENCY) != null) {
+      this.setEfficiencyViolations(categoriesNode.selectSingleNode(EFFICIENCY).getText());
+    }
+    if (categoriesNode.selectSingleNode(PORTABILITY) != null) {
+      this.setPortabilityViolations(categoriesNode.selectSingleNode(PORTABILITY).getText());
+    }
+    if (categoriesNode.selectSingleNode(USABILITY) != null) {
+      this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
+    }
   }
 
-  private void initMostViolatedRulesFromNode(Node mostViolatedNode, SonarAccess sonarAccess) throws HttpException, ReportException, IOException, DocumentException {
+  private void initMostViolatedRulesFromNode(Node mostViolatedNode, SonarAccess sonarAccess) throws HttpException,
+      ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
     while (it.hasNext()) {

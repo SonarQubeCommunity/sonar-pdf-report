@@ -28,9 +28,9 @@ public class UrlPath {
   // Second level
   public static final String PARENT_PROJECT = "&depth=0&format=xml";
   public static final String CHILD_PROJECTS = "&depth=1&format=xml";
-  public static final String CATEGORIES_VIOLATIONS = "&metrics="+ MetricKeys.MANDATORY_VIOLATIONS +"&filter_rules_cats=false&format=xml";
-  public static final String MOST_VIOLATED_RULES = "&metrics="+ MetricKeys.MANDATORY_VIOLATIONS +"&limit=25&filter_rules=false&filter_rules_cats=true&format=xml";
-  public static final String MOST_VIOLATED_FILES = "&metrics="+ MetricKeys.MANDATORY_VIOLATIONS +"&scopes=FIL&depth=-1&limit=5&format=xml";
+  public static final String CATEGORIES_VIOLATIONS = "&metrics="+ MetricKeys.VIOLATIONS +"&filter_rules_cats=false&format=xml";
+  public static final String MOST_VIOLATED_RULES = "&metrics="+ MetricKeys.VIOLATIONS +"&limit=25&filter_rules=false&filter_rules_cats=true&format=xml";
+  public static final String MOST_VIOLATED_FILES = "&metrics="+ MetricKeys.VIOLATIONS +"&scopes=FIL&depth=-1&limit=5&format=xml";
   public static final String MOST_COMPLEX_FILES = "&metrics="+ MetricKeys.COMPLEXITY +"&scopes=FIL&depth=-1&limit=5&format=xml";
   public static final String MOST_DUPLICATED_FILES = "&metrics="+ MetricKeys.DUPLICATED_LINES +"&scopes=FIL&depth=-1&limit=5&format=xml";
   public static final String VIOLATED_RESOURCES_BY_RULE = "&scopes=FIL&depth=-1&limit=100&format=xml&rules=";

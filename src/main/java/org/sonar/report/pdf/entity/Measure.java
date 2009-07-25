@@ -29,7 +29,7 @@ public class Measure {
   private Integer qualitativeTendency;
   private Integer quantitativeTendency;
   private String alert;
-  
+
   private static final String KEY = "key";
   private static final String VALUE = "val";
   private static final String FORMAT_VALUE = "frmt_val";
@@ -42,9 +42,9 @@ public class Measure {
     this.qualitativeTendency = 0;
     this.quantitativeTendency = 0;
   }
-  
+
   public Measure() {
-    
+
   }
 
   public String getKey() {
@@ -110,9 +110,11 @@ public class Measure {
    */
   public void initFromNode(Node measureNode) {
     this.setKey(measureNode.selectSingleNode(KEY).getText());
-    this.setFormatValue(measureNode.selectSingleNode(FORMAT_VALUE).getText());
-    this.setValue(measureNode.selectSingleNode(VALUE).getText());
-
+    
+    if (measureNode.selectSingleNode(FORMAT_VALUE) != null) {
+      this.setFormatValue(measureNode.selectSingleNode(FORMAT_VALUE).getText());
+      this.setValue(measureNode.selectSingleNode(VALUE).getText());
+    }
     if (measureNode.selectSingleNode(TREND) != null) {
       this.setQualitativeTendency(Integer.parseInt(measureNode.selectSingleNode(TREND).getText()));
     } else {
@@ -124,8 +126,8 @@ public class Measure {
     } else {
       this.setQuantitativeTendency(0);
     }
-    
-    if(measureNode.selectSingleNode(VALUE) != null) {
+
+    if (measureNode.selectSingleNode(VALUE) != null) {
       this.setTextValue(measureNode.selectSingleNode(VALUE).getText());
     } else {
       this.setTextValue("");

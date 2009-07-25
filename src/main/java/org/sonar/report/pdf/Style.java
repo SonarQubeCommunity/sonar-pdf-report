@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class Style {

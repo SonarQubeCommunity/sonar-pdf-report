@@ -34,8 +34,8 @@ public class Rule {
   // Total vilations of this rule
   private String violationsNumberFormatted;
 
-  private static final String RULE_NAME = "rule/name";
-  private static final String RULE_KEY = "rule/key";
+  private static final String RULE_NAME = "rule_name";
+  private static final String RULE_KEY = "rule_key";
   private static final String RULE_VIOLATIONS_NUMBER = "val";
   private static final String RULE_VIOLATIONS_NUMBER_FORMATTED = "frmt_val";
 

@@ -37,15 +37,12 @@ public class MetricKeys {
   public static final String TEST_ERRORS = "test_errors";
   public static final String TEST_FAILURES = "test_failures";
   public static final String TEST_SUCCESS_DENSITY = "test_success_density";
-  public static final String MANDATORY_VIOLATIONS = "mandatory_violations";
-  public static final String OPTIONAL_VIOLATIONS = "optional_violations";
   public static final String VIOLATIONS = "violations";
   public static final String CLASS_COMPLEXITY_DISTRIBUTION = "class_complexity_distribution";
   public static final String DUPLICATED_LINES_DENSITY = "duplicated_lines_density";
   public static final String CLASS_COMPLEXITY = "class_complexity";
   public static final String FUNCTION_COMPLEXITY = "function_complexity";
   public static final String COMMENT_LINES_DENSITY = "comment_lines_density";
-  public static final String MANDATORY_VIOLATIONS_DENSITY = "mandatory_violations_density";
   public static final String VIOLATIONS_DENSITY = "violations_density";
   public static final String UNCOVERED_COMPLEXITY_BY_TESTS = "uncovered_complexity_by_tests";
 

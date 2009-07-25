@@ -288,10 +288,10 @@ public class ExecutivePDFReporter extends PDFReporter {
     PdfPTable rulesComplianceTendency = new PdfPTable(2);
     Style.noBorderTable(rulesComplianceTendency);
     rulesComplianceTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-    rulesComplianceTendency.addCell(new Phrase(project.getMeasure(MetricKeys.MANDATORY_VIOLATIONS_DENSITY).getFormatValue(),
+    rulesComplianceTendency.addCell(new Phrase(project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getFormatValue(),
         Style.DASHBOARD_DATA_FONT));
-    rulesComplianceTendency.addCell(getTendencyImage(project.getMeasure(MetricKeys.MANDATORY_VIOLATIONS_DENSITY)
-        .getQualitativeTendency(), project.getMeasure(MetricKeys.MANDATORY_VIOLATIONS_DENSITY).getQuantitativeTendency()));
+    rulesComplianceTendency.addCell(getTendencyImage(project.getMeasure(MetricKeys.VIOLATIONS_DENSITY)
+        .getQualitativeTendency(), project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getQuantitativeTendency()));
     rulesCompliance.addCell(rulesComplianceTendency);
 
     PdfPTable violations = new PdfPTable(1);
@@ -300,10 +300,10 @@ public class ExecutivePDFReporter extends PDFReporter {
     PdfPTable violationsTendency = new PdfPTable(2);
     Style.noBorderTable(violationsTendency);
     violationsTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
-    violationsTendency.addCell(new Phrase(project.getMeasure(MetricKeys.MANDATORY_VIOLATIONS).getFormatValue(),
+    violationsTendency.addCell(new Phrase(project.getMeasure(MetricKeys.VIOLATIONS).getFormatValue(),
         Style.DASHBOARD_DATA_FONT));
-    violationsTendency.addCell(getTendencyImage(project.getMeasure(MetricKeys.MANDATORY_VIOLATIONS)
-        .getQualitativeTendency(), project.getMeasure(MetricKeys.MANDATORY_VIOLATIONS).getQuantitativeTendency()));
+    violationsTendency.addCell(getTendencyImage(project.getMeasure(MetricKeys.VIOLATIONS)
+        .getQualitativeTendency(), project.getMeasure(MetricKeys.VIOLATIONS).getQuantitativeTendency()));
     violations.addCell(violationsTendency);
 
     codingRulesViolationsTable.setSpacingBefore(10);
