@@ -20,13 +20,12 @@
 package org.sonar.report.pdf.test;
 
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
 import org.testng.Assert;
 import org.sonar.report.pdf.PDFReportPlugin;
 
 public class PDFReportPluginTest {
 
-  @Test
+  @Test( groups = { "post-job" })
   public void shouldDefineExtensions() {
     Assert.assertEquals(2, new PDFReportPlugin().getExtensions().size());
   }

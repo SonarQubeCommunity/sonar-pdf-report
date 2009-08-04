@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 public class PDFPostJobTest {
 
-  @Test
+  @Test( groups = { "post-job" })
   public void doNotExecuteIfSkipParameter() {
     PropertiesConfiguration conf = new PropertiesConfiguration();
     conf.setProperty(PDFPostJob.SKIP_PDF_KEY, Boolean.TRUE);
@@ -41,7 +41,7 @@ public class PDFPostJobTest {
     assertFalse(new PDFPostJob(null).shouldExecuteOnProject(project));
   }
 
-  @Test
+  @Test( groups = { "post-job" })
   public void shouldExecuteIfNoSkipParameter() {
     Project project = mock(Project.class);
     when(project.getConfiguration()).thenReturn(new PropertiesConfiguration());
