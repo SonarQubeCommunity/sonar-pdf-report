@@ -72,16 +72,17 @@ public class Rule {
       throw new ReportException("Rule not initialized. Forget call to initFromNode() previously?");
     } else {
       Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.VIOLATIONS + projectKey
-          + UrlPath.VIOLATED_RESOURCES_BY_RULE + getKey());
+          + UrlPath.VIOLATED_RESOURCES_BY_RULE + getKey() + UrlPath.XML_SOURCE);
       List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);
       topViolatedResources = new LinkedList<Violation>();
       Iterator<Node> it = violatedResources.iterator();
       while (it.hasNext()) {
         Node resource = it.next();
         String resourceKey = resource.selectSingleNode(RESOURCE_KEY).getText();
-        String line = resource.selectSingleNode(RESOURCE_LINE).getText();
-        // Document sourceLineDoc = sonarAccess.getUrlAsDocument(UrlPath.SOURCES + resourceKey + UrlPath.XML_SOURCE + "&from=" + line + "&to=" + line);
-        // String sourceLine = sourceLineDoc.selectSingleNode(SOURCE).getText();
+        String line = "N/A";
+        if(resource.selectSingleNode(RESOURCE_LINE) != null) {
+          line = resource.selectSingleNode(RESOURCE_LINE).getText();
+        }
         topViolatedResources.add(new Violation(line , resourceKey, ""));
         
       }

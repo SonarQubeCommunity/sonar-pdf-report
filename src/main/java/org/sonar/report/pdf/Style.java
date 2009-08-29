@@ -24,7 +24,6 @@ import java.util.List;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class Style {
@@ -47,12 +46,12 @@ public class Style {
   /**
    * Font used in general plain text
    */
-  public final static Font NORMAL_FONT = new Font(Font.TIMES_ROMAN, 12, Font.NORMAL, Color.BLACK);
+  public final static Font NORMAL_FONT = new Font(Font.TIMES_ROMAN, 11, Font.NORMAL, Color.BLACK);
   
   /**
    * Font used in code text (bold)
    */
-  public final static Font MONOSPACED_BOLD_FONT = new Font(Font.COURIER, 12, Font.BOLD, Color.BLACK);
+  public final static Font MONOSPACED_BOLD_FONT = new Font(Font.COURIER, 11, Font.BOLD, Color.BLACK);
   
   /**
    * Font used in code text

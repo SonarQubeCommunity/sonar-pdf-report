@@ -59,9 +59,9 @@ public class Toc extends PdfPageEventHelper {
     content.getDefaultCell().setBorderColorBottom(Color.LIGHT_GRAY);
     content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
     content.getDefaultCell().setUseBorderPadding(true);
-    content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 14)));
+    content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 11)));
     content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_RIGHT);
-    content.addCell(new Phrase("Page " + document.getPageNumber(), new Font(Font.HELVETICA, 14)));
+    content.addCell(new Phrase("Page " + document.getPageNumber(), new Font(Font.HELVETICA, 11)));
     content.getDefaultCell().setBorderColorBottom(Color.WHITE);
     content.getDefaultCell().setUseBorderPadding(false);
   }
@@ -78,13 +78,13 @@ public class Toc extends PdfPageEventHelper {
     switch (depth) {
     case 2:
       content.getDefaultCell().setIndent(10);
-      content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 12)));
+      content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 10)));
       content.getDefaultCell().setIndent(0);
       content.addCell("");
       break;
     default:
       content.getDefaultCell().setIndent(20);
-      content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 10)));
+      content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 9)));
       content.getDefaultCell().setIndent(0);
       content.addCell("");
     }

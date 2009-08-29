@@ -103,7 +103,7 @@ public class Project {
   public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
       ReportException {
     Logger.info("Retrieving project info for " + this.key);
-    Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT);
+    Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT + UrlPath.XML_SOURCE);
     //TODO: seguir por aquí (NullPointer cuando no hay resources)
     initFromNode(parent.selectSingleNode(PROJECT));
     initMeasures(sonarAccess);
@@ -112,7 +112,7 @@ public class Project {
     initMostViolatedFiles(sonarAccess);
     initMostComplexElements(sonarAccess);
     initMostDuplicatedFiles(sonarAccess);
-    Document childs = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.CHILD_PROJECTS);
+    Document childs = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.CHILD_PROJECTS + UrlPath.XML_SOURCE);
     List<Node> childNodes = childs.selectNodes(PROJECT);
     Iterator<Node> it = childNodes.iterator();
     setSubprojects(new ArrayList<Project>());
@@ -158,7 +158,7 @@ public class Project {
       ReportException {
     Logger.info("    Retrieving most violated rules");
     Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
-        + UrlPath.MOST_VIOLATED_RULES);
+        + UrlPath.MOST_VIOLATED_RULES + UrlPath.XML_SOURCE);
     if(mostViolatedRules.selectSingleNode(PROJECT) != null) {
       initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT), sonarAccess);
     }
@@ -167,7 +167,7 @@ public class Project {
   private void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most violated files");
     Document mostViolatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
-        + UrlPath.MOST_VIOLATED_FILES);
+        + UrlPath.MOST_VIOLATED_FILES + UrlPath.XML_SOURCE);
     this.setMostViolatedFiles(FileInfo.initFromDocument(mostViolatedFilesDoc, FileInfo.VIOLATIONS_CONTENT));
 
   }
@@ -175,14 +175,14 @@ public class Project {
   private void initMostComplexElements(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most complex elements");
     Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
-        + UrlPath.MOST_COMPLEX_FILES);
+        + UrlPath.MOST_COMPLEX_FILES + UrlPath.XML_SOURCE);
     this.setMostComplexFiles(FileInfo.initFromDocument(mostComplexFilesDoc, FileInfo.CCN_CONTENT));
   }
 
   private void initMostDuplicatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most duplicated files");
     Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
-        + UrlPath.MOST_DUPLICATED_FILES);
+        + UrlPath.MOST_DUPLICATED_FILES + UrlPath.XML_SOURCE);
     this.setMostDuplicatedFiles(FileInfo.initFromDocument(mostDuplicatedFilesDoc, FileInfo.DUPLICATIONS_CONTENT));
   }
 
@@ -196,7 +196,7 @@ public class Project {
 
   private void initCategories(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Document categories = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
-        + UrlPath.CATEGORIES_VIOLATIONS);
+        + UrlPath.CATEGORIES_VIOLATIONS + UrlPath.XML_SOURCE);
     if(categories.selectSingleNode(PROJECT) != null) {
       this.initCategoriesViolationsFromNode(categories.selectSingleNode(PROJECT));
     }

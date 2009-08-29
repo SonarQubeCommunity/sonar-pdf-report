@@ -37,7 +37,6 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
@@ -127,20 +126,42 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     table.getDefaultCell().setColspan(10);
     table.getDefaultCell().setBackgroundColor(Color.GRAY);
     table.addCell("");
-    table.getDefaultCell().setColspan(9);
+    table.getDefaultCell().setColspan(7);
     table.getDefaultCell().setBackgroundColor(new Color(255,228,181));
     table.addCell(new Phrase("File", Style.NORMAL_FONT));
-    table.getDefaultCell().setColspan(1);
+    table.getDefaultCell().setColspan(3);
     table.addCell(new Phrase("Line", Style.NORMAL_FONT));
     table.getDefaultCell().setBackgroundColor(Color.WHITE);
-    while(itLeft.hasNext()) {
-      String textLeft = itLeft.next();
-      String textRight = itRight.next();
-      table.getDefaultCell().setColspan(9);
-      table.addCell(textLeft);
-      table.getDefaultCell().setColspan(1);
-      table.addCell(textRight);
+
+    int i = 0;
+    String lineNumbers = "";
+    while(i < files.size() - 1) {
+      if(lineNumbers.equals("")) {
+        lineNumbers += lines.get(i);
+      } else {
+        lineNumbers += ", " + lines.get(i);
+      }
+      
+      if(!files.get(i).equals(files.get(i+1))) {
+        table.getDefaultCell().setColspan(7);
+        table.addCell(files.get(i));
+        table.getDefaultCell().setColspan(3);
+        table.addCell(lineNumbers);
+        lineNumbers = "";
+      }
+      i++;
     }
+    
+    table.getDefaultCell().setColspan(7);
+    table.addCell(files.get(files.size() - 1));
+    table.getDefaultCell().setColspan(3);
+    if(lineNumbers.equals("")) {
+      lineNumbers += lines.get(i);
+    } else {
+      lineNumbers += ", " + lines.get(lines.size() - 1);
+    }
+    table.addCell(lineNumbers);
+    
     table.setSpacingBefore(20);
     table.setSpacingAfter(20);
     table.setLockedWidth(false);

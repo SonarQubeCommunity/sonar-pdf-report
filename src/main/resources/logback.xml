@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration debug="false">
+  <logger name="org.apache.commons">
+    <level value="ERROR"/>
+  </logger>
+
+  <root>
+    <level value="ERROR"/>
+  </root>
+
+</configuration>

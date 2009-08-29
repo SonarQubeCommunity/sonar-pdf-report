@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
@@ -34,7 +33,7 @@ public class ReporterTest {
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/logo-gmv.gif"),
+    PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
         "org.codehaus.sonar-plugins:all", "http://localhost:9000", config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();

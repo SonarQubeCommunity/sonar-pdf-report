@@ -21,8 +21,8 @@ package org.sonar.report.pdf.mojo;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
+import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Logger;
 
@@ -75,16 +75,16 @@ public class SonarPDFMojo extends AbstractMojo {
   private String branch;
 
   public void execute() throws MojoExecutionException {
-
+    
     Logger.setLog(getLog());
-
+    
     Properties config = new Properties();
     Properties configLang = new Properties();
 
     try {
       if (sonarHostUrl != null) {
         config.put("sonar.base.url", sonarHostUrl);
-        config.put("front.page.logo", "sonar-very-large.png");
+        config.put("front.page.logo", "sonar.png");
       } else {
         config.load(this.getClass().getResourceAsStream("/report.properties"));
       }
@@ -95,7 +95,7 @@ public class SonarPDFMojo extends AbstractMojo {
         sonarProjectId += ":" + branch;
       }
 
-      PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
+      PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
           config.getProperty("sonar.base.url"), config, configLang);
 
       ByteArrayOutputStream baos = reporter.getReport();
