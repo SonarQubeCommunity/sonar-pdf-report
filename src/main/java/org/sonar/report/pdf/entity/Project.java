@@ -28,6 +28,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
@@ -228,7 +229,10 @@ public class Project {
       Node measure = it.next();
       if (!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
         Rule rule = Rule.initFromNode(measure);
-        rule.loadViolatedResources(sonarAccess, this.key);
+        
+        if(PDFReporter.reportType.equals("workbook")) {
+          rule.loadViolatedResources(sonarAccess, this.key);
+        }
         this.mostViolatedRules.add(rule);
       }
     }

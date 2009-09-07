@@ -50,6 +50,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public abstract class PDFReporter {
 
   private Project project = null;
+  public static String reportType = "workbook";
 
   public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     // Creation of documents

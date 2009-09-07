@@ -71,8 +71,7 @@ public class DefaultPDFReporter extends PDFReporter {
     this.sonarUrl = sonarUrl;
     this.configProperties = configProperties;
     this.langProperties = langProperties;
-    String string = null;
-    string.charAt(0);
+    reportType = "default";
   }
 
   @Override

@@ -44,6 +44,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
   public TeamWorkbookPDFReporter(URL logo, String projectKey, String sonarUrl, Properties configProperties,
       Properties langProperties) {
     super(logo, projectKey, sonarUrl, configProperties, langProperties);
+    reportType = "workbook";
   }
 
   public void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException,

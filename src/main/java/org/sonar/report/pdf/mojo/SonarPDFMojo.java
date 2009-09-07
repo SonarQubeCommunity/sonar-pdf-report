@@ -21,6 +21,7 @@ package org.sonar.report.pdf.mojo;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
@@ -67,17 +68,25 @@ public class SonarPDFMojo extends AbstractMojo {
   private String sonarHostUrl;
 
   /**
-   * Branch to be used
+   * Branch to be used.
    * 
    * @parameter expression="${branch}"
    * @optional
    */
   private String branch;
 
+  /**
+   * Type of report.
+   * 
+   * @parameter expression="${report.type}"
+   * @optional
+   */
+  private String reportType;
+
   public void execute() throws MojoExecutionException {
-    
+
     Logger.setLog(getLog());
-    
+
     Properties config = new Properties();
     Properties configLang = new Properties();
 
@@ -95,8 +104,22 @@ public class SonarPDFMojo extends AbstractMojo {
         sonarProjectId += ":" + branch;
       }
 
-      PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
-          config.getProperty("sonar.base.url"), config, configLang);
+      PDFReporter reporter = null;
+      if (reportType != null) {
+        if (reportType.equals("executive")) {
+          Logger.info("Executive report type selected");
+          reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
+              config.getProperty("sonar.base.url"), config, configLang);
+        } else if (reportType.equals("workbook")) {
+          Logger.info("Team workbook report type selected");
+           reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
+              config.getProperty("sonar.base.url"), config, configLang);
+        }
+      } else {
+        Logger.info("No report type provided. Default report selected (Team workbook)");
+        reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
+            config.getProperty("sonar.base.url"), config, configLang);
+      }
 
       ByteArrayOutputStream baos = reporter.getReport();
       FileOutputStream fos = null;

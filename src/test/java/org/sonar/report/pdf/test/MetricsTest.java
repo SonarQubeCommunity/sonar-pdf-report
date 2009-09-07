@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 
 public class MetricsTest {
   
-  @Test(alwaysRun = true, enabled = false, groups = { "metrics" })
+  @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
   public void metricsShouldBeConsistent() throws IOException, DocumentException, IllegalArgumentException, IllegalAccessException {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
@@ -24,7 +24,7 @@ public class MetricsTest {
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    SonarAccess sonarAccess = new SonarAccess("http://localhost:9000");
+    SonarAccess sonarAccess = new SonarAccess("http://nemo.sonar.codehaus.org");
     Measures measures = new Measures();
     String allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
     

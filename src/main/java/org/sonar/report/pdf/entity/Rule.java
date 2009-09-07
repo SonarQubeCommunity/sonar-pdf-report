@@ -76,6 +76,7 @@ public class Rule {
       List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);
       topViolatedResources = new LinkedList<Violation>();
       Iterator<Node> it = violatedResources.iterator();
+
       while (it.hasNext()) {
         Node resource = it.next();
         String resourceKey = resource.selectSingleNode(RESOURCE_KEY).getText();
@@ -84,7 +85,6 @@ public class Rule {
           line = resource.selectSingleNode(RESOURCE_LINE).getText();
         }
         topViolatedResources.add(new Violation(line , resourceKey, ""));
-        
       }
     }
   }

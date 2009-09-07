@@ -64,6 +64,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     this.sonarUrl = sonarUrl;
     this.configProperties = configProperties;
     this.langProperties = langProperties;
+    reportType = "executive";
   }
 
   @Override

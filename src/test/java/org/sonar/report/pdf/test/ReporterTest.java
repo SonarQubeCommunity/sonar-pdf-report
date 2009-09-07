@@ -27,14 +27,14 @@ public class ReporterTest {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
     config.load(resource.openStream());
-    config.setProperty("sonar.base.url", "http://localhost:9000");
+    config.setProperty("sonar.base.url", "http://nemo.sonar.codehaus.org");
     
     URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
     PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
-        "org.codehaus.sonar-plugins:all", "http://localhost:9000", config, configText);
+        "com.xpn.xwiki.platform:xwiki-platform-externals", "http://nemo.sonar.codehaus.org", config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;
