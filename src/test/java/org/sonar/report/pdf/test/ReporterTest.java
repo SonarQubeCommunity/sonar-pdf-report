@@ -22,7 +22,7 @@ public class ReporterTest {
    * The key of the project is not place in properties, this is provided in execution time.
    * @throws ReportException 
    */
-  @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
+  @Test(enabled = false, groups = { "report" }, dependsOnGroups = { "metrics" })
   public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
     URL resource = this.getClass().getClassLoader().getResource("report.properties");
     Properties config = new Properties();
