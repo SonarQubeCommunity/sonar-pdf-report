@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
@@ -8,7 +7,7 @@
     <relativePath>../parent</relativePath>
   </parent>
   <artifactId>pdf-report</artifactId>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.3</version>
   <packaging>maven-plugin</packaging>
   <name>Sonar PDF Report Maven Plugin</name>
   <build>
@@ -143,8 +142,8 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/pdf-report</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/pdf-report</developerConnection>
-    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/pdf-report</url>
+    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/tags/pdf-report-0.3</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/pdf-report-0.3</developerConnection>
+    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/pdf-report-0.3</url>
   </scm>
 </project>
