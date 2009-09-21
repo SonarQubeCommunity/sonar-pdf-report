@@ -7,7 +7,7 @@
     <relativePath>../parent</relativePath>
   </parent>
   <artifactId>pdf-report</artifactId>
-  <version>0.3</version>
+  <version>0.4-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Sonar PDF Report Maven Plugin</name>
   <build>
@@ -142,8 +142,8 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/tags/pdf-report-0.3</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/pdf-report-0.3</developerConnection>
-    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/pdf-report-0.3</url>
+    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/pdf-report</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/pdf-report</developerConnection>
+    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/pdf-report</url>
   </scm>
 </project>
