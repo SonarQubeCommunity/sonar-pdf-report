@@ -30,6 +30,9 @@ public class PDFPostJob implements PostJob, DependsUponMavenPlugin, CheckProject
 
   public static final String SKIP_PDF_KEY = "sonar.pdf.skip";
   public static final boolean SKIP_PDF_DEFAULT_VALUE = false;
+  
+  public static final String REPORT_TYPE = "report.type";
+  public static final String REPORT_TYPE_DEFAULT_VALUE = "workbook";
 
   private PDFMavenPluginHandler handler;
 

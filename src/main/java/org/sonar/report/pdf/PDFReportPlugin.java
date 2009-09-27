@@ -28,7 +28,7 @@ import org.sonar.report.pdf.batch.PDFPostJob;
 import java.util.ArrayList;
 import java.util.List;
 
-@Properties(
+@Properties({
     @Property(
         key=PDFPostJob.SKIP_PDF_KEY,
         name="Skip",
@@ -37,8 +37,17 @@ import java.util.List;
         global = true,
         project = true,
         module = false
+    ),
+    @Property(
+        key=PDFPostJob.REPORT_TYPE,
+        name="Type",
+        description = "Report type (executive or workbook).",
+        defaultValue = PDFPostJob.REPORT_TYPE_DEFAULT_VALUE,
+        global = true,
+        project = true,
+        module = false
     )
-)
+})
 public class PDFReportPlugin implements Plugin {
   
   public String getKey() {

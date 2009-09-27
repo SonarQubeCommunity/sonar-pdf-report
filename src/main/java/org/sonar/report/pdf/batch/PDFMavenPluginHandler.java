@@ -23,6 +23,7 @@ import org.sonar.api.batch.maven.MavenPluginHandler;
 import org.sonar.api.batch.maven.MavenPlugin;
 import org.sonar.api.resources.Project;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
 
 import java.util.Properties;
@@ -30,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class PDFMavenPluginHandler implements MavenPluginHandler {
-  
+
   public String getGroupId() {
     return "org.codehaus.sonar-plugins";
   }
@@ -43,14 +44,15 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
     InputStream input = null;
     try {
       Properties props = new Properties();
-      input = this.getClass().getResourceAsStream("/META-INF/maven/org.codehaus.sonar-plugins/pdf-report/pom.properties");
+      input = this.getClass().getResourceAsStream(
+          "/META-INF/maven/org.codehaus.sonar-plugins/pdf-report/pom.properties");
       props.load(input);
       return props.getProperty("version");
 
     } catch (IOException e) {
       LoggerFactory.getLogger(getClass()).error("can not load the plugin version from report.properties", e);
       return null;
-      
+
     } finally {
       IOUtils.closeQuietly(input);
     }
@@ -61,10 +63,11 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
   }
 
   public String[] getGoals() {
-    return new String[] {"generate"};
+    return new String[] { "generate" };
   }
 
   public void configure(Project project, MavenPlugin plugin) {
-    // nothing to do
+    plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
+        PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
   }
 }
