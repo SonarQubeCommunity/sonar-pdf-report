@@ -41,6 +41,12 @@ public class Logger {
       log.debug(message);
     }
   }
+  
+  public static void warn(CharSequence message) {
+    if (log != null) {
+      log.warn(message);
+    }
+  }
 
   public static void setLog(Log log) {
     Logger.log = log;

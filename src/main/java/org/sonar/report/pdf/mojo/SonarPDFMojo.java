@@ -75,6 +75,15 @@ public class SonarPDFMojo extends AbstractMojo {
    */
   private String branch;
 
+
+  /**
+   * Branch to be used.
+   * 
+   * @parameter expression="${sonar.branch}"
+   * @optional
+   */
+  private String sonarBranch;
+  
   /**
    * Type of report.
    * 
@@ -102,6 +111,11 @@ public class SonarPDFMojo extends AbstractMojo {
       String sonarProjectId = project.getGroupId() + ":" + project.getArtifactId();
       if (branch != null) {
         sonarProjectId += ":" + branch;
+        Logger.warn("Use of branch parameter is deprecated, use sonar.branch instead");
+        Logger.info("Branch " + branch + " selected");
+      } else if(sonarBranch != null) {
+        sonarProjectId += ":" + sonarBranch;
+        Logger.info("Branch " + sonarBranch + " selected");
       }
 
       PDFReporter reporter = null;
