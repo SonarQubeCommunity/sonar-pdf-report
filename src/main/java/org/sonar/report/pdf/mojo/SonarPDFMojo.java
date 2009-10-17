@@ -101,6 +101,9 @@ public class SonarPDFMojo extends AbstractMojo {
 
     try {
       if (sonarHostUrl != null) {
+        if(sonarHostUrl.endsWith("/")) {
+          sonarHostUrl = sonarHostUrl.substring(0, sonarHostUrl.length() - 1);
+        }
         config.put("sonar.base.url", sonarHostUrl);
         config.put("front.page.logo", "sonar.png");
       } else {
