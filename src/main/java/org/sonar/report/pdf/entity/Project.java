@@ -113,10 +113,14 @@ public class Project {
     initMostViolatedFiles(sonarAccess);
     initMostComplexElements(sonarAccess);
     initMostDuplicatedFiles(sonarAccess);
+    Logger.debug("Accessing Sonar: getting child projects");
     Document childs = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.CHILD_PROJECTS + UrlPath.XML_SOURCE);
     List<Node> childNodes = childs.selectNodes(PROJECT);
     Iterator<Node> it = childNodes.iterator();
     setSubprojects(new ArrayList<Project>());
+    if(!it.hasNext()) {
+      Logger.debug(this.key +" project has no childs");
+    }
     while (it.hasNext()) {
       Node childNode = it.next();
       if (childNode.selectSingleNode("scope").getText().equals("PRJ")) {
@@ -158,15 +162,19 @@ public class Project {
   private void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
       ReportException {
     Logger.info("    Retrieving most violated rules");
+    Logger.debug("Accessing Sonar: getting most violated rules");
     Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.MOST_VIOLATED_RULES + UrlPath.XML_SOURCE);
     if(mostViolatedRules.selectSingleNode(PROJECT) != null) {
       initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT), sonarAccess);
+    } else {
+      Logger.warn("There is not result on select //resources/resource");
     }
   }
 
   private void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most violated files");
+    Logger.debug("Accessing Sonar: getting most violated files");
     Document mostViolatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
         + UrlPath.MOST_VIOLATED_FILES + UrlPath.XML_SOURCE);
     this.setMostViolatedFiles(FileInfo.initFromDocument(mostViolatedFilesDoc, FileInfo.VIOLATIONS_CONTENT));
@@ -175,6 +183,7 @@ public class Project {
 
   private void initMostComplexElements(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most complex elements");
+    Logger.debug("Accessing Sonar: getting most complex elements");
     Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
         + UrlPath.MOST_COMPLEX_FILES + UrlPath.XML_SOURCE);
     this.setMostComplexFiles(FileInfo.initFromDocument(mostComplexFilesDoc, FileInfo.CCN_CONTENT));
@@ -182,6 +191,7 @@ public class Project {
 
   private void initMostDuplicatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most duplicated files");
+    Logger.debug("Accessing Sonar: getting most duplicated files");
     Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
         + UrlPath.MOST_DUPLICATED_FILES + UrlPath.XML_SOURCE);
     this.setMostDuplicatedFiles(FileInfo.initFromDocument(mostDuplicatedFilesDoc, FileInfo.DUPLICATIONS_CONTENT));
@@ -196,28 +206,42 @@ public class Project {
   }
 
   private void initCategories(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+    Logger.debug("Accessing Sonar: getting categories");
     Document categories = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.CATEGORIES_VIOLATIONS + UrlPath.XML_SOURCE);
     if(categories.selectSingleNode(PROJECT) != null) {
       this.initCategoriesViolationsFromNode(categories.selectSingleNode(PROJECT));
+    } else {
+      Logger.warn("Init Categories. There is not result on select //resources/resource");
     }
   }
 
   private void initCategoriesViolationsFromNode(Node categoriesNode) {
+    Logger.debug("Get most complex elements (initMostViolatedFiles)");
     if (categoriesNode.selectSingleNode(MAINTAINABILITY) != null) {
       this.setMaintainabilityViolations(categoriesNode.selectSingleNode(MAINTAINABILITY).getText());
+    } else {
+      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Maintainability']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(RELIABILITY) != null) {
       this.setReliabilityViolations(categoriesNode.selectSingleNode(RELIABILITY).getText());
+    } else {
+      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Reliability']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(EFFICIENCY) != null) {
       this.setEfficiencyViolations(categoriesNode.selectSingleNode(EFFICIENCY).getText());
+    } else {
+      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Efficiency']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(PORTABILITY) != null) {
       this.setPortabilityViolations(categoriesNode.selectSingleNode(PORTABILITY).getText());
+    } else {
+      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Portability']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(USABILITY) != null) {
       this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
+    } else {
+      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Usability']/frmt_val");
     }
   }
 
@@ -225,11 +249,13 @@ public class Project {
       ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
+    if(!it.hasNext()) {
+      Logger.warn("There is not result on select //resources/resource/msr");
+    }
     while (it.hasNext()) {
       Node measure = it.next();
       if (!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
         Rule rule = Rule.initFromNode(measure);
-        
         if(PDFReporter.reportType.equals("workbook")) {
           rule.loadViolatedResources(sonarAccess, this.key);
         }

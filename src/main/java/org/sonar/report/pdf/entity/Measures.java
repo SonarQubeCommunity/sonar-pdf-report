@@ -31,6 +31,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
 import org.sonar.report.pdf.util.UrlPath;
 
@@ -53,6 +54,7 @@ public class Measures {
     if (measuresKeys == null) {
       measuresKeys = getAllMetricKeys(sonarAccess);
     }
+    Logger.debug("Accessing Sonar: getting measures for project " + projectKey);
     String urlAllMesaures = UrlPath.RESOURCES + projectKey + "&depth=0&format=xml&includetrends=true"
           + "&metrics=" + measuresKeys;
     this.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
@@ -60,6 +62,7 @@ public class Measures {
   
   public String getAllMetricKeys(SonarAccess sonarAccess) throws HttpException, IOException, org.dom4j.DocumentException {
     String urlAllMetrics = "/api/metrics?format=xml";
+    Logger.debug("Accessing Sonar: getting all metric keys");
     org.dom4j.Document allMetricsDocument = sonarAccess.getUrlAsDocument(urlAllMetrics);
     List<Node> allMetricKeysNodes = allMetricsDocument.selectNodes("//metrics/metric/key");
     String allMetricKeys= ""; 

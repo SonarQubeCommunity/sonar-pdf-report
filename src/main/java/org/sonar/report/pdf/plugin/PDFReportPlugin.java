@@ -16,7 +16,7 @@
  * License along with Sonar; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.report.pdf;
+package org.sonar.report.pdf.plugin;
 
 import org.sonar.api.Extension;
 import org.sonar.api.Plugin;
@@ -24,6 +24,7 @@ import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.report.pdf.batch.PDFMavenPluginHandler;
 import org.sonar.report.pdf.batch.PDFPostJob;
+import org.sonar.report.pdf.web.ReportWebService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +50,11 @@ import java.util.List;
     )
 })
 public class PDFReportPlugin implements Plugin {
+    
+  public static final String PLUGIN_KEY = "pdf-report"; 
   
   public String getKey() {
-    return "pdf-report";
+    return PLUGIN_KEY;
   }
 
   public String getName() {
@@ -66,6 +69,9 @@ public class PDFReportPlugin implements Plugin {
     List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
     extensions.add(PDFMavenPluginHandler.class);
     extensions.add(PDFPostJob.class);
+    extensions.add(ReportDataMetric.class);
+    extensions.add(ReportWebService.class);
+    extensions.add(PdfReportWidget.class);
     return extensions;
   }
 }

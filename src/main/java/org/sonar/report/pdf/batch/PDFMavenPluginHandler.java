@@ -23,7 +23,6 @@ import org.sonar.api.batch.maven.MavenPluginHandler;
 import org.sonar.api.batch.maven.MavenPlugin;
 import org.sonar.api.resources.Project;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
 
 import java.util.Properties;

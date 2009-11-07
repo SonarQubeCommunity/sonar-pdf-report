@@ -1,7 +1,6 @@
 package org.sonar.report.pdf.entity;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +10,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.sonar.report.pdf.entity.exception.ReportException;
+import org.sonar.report.pdf.util.Logger;
 import org.sonar.report.pdf.util.SonarAccess;
 import org.sonar.report.pdf.util.UrlPath;
 
@@ -71,6 +71,7 @@ public class Rule {
     if (getKey() == null) {
       throw new ReportException("Rule not initialized. Forget call to initFromNode() previously?");
     } else {
+      Logger.debug("Accessing Sonar: getting violated resurces by one given rule (" + getKey() + ")");
       Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.VIOLATIONS + projectKey
           + UrlPath.VIOLATED_RESOURCES_BY_RULE + getKey() + UrlPath.XML_SOURCE);
       List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);

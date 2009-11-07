@@ -21,7 +21,7 @@ package org.sonar.report.pdf.test;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
-import org.sonar.report.pdf.PDFReportPlugin;
+import org.sonar.report.pdf.plugin.PDFReportPlugin;
 
 public class PDFReportPluginTest {
 

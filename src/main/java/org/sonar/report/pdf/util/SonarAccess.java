@@ -44,7 +44,7 @@ public class SonarAccess {
     HttpMethod method = new GetMethod(this.sonarUrl + urlPath);
     int status = 0;
 
-    Logger.debug("Accessing Sonar: " + this.sonarUrl + urlPath);
+    Logger.debug("HTTP Request: " + this.sonarUrl + urlPath);
     status = client.executeMethod(method);
     if (!(status == HttpStatus.SC_OK)) {
       Logger.error("Can´t access to Sonar or project doesn't exist on Sonar instance. HTTP KO to " + this.sonarUrl + urlPath);

@@ -27,7 +27,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Plugin-Class>org.sonar.report.pdf.PDFReportPlugin</Plugin-Class>
+              <Plugin-Class>org.sonar.report.pdf.plugin.PDFReportPlugin</Plugin-Class>
             </manifestEntries>
           </archive>
         </configuration>
@@ -44,7 +44,7 @@
     </plugins>
   </build>
   <properties>
-    <sonar.version>1.10</sonar.version>
+    <sonar.version>1.11</sonar.version>
   </properties>
   <dependencies>
     <dependency>

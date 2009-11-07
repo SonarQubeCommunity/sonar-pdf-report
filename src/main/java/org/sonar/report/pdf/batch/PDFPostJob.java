@@ -19,18 +19,31 @@
  */
 package org.sonar.report.pdf.batch;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.apache.commons.codec.binary.Base64;
 import org.sonar.api.batch.PostJob;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.CheckProject;
 import org.sonar.api.batch.maven.DependsUponMavenPlugin;
 import org.sonar.api.batch.maven.MavenPluginHandler;
+import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.resources.Project;
+import org.sonar.report.pdf.plugin.ReportDataMetric;
+import org.sonar.report.pdf.util.Logger;
 
 public class PDFPostJob implements PostJob, DependsUponMavenPlugin, CheckProject {
 
   public static final String SKIP_PDF_KEY = "sonar.pdf.skip";
   public static final boolean SKIP_PDF_DEFAULT_VALUE = false;
-  
+
   public static final String REPORT_TYPE = "report.type";
   public static final String REPORT_TYPE_DEFAULT_VALUE = "workbook";
 
@@ -45,10 +58,54 @@ public class PDFPostJob implements PostJob, DependsUponMavenPlugin, CheckProject
   }
 
   public void executeOn(Project project, SensorContext context) {
-     // nothing to do, the maven plugin has been executed 
+    Measure measure = new Measure(ReportDataMetric.PDF_DATA);
+    File[] targetFiles = project.getFileSystem().getBuildDir().listFiles();
+    int i = 0;
+    File pdf = null;
+    while (i < targetFiles.length) {
+      if (targetFiles[i].getName().equals(project.getArtifactId() + ".pdf")) {
+        pdf = targetFiles[i];
+        break;
+      }
+      i++;
+    }
+    try {
+      byte[] encoded = Base64.encodeBase64(loadFile(pdf));
+      String data = new String(encoded);
+      measure.setData(data);
+      measure.setPersistenceMode(PersistenceMode.DATABASE);
+      context.saveMeasure(measure);
+      Logger.info("PDF saved in Sonar");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public MavenPluginHandler getMavenPluginHandler(Project project) {
     return handler;
+  }
+  
+  private void copy(InputStream in, OutputStream out) throws IOException {
+    byte[] barr = new byte[1024];
+    while (true) {
+      int r = in.read(barr);
+      if (r <= 0) {
+        break;
+      }
+      out.write(barr, 0, r);
+    }
+  }
+
+  private byte[] loadFile(File file) throws IOException {
+    InputStream in = new FileInputStream(file);
+    try {
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      copy(in, buffer);
+      return buffer.toByteArray();
+    } finally {
+      in.close();
+    }
   }
 }
