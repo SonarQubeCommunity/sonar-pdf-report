@@ -221,27 +221,27 @@ public class Project {
     if (categoriesNode.selectSingleNode(MAINTAINABILITY) != null) {
       this.setMaintainabilityViolations(categoriesNode.selectSingleNode(MAINTAINABILITY).getText());
     } else {
-      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Maintainability']/frmt_val");
+      Logger.debug("Init Categories violations. There is not result on select msr[rule_category='Maintainability']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(RELIABILITY) != null) {
       this.setReliabilityViolations(categoriesNode.selectSingleNode(RELIABILITY).getText());
     } else {
-      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Reliability']/frmt_val");
+      Logger.debug("Init Categories violations. There is not result on select msr[rule_category='Reliability']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(EFFICIENCY) != null) {
       this.setEfficiencyViolations(categoriesNode.selectSingleNode(EFFICIENCY).getText());
     } else {
-      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Efficiency']/frmt_val");
+      Logger.debug("Init Categories violations. There is not result on select msr[rule_category='Efficiency']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(PORTABILITY) != null) {
       this.setPortabilityViolations(categoriesNode.selectSingleNode(PORTABILITY).getText());
     } else {
-      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Portability']/frmt_val");
+      Logger.debug("Init Categories violations. There is not result on select msr[rule_category='Portability']/frmt_val");
     }
     if (categoriesNode.selectSingleNode(USABILITY) != null) {
       this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
     } else {
-      Logger.warn("Init Categories violations. There is not result on select msr[rule_category='Usability']/frmt_val");
+      Logger.debug("Init Categories violations. There is not result on select msr[rule_category='Usability']/frmt_val");
     }
   }
 
