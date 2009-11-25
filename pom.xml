@@ -7,7 +7,7 @@
     <relativePath>../parent</relativePath>
   </parent>
   <artifactId>pdf-report</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Sonar PDF Report Maven Plugin</name>
   <build>
@@ -44,7 +44,7 @@
     </plugins>
   </build>
   <properties>
-    <sonar.version>1.11</sonar.version>
+    <sonar.version>1.12-SNAPSHOT</sonar.version>
   </properties>
   <dependencies>
     <dependency>
