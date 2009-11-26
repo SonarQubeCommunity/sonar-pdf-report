@@ -44,7 +44,7 @@
     </plugins>
   </build>
   <properties>
-    <sonar.version>1.12-SNAPSHOT</sonar.version>
+    <sonar.version>1.11</sonar.version>
   </properties>
   <dependencies>
     <dependency>
