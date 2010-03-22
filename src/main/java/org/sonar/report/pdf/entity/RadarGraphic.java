@@ -1,8 +1,9 @@
 /*
- * Sonar, open source software quality management tool.
+ * Sonar PDF Plugin, open source plugin for Sonar
  * Copyright (C) 2009 GMV-SGI
+ * Copyright (C) 2010 klicap - ingeniería del puzle
  *
- * Sonar is free software; you can redistribute it and/or
+ * Sonar PDF Plugin is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -26,37 +27,39 @@ import com.lowagie.text.Image;
 
 public class RadarGraphic {
 
-  private float efficiency;
-  private float maintainability;
-  private float portability;
-  private float reliavility;
-  private float usability;
-  private String sonarUrl;
+    private String efficiency;
+    private String maintainability;
+    private String portability;
+    private String reliavility;
+    private String usability;
+    private String sonarUrl;
 
-  public RadarGraphic(float efficiency, float maintainability, float portability, float reliavility, float usability,
-      String sonarUrl) {
-    this.efficiency = efficiency;
-    this.maintainability = maintainability;
-    this.portability = portability;
-    this.reliavility = reliavility;
-    this.usability = usability;
-    this.sonarUrl = sonarUrl;
-  }
-
-  public Image getGraphic() {
-    Image image = null;
-    try {
-      image = Image.getInstance(sonarUrl + "/chart?ck=xradar&w=200&h=160&" + "c=777777|F8A036&m=100&g=0.25&"
-          + "l=Eff.,Mai.,Por.,Rel.,Usa.&" + "v=" + efficiency + "," + maintainability + "," + portability + ","
-          + reliavility + "," + usability);
-    } catch (BadElementException e) {
-      e.printStackTrace();
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    public RadarGraphic(String efficiency, String maintainability, String portability, String reliavility,
+            String usability, String sonarUrl) {
+        this.efficiency = efficiency;
+        this.maintainability = maintainability;
+        this.portability = portability;
+        this.reliavility = reliavility;
+        this.usability = usability;
+        this.sonarUrl = sonarUrl;
     }
-    return image;
-  }
+
+    public Image getGraphic() {
+        Image image = null;
+        try {
+            image = Image.getInstance(sonarUrl + "/chart?ck=xradar&w=210&h=110&c=777777|F8A036&m=100&g=0.25&"
+                    + "l=Eff.(" + efficiency + "%25),Mai.(" + maintainability + "%25),Por.(" + portability
+                    + "%25),Rel.(" + reliavility + "%25),Usa.(" + usability + "%25)&" + "v=" + efficiency + ","
+                    + maintainability + "," + portability + "," + reliavility + "," + usability);
+            image.setAlignment(Image.ALIGN_MIDDLE);
+        } catch (BadElementException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
 
 }

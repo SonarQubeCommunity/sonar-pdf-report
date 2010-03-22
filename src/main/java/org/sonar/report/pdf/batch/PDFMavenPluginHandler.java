@@ -1,9 +1,9 @@
 /*
- * Sonar, open source software quality management tool.
- * Copyright (C) 2009 SonarSource SA
- * mailto:contact AT sonarsource DOT com
+ * Sonar PDF Plugin, open source plugin for Sonar
+ * Copyright (C) 2009 GMV-SGI
+ * Copyright (C) 2010 klicap - ingeniería del puzle
  *
- * Sonar is free software; you can redistribute it and/or
+ * Sonar PDF Plugin is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -31,42 +31,45 @@ import java.io.InputStream;
 
 public class PDFMavenPluginHandler implements MavenPluginHandler {
 
-  public String getGroupId() {
-    return "org.codehaus.sonar-plugins";
-  }
-
-  public String getArtifactId() {
-    return "pdf-report";
-  }
-
-  public String getVersion() {
-    InputStream input = null;
-    try {
-      Properties props = new Properties();
-      input = this.getClass().getResourceAsStream(
-          "/META-INF/maven/org.codehaus.sonar-plugins/pdf-report/pom.properties");
-      props.load(input);
-      return props.getProperty("version");
-
-    } catch (IOException e) {
-      LoggerFactory.getLogger(getClass()).error("can not load the plugin version from report.properties", e);
-      return null;
-
-    } finally {
-      IOUtils.closeQuietly(input);
+    public String getGroupId() {
+        return "org.codehaus.sonar-plugins";
     }
-  }
 
-  public boolean isFixedVersion() {
-    return false;
-  }
+    public String getArtifactId() {
+        return "pdf-report";
+    }
 
-  public String[] getGoals() {
-    return new String[] { "generate" };
-  }
+    public String getVersion() {
+        InputStream input = null;
+        try {
+            Properties props = new Properties();
+            input = this.getClass().getResourceAsStream("/META-INF/maven/org.codehaus.sonar-plugins/pdf-report/pom.properties");
+            props.load(input);
+            return props.getProperty("version");
 
-  public void configure(Project project, MavenPlugin plugin) {
-    plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
-        PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
-  }
+        } catch (IOException e) {
+            LoggerFactory.getLogger(getClass()).error("can not load the plugin version from report.properties", e);
+            return null;
+
+        } finally {
+            IOUtils.closeQuietly(input);
+        }
+    }
+
+    public boolean isFixedVersion() {
+        return false;
+    }
+
+    public String[] getGoals() {
+        return new String[] { "generate" };
+    }
+
+    public void configure(Project project, MavenPlugin plugin) {
+        plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
+                PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
+        plugin.setParameter("username", project.getConfiguration().getString(PDFPostJob.USERNAME,
+                PDFPostJob.USERNAME_DEFAULT_VALUE));
+        plugin.setParameter("password", project.getConfiguration().getString(PDFPostJob.PASSWORD,
+                PDFPostJob.PASSWORD_DEFAULT_VALUE));
+    }
 }

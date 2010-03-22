@@ -1,8 +1,9 @@
 /*
- * Sonar, open source software quality management tool.
+ * Sonar PDF Plugin, open source plugin for Sonar
  * Copyright (C) 2009 GMV-SGI
+ * Copyright (C) 2010 klicap - ingeniería del puzle
  *
- * Sonar is free software; you can redistribute it and/or
+ * Sonar PDF Plugin is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -33,56 +34,56 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class Events extends PdfPageEventHelper {
 
-  private Toc toc;
-  private Header header;
+    private Toc toc;
+    private Header header;
 
-  public Events(Toc toc, Header header) {
-    this.toc = toc;
-    this.header = header;
-    toc.setHeader(header);
-  }
-
-  @Override
-  public void onChapter(PdfWriter writer, Document document, float position, Paragraph paragraph) {
-    toc.onChapter(writer, document, position, paragraph);
-  }
-
-  @Override
-  public void onChapterEnd(PdfWriter writer, Document document, float position) {
-    toc.onChapterEnd(writer, document, position);
-  }
-
-  @Override
-  public void onSection(PdfWriter writer, Document document, float position, int depth, Paragraph paragraph) {
-    toc.onSection(writer, document, position, depth, paragraph);
-  }
-
-  @Override
-  public void onEndPage(PdfWriter writer, Document document) {
-    header.onEndPage(writer, document);
-    printPageNumber(writer, document);
-  }
-
-  @Override
-  public void onCloseDocument(PdfWriter writer, Document document) {
-    toc.onCloseDocument(writer, document);
-  }
-
-  private void printPageNumber(PdfWriter writer, Document document) {
-    PdfContentByte cb = writer.getDirectContent();
-    cb.saveState();
-    float textBase = document.bottom() - 20;
-    try {
-      cb.setFontAndSize(BaseFont.createFont("Helvetica", BaseFont.WINANSI, false), 12);
-    } catch (DocumentException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    public Events(Toc toc, Header header) {
+        this.toc = toc;
+        this.header = header;
+        toc.setHeader(header);
     }
-    cb.beginText();
-    cb.setTextMatrix(document.right() - 10, textBase);
-    cb.showText(String.valueOf(writer.getPageNumber()));
-    cb.endText();
-    cb.saveState();
-  }
+
+    @Override
+    public void onChapter(PdfWriter writer, Document document, float position, Paragraph paragraph) {
+        toc.onChapter(writer, document, position, paragraph);
+    }
+
+    @Override
+    public void onChapterEnd(PdfWriter writer, Document document, float position) {
+        toc.onChapterEnd(writer, document, position);
+    }
+
+    @Override
+    public void onSection(PdfWriter writer, Document document, float position, int depth, Paragraph paragraph) {
+        toc.onSection(writer, document, position, depth, paragraph);
+    }
+
+    @Override
+    public void onEndPage(PdfWriter writer, Document document) {
+        header.onEndPage(writer, document);
+        printPageNumber(writer, document);
+    }
+
+    @Override
+    public void onCloseDocument(PdfWriter writer, Document document) {
+        toc.onCloseDocument(writer, document);
+    }
+
+    private void printPageNumber(PdfWriter writer, Document document) {
+        PdfContentByte cb = writer.getDirectContent();
+        cb.saveState();
+        float textBase = document.bottom() - 20;
+        try {
+            cb.setFontAndSize(BaseFont.createFont("Helvetica", BaseFont.WINANSI, false), 12);
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cb.beginText();
+        cb.setTextMatrix(document.right() - 10, textBase);
+        cb.showText(String.valueOf(writer.getPageNumber()));
+        cb.endText();
+        cb.saveState();
+    }
 }

@@ -1,9 +1,9 @@
 /*
- * Sonar, open source software quality management tool.
- * Copyright (C) 2009 SonarSource SA
- * mailto:contact AT sonarsource DOT com
+ * Sonar PDF Plugin, open source plugin for Sonar
+ * Copyright (C) 2009 GMV-SGI
+ * Copyright (C) 2010 klicap - ingeniería del puzle
  *
- * Sonar is free software; you can redistribute it and/or
+ * Sonar PDF Plugin is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -30,22 +30,22 @@ import static org.mockito.Mockito.when;
 
 public class PDFPostJobTest {
 
-  @Test( groups = { "post-job" })
-  public void doNotExecuteIfSkipParameter() {
-    PropertiesConfiguration conf = new PropertiesConfiguration();
-    conf.setProperty(PDFPostJob.SKIP_PDF_KEY, Boolean.TRUE);
+    @Test(groups = { "post-job" })
+    public void doNotExecuteIfSkipParameter() {
+        PropertiesConfiguration conf = new PropertiesConfiguration();
+        conf.setProperty(PDFPostJob.SKIP_PDF_KEY, Boolean.TRUE);
 
-    Project project = mock(Project.class);
-    when(project.getConfiguration()).thenReturn(conf);
+        Project project = mock(Project.class);
+        when(project.getConfiguration()).thenReturn(conf);
 
-    assertFalse(new PDFPostJob(null).shouldExecuteOnProject(project));
-  }
+        assertFalse(new PDFPostJob(null).shouldExecuteOnProject(project));
+    }
 
-  @Test( groups = { "post-job" })
-  public void shouldExecuteIfNoSkipParameter() {
-    Project project = mock(Project.class);
-    when(project.getConfiguration()).thenReturn(new PropertiesConfiguration());
+    @Test(groups = { "post-job" })
+    public void shouldExecuteIfNoSkipParameter() {
+        Project project = mock(Project.class);
+        when(project.getConfiguration()).thenReturn(new PropertiesConfiguration());
 
-    assertTrue(new PDFPostJob(null).shouldExecuteOnProject(project));
-  }
+        assertTrue(new PDFPostJob(null).shouldExecuteOnProject(project));
+    }
 }

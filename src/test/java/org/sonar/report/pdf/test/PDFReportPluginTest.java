@@ -1,9 +1,9 @@
 /*
- * Sonar, open source software quality management tool.
- * Copyright (C) 2009 SonarSource SA
- * mailto:contact AT sonarsource DOT com
+ * Sonar PDF Plugin, open source plugin for Sonar
+ * Copyright (C) 2009 GMV-SGI
+ * Copyright (C) 2010 klicap - ingeniería del puzle
  *
- * Sonar is free software; you can redistribute it and/or
+ * Sonar PDF Plugin is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -25,8 +25,8 @@ import org.sonar.report.pdf.plugin.PDFReportPlugin;
 
 public class PDFReportPluginTest {
 
-  @Test( groups = { "post-job" })
-  public void shouldDefineExtensions() {
-    Assert.assertEquals(5, new PDFReportPlugin().getExtensions().size());
-  }
+    @Test(groups = { "post-job" })
+    public void shouldDefineExtensions() {
+        Assert.assertEquals(5, new PDFReportPlugin().getExtensions().size());
+    }
 }

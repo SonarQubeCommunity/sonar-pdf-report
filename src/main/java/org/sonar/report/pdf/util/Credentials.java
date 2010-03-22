@@ -17,20 +17,39 @@
  * License along with Sonar; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.report.pdf.plugin;
+package org.sonar.report.pdf.util;
 
-import java.util.Arrays;
-import java.util.List;
+public class Credentials {
 
-import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.measures.Metric;
-import org.sonar.api.measures.Metrics;
+    private static String username = null;
+    private static String password = null;
 
-public class ReportDataMetric implements Metrics {
-    public final static Metric PDF_DATA = new Metric("pdf-data", "PDF binary data", "PDF binary data",
-            Metric.ValueType.DATA, Metric.DIRECTION_NONE, false, CoreMetrics.DOMAIN_GENERAL);
-
-    public List<Metric> getMetrics() {
-        return Arrays.asList(PDF_DATA);
+    /**
+     * @return the username
+     */
+    public static String getUsername() {
+        return username;
     }
+
+    /**
+     * @param username the username to set
+     */
+    public static void setUsername(String username) {
+        Credentials.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public static String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public static void setPassword(String password) {
+        Credentials.password = password;
+    }
+
 }

@@ -1,8 +1,9 @@
 /*
- * Sonar, open source software quality management tool.
+ * Sonar PDF Plugin, open source plugin for Sonar
  * Copyright (C) 2009 GMV-SGI
+ * Copyright (C) 2010 klicap - ingeniería del puzle
  *
- * Sonar is free software; you can redistribute it and/or
+ * Sonar PDF Plugin is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
@@ -47,31 +48,49 @@ import java.util.List;
         global = true,
         project = true,
         module = false
+    ),
+    @Property(
+            key=PDFPostJob.USERNAME,
+            name="Username",
+            description = "Username for WS API access.",
+            defaultValue = PDFPostJob.USERNAME_DEFAULT_VALUE,
+            global = true,
+            project = true,
+            module = false
+    ),
+    @Property(
+            key=PDFPostJob.PASSWORD,
+            name="Password",
+            description = "Password for WS API access.",
+            defaultValue = PDFPostJob.PASSWORD_DEFAULT_VALUE,
+            global = true,
+            project = true,
+            module = false
     )
 })
 public class PDFReportPlugin implements Plugin {
-    
-  public static final String PLUGIN_KEY = "pdf-report"; 
-  
-  public String getKey() {
-    return PLUGIN_KEY;
-  }
 
-  public String getName() {
-    return "PDF Report";
-  }
+    public static final String PLUGIN_KEY = "pdf-report";
 
-  public String getDescription() {
-    return "Generate a PDF report that contains the most relevant information from project analysis.";
-  }
+    public String getKey() {
+        return PLUGIN_KEY;
+    }
 
-  public List<Class<? extends Extension>> getExtensions() {
-    List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
-    extensions.add(PDFMavenPluginHandler.class);
-    extensions.add(PDFPostJob.class);
-    extensions.add(ReportDataMetric.class);
-    extensions.add(ReportWebService.class);
-    extensions.add(PdfReportWidget.class);
-    return extensions;
-  }
+    public String getName() {
+        return "PDF Report";
+    }
+
+    public String getDescription() {
+        return "Generate a PDF report that contains the most relevant information from project analysis.";
+    }
+
+    public List<Class< ? extends Extension>> getExtensions() {
+        List<Class< ? extends Extension>> extensions = new ArrayList<Class< ? extends Extension>>();
+        extensions.add(PDFMavenPluginHandler.class);
+        extensions.add(PDFPostJob.class);
+        extensions.add(ReportDataMetric.class);
+        extensions.add(ReportWebService.class);
+        extensions.add(PdfReportWidget.class);
+        return extensions;
+    }
 }
