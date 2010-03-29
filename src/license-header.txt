@@ -1,7 +1,7 @@
 Sonar PDF Plugin, open source plugin for Sonar
 
 Copyright (C) 2009 GMV-SGI
-Copyright (C) 2010 klicap - ingeniería del puzle
+Copyright (C) 2010 klicap - ingenieria del puzle
 
 Sonar PDF Plugin is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
