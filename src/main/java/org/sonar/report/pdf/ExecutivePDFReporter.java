@@ -296,9 +296,14 @@ public class ExecutivePDFReporter extends PDFReporter {
         rulesComplianceTendency.getDefaultCell().setFixedHeight(Style.TENDENCY_ICONS_HEIGHT);
         rulesComplianceTendency.addCell(new Phrase(project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getFormatValue(),
                 Style.DASHBOARD_DATA_FONT));
-        rulesComplianceTendency
-                .addCell(getTendencyImage(project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getQualitativeTendency(),
-                        project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getQuantitativeTendency()));
+
+        // Workarround for avoid resizing
+        Image tendencyRulesResize = getTendencyImage(project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getQualitativeTendency(),
+            project.getMeasure(MetricKeys.VIOLATIONS_DENSITY).getQuantitativeTendency());
+        tendencyRulesResize.scaleAbsolute(Style.TENDENCY_ICONS_HEIGHT, Style.TENDENCY_ICONS_HEIGHT);
+        PdfPCell tendencyRulesCell = new PdfPCell(tendencyRulesResize);
+        tendencyRulesCell.setBorder(0);
+        rulesComplianceTendency.addCell(tendencyRulesCell);
         rulesCompliance.addCell(rulesComplianceTendency);
 
         PdfPTable violations = new PdfPTable(1);
