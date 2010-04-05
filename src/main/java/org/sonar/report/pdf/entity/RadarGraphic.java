@@ -26,41 +26,45 @@ import java.net.MalformedURLException;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Image;
 
+import org.sonar.report.pdf.util.Logger;
+
 public class RadarGraphic {
 
-    private String efficiency;
-    private String maintainability;
-    private String portability;
-    private String reliavility;
-    private String usability;
-    private String sonarUrl;
+  private String efficiency;
+  private String maintainability;
+  private String portability;
+  private String reliavility;
+  private String usability;
+  private String sonarUrl;
 
-    public RadarGraphic(String efficiency, String maintainability, String portability, String reliavility,
-            String usability, String sonarUrl) {
-        this.efficiency = efficiency;
-        this.maintainability = maintainability;
-        this.portability = portability;
-        this.reliavility = reliavility;
-        this.usability = usability;
-        this.sonarUrl = sonarUrl;
-    }
+  public RadarGraphic(String efficiency, String maintainability, String portability, String reliavility,
+      String usability, String sonarUrl) {
+    this.efficiency = efficiency;
+    this.maintainability = maintainability;
+    this.portability = portability;
+    this.reliavility = reliavility;
+    this.usability = usability;
+    this.sonarUrl = sonarUrl;
+  }
 
-    public Image getGraphic() {
-        Image image = null;
-        try {
-            image = Image.getInstance(sonarUrl + "/chart?ck=xradar&w=210&h=110&c=777777|F8A036&m=100&g=0.25&"
-                    + "l=Eff.(" + efficiency + "%25),Mai.(" + maintainability + "%25),Por.(" + portability
-                    + "%25),Rel.(" + reliavility + "%25),Usa.(" + usability + "%25)&" + "v=" + efficiency + ","
-                    + maintainability + "," + portability + "," + reliavility + "," + usability);
-            image.setAlignment(Image.ALIGN_MIDDLE);
-        } catch (BadElementException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
+  public Image getGraphic() {
+    Image image = null;
+    try {
+      String requestUrl = sonarUrl + "/chart?ck=xradar&w=210&h=110&c=777777|F8A036&m=100&g=0.25&" + "l=Eff.("
+          + efficiency + "%25),Mai.(" + maintainability + "%25),Por.(" + portability + "%25),Rel.(" + reliavility
+          + "%25),Usa.(" + usability + "%25)&" + "v=" + efficiency + "," + maintainability + "," + portability + ","
+          + reliavility + "," + usability;
+      Logger.debug("Getting radar graphic: " + requestUrl);
+      image = Image.getInstance(requestUrl);
+      image.setAlignment(Image.ALIGN_MIDDLE);
+    } catch (BadElementException e) {
+      e.printStackTrace();
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return image;
+  }
 
 }

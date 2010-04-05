@@ -248,31 +248,36 @@ public class Project {
   }
 
   private void initCategoriesRciFromNode(Node categoriesRciNode) {
-    Logger.debug("Getting category RCI (initCategoriesRciFromNode)");
+    Logger.debug("Getting categories RCI (initCategoriesRciFromNode)");
     if (categoriesRciNode.selectSingleNode(MAINTAINABILITY_RCI) != null) {
       this.setMaintainabilityRci(categoriesRciNode.selectSingleNode(MAINTAINABILITY_RCI).getText());
     } else {
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Maintainability']/val");
+      this.setMaintainabilityRci("100.0");
+      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Maintainability']/val. Setting 100%");
     }
     if (categoriesRciNode.selectSingleNode(RELIABILITY_RCI) != null) {
       this.setReliabilityRci(categoriesRciNode.selectSingleNode(RELIABILITY_RCI).getText());
     } else {
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Reliability']/val");
+      this.setReliabilityRci("100.0");
+      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Reliability']/val. Setting 100%");
     }
     if (categoriesRciNode.selectSingleNode(EFFICIENCY_RCI) != null) {
       this.setEfficiencyRci(categoriesRciNode.selectSingleNode(EFFICIENCY_RCI).getText());
     } else {
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Efficiency']/val");
+      this.setEfficiencyRci("100.0");
+      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Efficiency']/val. Setting 100%");
     }
     if (categoriesRciNode.selectSingleNode(PORTABILITY_RCI) != null) {
       this.setPortabilityRci(categoriesRciNode.selectSingleNode(PORTABILITY_RCI).getText());
     } else {
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Portability']/val");
+      this.setPortabilityRci("100.0");
+      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Portability']/val. Setting 100%");
     }
     if (categoriesRciNode.selectSingleNode(USABILITY_RCI) != null) {
       this.setUsabilityRci(categoriesRciNode.selectSingleNode(USABILITY_RCI).getText());
     } else {
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Usability']/val");
+      this.setUsabilityRci("100.0");
+      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Usability']/val. Setting 100%");
     }
   }
 
