@@ -45,142 +45,142 @@ import java.util.Properties;
  * @aggregator
  */
 public class SonarPDFMojo extends AbstractMojo {
-    /**
-     * Project build directory
-     * 
-     * @parameter expression="${project.build.directory}"
-     * @required
-     */
-    private File outputDirectory;
+  /**
+   * Project build directory
+   * 
+   * @parameter expression="${project.build.directory}"
+   * @required
+   */
+  private File outputDirectory;
 
-    /**
-     * Maven project info.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+  /**
+   * Maven project info.
+   * 
+   * @parameter expression="${project}"
+   * @required
+   * @readonly
+   */
+  private MavenProject project;
 
-    /**
-     * Sonar Base URL.
-     * 
-     * @parameter expression="${sonar.host.url}"
-     * @optional
-     */
-    private String sonarHostUrl;
+  /**
+   * Sonar Base URL.
+   * 
+   * @parameter expression="${sonar.host.url}"
+   * @optional
+   */
+  private String sonarHostUrl;
 
-    /**
-     * Branch to be used.
-     * 
-     * @parameter expression="${branch}"
-     * @optional
-     */
-    private String branch;
+  /**
+   * Branch to be used.
+   * 
+   * @parameter expression="${branch}"
+   * @optional
+   */
+  private String branch;
 
-    /**
-     * Branch to be used.
-     * 
-     * @parameter expression="${sonar.branch}"
-     * @optional
-     */
-    private String sonarBranch;
+  /**
+   * Branch to be used.
+   * 
+   * @parameter expression="${sonar.branch}"
+   * @optional
+   */
+  private String sonarBranch;
 
-    /**
-     * Type of report.
-     * 
-     * @parameter expression="${report.type}"
-     * @optional
-     */
-    private String reportType;
+  /**
+   * Type of report.
+   * 
+   * @parameter expression="${report.type}"
+   * @optional
+   */
+  private String reportType;
 
-    /**
-     * Username to access WS API.
-     * 
-     * @parameter expression="${sonar.pdf.username}"
-     * @optional
-     */
-    private String username;
+  /**
+   * Username to access WS API.
+   * 
+   * @parameter expression="${sonar.pdf.username}"
+   * @optional
+   */
+  private String username;
 
-    /**
-     * Password to access WS API.
-     * 
-     * @parameter expression="${sonar.pdf.password}"
-     * @optional
-     */
-    private String password;
+  /**
+   * Password to access WS API.
+   * 
+   * @parameter expression="${sonar.pdf.password}"
+   * @optional
+   */
+  private String password;
 
-    public void execute() throws MojoExecutionException {
+  public void execute() throws MojoExecutionException {
 
-        Logger.setLog(getLog());
+    Logger.setLog(getLog());
 
-        Properties config = new Properties();
-        Properties configLang = new Properties();
+    Properties config = new Properties();
+    Properties configLang = new Properties();
 
-        try {
-            if (sonarHostUrl != null) {
-                if (sonarHostUrl.endsWith("/")) {
-                    sonarHostUrl = sonarHostUrl.substring(0, sonarHostUrl.length() - 1);
-                }
-                config.put("sonar.base.url", sonarHostUrl);
-                config.put("front.page.logo", "sonar.png");
-            } else {
-                config.load(this.getClass().getResourceAsStream("/report.properties"));
-            }
-            configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"));
-
-            String sonarProjectId = project.getGroupId() + ":" + project.getArtifactId();
-            if (branch != null) {
-                sonarProjectId += ":" + branch;
-                Logger.warn("Use of branch parameter is deprecated, use sonar.branch instead");
-                Logger.info("Branch " + branch + " selected");
-            } else if (sonarBranch != null) {
-                sonarProjectId += ":" + sonarBranch;
-                Logger.info("Branch " + sonarBranch + " selected");
-            }
-
-            PDFReporter reporter = null;
-            if (reportType != null) {
-                if (reportType.equals("executive")) {
-                    Logger.info("Executive report type selected");
-                    reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
-                            config.getProperty("sonar.base.url"), config, configLang);
-                } else if (reportType.equals("workbook")) {
-                    Logger.info("Team workbook report type selected");
-                    reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
-                            config.getProperty("sonar.base.url"), config, configLang);
-                }
-            } else {
-                Logger.info("No report type provided. Default report selected (Team workbook)");
-                reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId,
-                        config.getProperty("sonar.base.url"), config, configLang);
-            }
-
-            Credentials.setUsername(username);
-            Credentials.setPassword(password);
-
-            ByteArrayOutputStream baos = reporter.getReport();
-            FileOutputStream fos = null;
-            if (!outputDirectory.exists()) {
-                outputDirectory.mkdirs();
-            }
-            File reportFile = new File(outputDirectory, project.getArtifactId() + ".pdf");
-            fos = new FileOutputStream(reportFile);
-            baos.writeTo(fos);
-            fos.flush();
-            fos.close();
-            Logger.info("PDF report generated (see " + project.getArtifactId() + ".pdf on build output directory)");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
-            Logger.error("Problem generating PDF file.");
-            e.printStackTrace();
-        } catch (org.dom4j.DocumentException e) {
-            Logger.error("Problem parsing response data.");
-            e.printStackTrace();
-        } catch (ReportException e) {
-            Logger.error("Internal error: " + e.getMessage());
-            e.printStackTrace();
+    try {
+      if (sonarHostUrl != null) {
+        if (sonarHostUrl.endsWith("/")) {
+          sonarHostUrl = sonarHostUrl.substring(0, sonarHostUrl.length() - 1);
         }
+        config.put("sonar.base.url", sonarHostUrl);
+        config.put("front.page.logo", "sonar.png");
+      } else {
+        config.load(this.getClass().getResourceAsStream("/report.properties"));
+      }
+      configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"));
+
+      String sonarProjectId = project.getGroupId() + ":" + project.getArtifactId();
+      if (branch != null) {
+        sonarProjectId += ":" + branch;
+        Logger.warn("Use of branch parameter is deprecated, use sonar.branch instead");
+        Logger.info("Branch " + branch + " selected");
+      } else if (sonarBranch != null) {
+        sonarProjectId += ":" + sonarBranch;
+        Logger.info("Branch " + sonarBranch + " selected");
+      }
+
+      PDFReporter reporter = null;
+      if (reportType != null) {
+        if (reportType.equals("executive")) {
+          Logger.info("Executive report type selected");
+          reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
+              .getProperty("sonar.base.url"), config, configLang);
+        } else if (reportType.equals("workbook")) {
+          Logger.info("Team workbook report type selected");
+          reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
+              .getProperty("sonar.base.url"), config, configLang);
+        }
+      } else {
+        Logger.info("No report type provided. Default report selected (Team workbook)");
+        reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
+            .getProperty("sonar.base.url"), config, configLang);
+      }
+
+      Credentials.setUsername(username);
+      Credentials.setPassword(password);
+
+      ByteArrayOutputStream baos = reporter.getReport();
+      FileOutputStream fos = null;
+      if (!outputDirectory.exists()) {
+        outputDirectory.mkdirs();
+      }
+      File reportFile = new File(outputDirectory, project.getArtifactId() + ".pdf");
+      fos = new FileOutputStream(reportFile);
+      baos.writeTo(fos);
+      fos.flush();
+      fos.close();
+      Logger.info("PDF report generated (see " + project.getArtifactId() + ".pdf on build output directory)");
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (DocumentException e) {
+      Logger.error("Problem generating PDF file.");
+      e.printStackTrace();
+    } catch (org.dom4j.DocumentException e) {
+      Logger.error("Problem parsing response data.");
+      e.printStackTrace();
+    } catch (ReportException e) {
+      Logger.error("Internal error: " + e.getMessage());
+      e.printStackTrace();
     }
+  }
 }

@@ -28,13 +28,13 @@ import org.sonar.api.web.RubyRailsWebservice;
  */
 public class ReportWebService extends AbstractRubyTemplate implements RubyRailsWebservice {
 
-    @Override
-    public String getTemplatePath() {
-        return "/org/sonar/report/pdf/PdfreportController.rb";
-    }
+  @Override
+  public String getTemplatePath() {
+    return "/org/sonar/report/pdf/PdfreportController.rb";
+  }
 
-    public String getId() {
-        return "Pdfreport";
-    }
+  public String getId() {
+    return "Pdfreport";
+  }
 
 }

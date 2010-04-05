@@ -22,21 +22,21 @@ package org.sonar.report.pdf.util;
 
 public class UrlPath {
 
-    // First level
-    public static final String RESOURCES = "/api/resources?resource=";
-    public static final String VIOLATIONS = "/api/violations?resource=";
-    public static final String SOURCES = "/api/sources?resource=";
+  // First level
+  public static final String RESOURCES = "/api/resources?resource=";
+  public static final String VIOLATIONS = "/api/violations?resource=";
+  public static final String SOURCES = "/api/sources?resource=";
 
-    // Second level
-    public static final String PARENT_PROJECT = "&depth=0";
-    public static final String CHILD_PROJECTS = "&depth=1";
-    public static final String CATEGORIES_VIOLATIONS = "&metrics=" + MetricKeys.VIOLATIONS + "&filter_rules_cats=false";
-    public static final String CATEGORIES_VIOLATIONS_DENSITY = "&metrics=" + MetricKeys.VIOLATIONS_DENSITY + "&filter_rules_cats=false";
-    public static final String MOST_VIOLATED_RULES = "&metrics=" + MetricKeys.VIOLATIONS + "&limit=10&filter_rules=false&filter_rules_cats=true";
-    public static final String MOST_VIOLATED_FILES = "&metrics=" + MetricKeys.VIOLATIONS + "&scopes=FIL&depth=-1&limit=5";
-    public static final String MOST_COMPLEX_FILES = "&metrics=" + MetricKeys.COMPLEXITY + "&scopes=FIL&depth=-1&limit=5";
-    public static final String MOST_DUPLICATED_FILES = "&metrics=" + MetricKeys.DUPLICATED_LINES + "&scopes=FIL&depth=-1&limit=5";
-    public static final String VIOLATED_RESOURCES_BY_RULE = "&scopes=FIL&depth=-1&limit=20&rules=";
-    public static final String XML_SOURCE = "&format=xml";
+  // Second level
+  public static final String PARENT_PROJECT = "&depth=0";
+  public static final String CHILD_PROJECTS = "&depth=1";
+  public static final String CATEGORIES_VIOLATIONS = "&metrics=" + MetricKeys.VIOLATIONS + "&filter_rules_cats=false";
+  public static final String CATEGORIES_VIOLATIONS_DENSITY = "&metrics=" + MetricKeys.VIOLATIONS_DENSITY + "&filter_rules_cats=false";
+  public static final String MOST_VIOLATED_RULES = "&metrics=" + MetricKeys.VIOLATIONS + "&limit=10&filter_rules=false&filter_rules_cats=true";
+  public static final String MOST_VIOLATED_FILES = "&metrics=" + MetricKeys.VIOLATIONS + "&scopes=FIL&depth=-1&limit=5";
+  public static final String MOST_COMPLEX_FILES = "&metrics=" + MetricKeys.COMPLEXITY + "&scopes=FIL&depth=-1&limit=5";
+  public static final String MOST_DUPLICATED_FILES = "&metrics=" + MetricKeys.DUPLICATED_LINES + "&scopes=FIL&depth=-1&limit=5";
+  public static final String VIOLATED_RESOURCES_BY_RULE = "&scopes=FIL&depth=-1&limit=20&rules=";
+  public static final String XML_SOURCE = "&format=xml";
 
 }

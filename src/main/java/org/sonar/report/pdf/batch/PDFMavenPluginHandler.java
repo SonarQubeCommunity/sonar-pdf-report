@@ -32,45 +32,46 @@ import java.io.InputStream;
 
 public class PDFMavenPluginHandler implements MavenPluginHandler {
 
-    public String getGroupId() {
-        return "org.codehaus.sonar-plugins";
+  public String getGroupId() {
+    return "org.codehaus.sonar-plugins";
+  }
+
+  public String getArtifactId() {
+    return "pdf-report";
+  }
+
+  public String getVersion() {
+    InputStream input = null;
+    try {
+      Properties props = new Properties();
+      input = this.getClass().getResourceAsStream(
+          "/META-INF/maven/org.codehaus.sonar-plugins/pdf-report/pom.properties");
+      props.load(input);
+      return props.getProperty("version");
+
+    } catch (IOException e) {
+      LoggerFactory.getLogger(getClass()).error("can not load the plugin version from report.properties", e);
+      return null;
+
+    } finally {
+      IOUtils.closeQuietly(input);
     }
+  }
 
-    public String getArtifactId() {
-        return "pdf-report";
-    }
+  public boolean isFixedVersion() {
+    return false;
+  }
 
-    public String getVersion() {
-        InputStream input = null;
-        try {
-            Properties props = new Properties();
-            input = this.getClass().getResourceAsStream("/META-INF/maven/org.codehaus.sonar-plugins/pdf-report/pom.properties");
-            props.load(input);
-            return props.getProperty("version");
+  public String[] getGoals() {
+    return new String[] { "generate" };
+  }
 
-        } catch (IOException e) {
-            LoggerFactory.getLogger(getClass()).error("can not load the plugin version from report.properties", e);
-            return null;
-
-        } finally {
-            IOUtils.closeQuietly(input);
-        }
-    }
-
-    public boolean isFixedVersion() {
-        return false;
-    }
-
-    public String[] getGoals() {
-        return new String[] { "generate" };
-    }
-
-    public void configure(Project project, MavenPlugin plugin) {
-        plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
-                PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
-        plugin.setParameter("username", project.getConfiguration().getString(PDFPostJob.USERNAME,
-                PDFPostJob.USERNAME_DEFAULT_VALUE));
-        plugin.setParameter("password", project.getConfiguration().getString(PDFPostJob.PASSWORD,
-                PDFPostJob.PASSWORD_DEFAULT_VALUE));
-    }
+  public void configure(Project project, MavenPlugin plugin) {
+    plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
+        PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
+    plugin.setParameter("username", project.getConfiguration().getString(PDFPostJob.USERNAME,
+        PDFPostJob.USERNAME_DEFAULT_VALUE));
+    plugin.setParameter("password", project.getConfiguration().getString(PDFPostJob.PASSWORD,
+        PDFPostJob.PASSWORD_DEFAULT_VALUE));
+  }
 }

@@ -28,10 +28,10 @@ import org.sonar.api.measures.Metric;
 import org.sonar.api.measures.Metrics;
 
 public class ReportDataMetric implements Metrics {
-    public final static Metric PDF_DATA = new Metric("pdf-data", "PDF binary data", "PDF binary data",
-            Metric.ValueType.DATA, Metric.DIRECTION_NONE, false, CoreMetrics.DOMAIN_GENERAL);
+  public final static Metric PDF_DATA = new Metric("pdf-data", "PDF binary data", "PDF binary data",
+      Metric.ValueType.DATA, Metric.DIRECTION_NONE, false, CoreMetrics.DOMAIN_GENERAL);
 
-    public List<Metric> getMetrics() {
-        return Arrays.asList(PDF_DATA);
-    }
+  public List<Metric> getMetrics() {
+    return Arrays.asList(PDF_DATA);
+  }
 }
