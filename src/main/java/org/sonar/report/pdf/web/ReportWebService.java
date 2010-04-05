@@ -24,7 +24,7 @@ import org.sonar.api.web.AbstractRubyTemplate;
 import org.sonar.api.web.RubyRailsWebservice;
 
 /**
- * Web Service accesible at sonar.host.url/api/plugins/Pdfreport/hola?resource=kee
+ * Web Service accesible at sonar.host.url/api/plugins/Pdfreport/getReport?resource=kee
  */
 public class ReportWebService extends AbstractRubyTemplate implements RubyRailsWebservice {
 
