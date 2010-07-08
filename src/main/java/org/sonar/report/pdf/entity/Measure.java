@@ -28,6 +28,7 @@ public class Measure {
   private String value;
   private String formatValue;
   private String textValue;
+  private String dataValue;
   private Integer qualitativeTendency;
   private Integer quantitativeTendency;
   private String alert;
@@ -82,6 +83,14 @@ public class Measure {
     this.textValue = textValue;
   }
 
+  public String getDataValue() {
+    return dataValue;
+  }
+
+  public void setDataValue(String dataValue) {
+    this.dataValue = dataValue;
+  }
+
   public Integer getQualitativeTendency() {
     return qualitativeTendency;
   }
@@ -107,7 +116,7 @@ public class Measure {
   }
 
   /**
-   * Init measurr from XML node. The root node must be "msr".
+   * Init measure from XML node. The root node must be "msr".
    * 
    * @param measureNode
    */
@@ -136,6 +145,12 @@ public class Measure {
       this.setTextValue(measureNode.selectSingleNode(DATA).getText());
     } else {
       this.setTextValue("");
+    }
+
+    if (measureNode.selectSingleNode(DATA) != null) {
+      this.setDataValue(measureNode.selectSingleNode(DATA).getText());
+    } else {
+      this.setDataValue("");
     }
   }
 }

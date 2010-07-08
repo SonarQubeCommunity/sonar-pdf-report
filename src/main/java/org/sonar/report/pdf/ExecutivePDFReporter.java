@@ -122,6 +122,7 @@ public class ExecutivePDFReporter extends PDFReporter {
       title.addCell(new Phrase(projectRow, Style.FRONTPAGE_FONT_1));
       title.addCell(new Phrase(versionRow, Style.FRONTPAGE_FONT_1));
       title.addCell(new Phrase(descriptionRow, Style.FRONTPAGE_FONT_2));
+      title.addCell(new Phrase(super.getProject().getMeasure(MetricKeys.PROFILE).getDataValue(), Style.FRONTPAGE_FONT_3));
       title.addCell(new Phrase(dateRow, Style.FRONTPAGE_FONT_3));
       title.setTotalWidth(pageSize.getWidth() - frontPageDocument.leftMargin() - frontPageDocument.rightMargin());
       title.writeSelectedRows(0, -1, frontPageDocument.leftMargin(), Style.FRONTPAGE_LOGO_POSITION_Y - 150,
