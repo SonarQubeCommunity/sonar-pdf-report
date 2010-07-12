@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
@@ -88,12 +89,15 @@ public class Rule {
    */
   public void loadViolatedResources(SonarAccess sonarAccess, String projectKey) throws ReportException, HttpException,
     IOException, DocumentException {
-    if (getKey() == null) {
+    String ruleKey = getKey();
+
+    if (ruleKey == null) {
       throw new ReportException("Rule not initialized. Forget call to initFromNode() previously?");
     } else {
+      ruleKey = URLEncoder.encode(ruleKey, "UTF8");
       Logger.debug("Accessing Sonar: getting violated resurces by one given rule (" + getKey() + ")");
       Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.VIOLATIONS + projectKey
-          + UrlPath.VIOLATED_RESOURCES_BY_RULE + getKey() + UrlPath.XML_SOURCE);
+          + UrlPath.VIOLATED_RESOURCES_BY_RULE + ruleKey + UrlPath.XML_SOURCE);
       List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);
       topViolatedResources = new LinkedList<Violation>();
       Iterator<Node> it = violatedResources.iterator();
