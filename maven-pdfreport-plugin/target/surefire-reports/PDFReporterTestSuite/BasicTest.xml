@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="BasicTest" failures="0" tests="1" time="2.088" errors="0">
-  <properties/>
-  <testcase name="metricsShouldBeConsistent" time="2.078" classname="org.sonar.report.pdf.test.MetricsTest"/>
-</testsuite>
