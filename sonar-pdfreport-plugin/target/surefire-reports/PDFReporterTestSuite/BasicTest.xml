@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="BasicTest" failures="0" tests="3" time="0.353" errors="0">
+  <properties/>
+  <testcase name="shouldExecuteIfNoSkipParameter" time="0.294" classname="org.sonar.report.pdf.test.PDFPostJobTest"/>
+  <testcase name="doNotExecuteIfSkipParameter" time="0.0060" classname="org.sonar.report.pdf.test.PDFPostJobTest"/>
+  <testcase name="shouldDefineExtensions" time="0.041" classname="org.sonar.report.pdf.test.PDFReportPluginTest"/>
+</testsuite>
