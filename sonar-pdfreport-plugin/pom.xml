@@ -140,7 +140,7 @@
     <!-- /////////////////// -->
 
     <properties>
-        <sonar.pluginName>pdfreport</sonar.pluginName>
+        <sonar.pluginName>PDF Report</sonar.pluginName>
         <sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
     </properties>
 </project>

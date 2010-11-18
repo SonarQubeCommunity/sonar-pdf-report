@@ -45,7 +45,7 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
     try {
       Properties props = new Properties();
       input = this.getClass().getResourceAsStream(
-          "/META-INF/maven/org.codehaus.sonar-plugins/sonar-pdf-report/pom.properties");
+          "/META-INF/maven/org.codehaus.sonar-plugins/sonar-pdfreport-plugin/pom.properties");
       props.load(input);
       return props.getProperty("version");
 
