@@ -43,19 +43,19 @@ public class ReporterTest {
      * 
      * @throws ReportException
      */
-    @Test(enabled = false, groups = { "report" }, dependsOnGroups = { "metrics" })
+    @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
     public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
         URL resource = this.getClass().getClassLoader().getResource("report.properties");
         Properties config = new Properties();
         config.load(resource.openStream());
-        config.setProperty("sonar.base.url", "http://localhost:9000");
+        config.setProperty("sonar.base.url", "http://nemo.sonarsource.org");
 
         URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
         Properties configText = new Properties();
         configText.load(resourceText.openStream());
 
         PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
-                "org.codehaus.sonar-plugins:all", "http://localhost:9000", config, configText);
+                "net.objectlab.kit:kit-parent", "http://nemo.sonarsource.org", config, configText);
 
         ByteArrayOutputStream baos = reporter.getReport();
         FileOutputStream fos = null;
