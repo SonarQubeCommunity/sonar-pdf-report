@@ -37,7 +37,6 @@
   
   <name>Sonar PDF Report (Sonar Plugin)</name>
   <description>Sonar plugin for PDF reporting</description>
-  <inceptionYear>2010</inceptionYear>
   
   <properties>
     <sonar.pluginName>PDF Report</sonar.pluginName>
@@ -70,17 +69,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Developed-by>klicap - ingeniería del puzle</Developed-by>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.5</version>
         <configuration>
@@ -88,11 +76,6 @@
             <suiteXmlFile>src/test/config/testng.xml</suiteXmlFile>
           </suiteXmlFiles>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.8</version>
       </plugin>
     </plugins>
   </build>
