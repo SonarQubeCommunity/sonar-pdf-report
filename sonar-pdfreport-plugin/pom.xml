@@ -20,127 +20,118 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!-- POM Relationships -->
-    <modelVersion>4.0.0</modelVersion>
+  <!-- POM Relationships -->
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.codehaus.sonar-plugins</groupId>
-        <artifactId>pdf-report</artifactId>
-        <version>1.2-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>org.codehaus.sonar-plugins</groupId>
+    <artifactId>pdf-report</artifactId>
+    <version>1.2-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <artifactId>sonar-pdfreport-plugin</artifactId>
+  <artifactId>sonar-pdfreport-plugin</artifactId>
+  <packaging>sonar-plugin</packaging>
+  
+  <name>Sonar PDF Report (Sonar Plugin)</name>
+  <description>Sonar plugin for PDF reporting</description>
+  <inceptionYear>2010</inceptionYear>
+  
+  <properties>
+    <sonar.pluginName>PDF Report</sonar.pluginName>
+    <sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.codehaus.sonar</groupId>
-            <artifactId>sonar-plugin-api</artifactId>
-            <version>${sonar.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.sonar</groupId>
-            <artifactId>sonar-plugin-api</artifactId>
-            <version>${sonar.version}</version>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.7</version>
-            <scope>test</scope>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.7</version>
-            <scope>test</scope>
-        </dependency>
-                <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.15</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mail</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.jms</groupId>
-                    <artifactId>jms</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jdmk</groupId>
-                    <artifactId>jmxtools</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jmx</groupId>
-                    <artifactId>jmxri</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-plugin-api</artifactId>
+      <version>${sonar.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-plugin-api</artifactId>
+      <version>${sonar.version}</version>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>5.7</version>
+      <scope>test</scope>
+      <classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.15</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
-    <!-- ///////////////// -->
-
-    <!-- Build Settings -->
-
-    <packaging>sonar-plugin</packaging>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Developed-by>klicap - ingeniería del puzle</Developed-by>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>src/test/config/testng.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.8</version>
-            </plugin>
-        </plugins>
-    </build>
-
-    <!-- ////////////// -->
-
-    <!-- Project Information -->
-
-    <name>Sonar PDF Report (Sonar Plugin)</name>
-    <description>Sonar plugin for PDF reporting</description>
-    <inceptionYear>2010</inceptionYear>
-
-    <!-- /////////////////// -->
-
-    <properties>
-        <sonar.pluginName>PDF Report</sonar.pluginName>
-        <sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
-    </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Developed-by>klicap - ingeniería del puzle</Developed-by>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>src/test/config/testng.xml</suiteXmlFile>
+          </suiteXmlFiles>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.8</version>
+      </plugin>
+    </plugins>
+  </build>
 </project>
