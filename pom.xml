@@ -32,7 +32,8 @@
     <relativePath>../parent</relativePath>
   </parent>
 
-  <artifactId>pdf-report</artifactId>
+  <groupId>org.codehaus.sonar-plugins.pdf-report</groupId>
+  <artifactId>parent</artifactId>
   <version>1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   
@@ -41,7 +42,7 @@
   <inceptionYear>2010</inceptionYear>
   <organization>
     <name>klicap - ingeniería del puzle</name>
-    <url>www.klicap.es</url>
+    <url>http://www.klicap.es</url>
   </organization>
   <licenses>
     <license>

@@ -33,7 +33,7 @@ import java.io.InputStream;
 public class PDFMavenPluginHandler implements MavenPluginHandler {
 
   public String getGroupId() {
-    return "org.codehaus.sonar-plugins";
+    return "org.codehaus.sonar-plugins.pdf-report";
   }
 
   public String getArtifactId() {
@@ -45,7 +45,7 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
     try {
       Properties props = new Properties();
       input = this.getClass().getResourceAsStream(
-          "/META-INF/maven/org.codehaus.sonar-plugins/sonar-pdfreport-plugin/pom.properties");
+          "/META-INF/maven/org.codehaus.sonar-plugins.pdf-report/sonar-pdfreport-plugin/pom.properties");
       props.load(input);
       return props.getProperty("version");
 

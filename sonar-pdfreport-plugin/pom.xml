@@ -26,8 +26,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.codehaus.sonar-plugins</groupId>
-    <artifactId>pdf-report</artifactId>
+    <groupId>org.codehaus.sonar-plugins.pdf-report</groupId>
+    <artifactId>parent</artifactId>
     <version>1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -37,6 +37,7 @@
   
   <name>Sonar PDF Report (Sonar Plugin)</name>
   <description>Sonar plugin for PDF reporting</description>
+  <url>http://docs.codehaus.org/display/SONAR/Sonar+PDF+Plugin</url>
   
   <properties>
     <sonar.pluginName>PDF Report</sonar.pluginName>

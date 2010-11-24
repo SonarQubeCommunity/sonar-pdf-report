@@ -26,8 +26,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.codehaus.sonar-plugins</groupId>
-    <artifactId>pdf-report</artifactId>
+    <groupId>org.codehaus.sonar-plugins.pdf-report</groupId>
+    <artifactId>parent</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
 
