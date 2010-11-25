@@ -2,7 +2,7 @@
 <!--
 /*
  * Sonar PDF Plugin, open source plugin for Sonar
- * Copyright (C) 2010 klicap - ingeniería del puzle
+ * Copyright (C) 2010 klicap - ingenieria del puzle
  * Copyright (C) 2009 GMV-SGI
  *
  * Sonar PDF Plugin is free software; you can redistribute it and/or
@@ -40,7 +40,7 @@
   <description>Sonar and Maven plugin for PDF reporting</description>
   <inceptionYear>2010</inceptionYear>
   <organization>
-    <name>klicap - ingeniería del puzle</name>
+    <name>klicap - ingenieria del puzle</name>
     <url>http://www.klicap.es</url>
   </organization>
   <licenses>
@@ -55,7 +55,7 @@
       <id>amuniz</id>
       <name>Antonio Manuel Muñiz Martín</name>
       <email>amuniz@klicap.es</email>
-      <organization>klicap - ingeniería del puzle</organization>
+      <organization>klicap - ingenieria del puzle</organization>
       <url>http://www.klicap.es</url>
       <roles>
         <role>Project lead</role>

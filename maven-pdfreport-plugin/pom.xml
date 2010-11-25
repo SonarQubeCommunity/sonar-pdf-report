@@ -2,7 +2,7 @@
 <!--
 /*
  * Sonar PDF Plugin, open source plugin for Sonar
- * Copyright (C) 2010 klicap - ingeniería del puzle
+ * Copyright (C) 2010 klicap - ingenieria del puzle
  * Copyright (C) 2009 GMV-SGI
  *
  * Sonar PDF Plugin is free software; you can redistribute it and/or
@@ -120,7 +120,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Developed-by>klicap - ingeniería del puzle</Developed-by>
+              <Developed-by>klicap - ingenieria del puzle</Developed-by>
             </manifestEntries>
           </archive>
         </configuration>

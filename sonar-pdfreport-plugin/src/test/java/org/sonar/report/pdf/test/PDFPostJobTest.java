@@ -1,6 +1,6 @@
 /*
  * Sonar PDF Report (Sonar Plugin)
- * Copyright (C) 2010 klicap - ingeniería del puzle
+ * Copyright (C) 2010 klicap - ingenieria del puzle
  * dev@sonar.codehaus.org
  *
  * This program is free software; you can redistribute it and/or
