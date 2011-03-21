@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
 
 public class MetricsTest {
 
-    @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
+    @Test(alwaysRun = true, enabled = false, groups = { "metrics" })
     public void metricsShouldBeConsistent() throws IOException, DocumentException, IllegalArgumentException,
         IllegalAccessException, ReportException {
         URL resource = this.getClass().getClassLoader().getResource("report.properties");
