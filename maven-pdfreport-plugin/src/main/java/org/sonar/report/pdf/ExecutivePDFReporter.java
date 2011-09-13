@@ -149,7 +149,6 @@ public class ExecutivePDFReporter extends PDFReporter {
     printDashboard(project, section11);
     Section section12 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
         Style.TITLE_FONT));
-    printRulesCategories(project, section12);
     printMostViolatedRules(project, section12);
     printMostViolatedFiles(project, section12);
     printMostComplexFiles(project, section12);
@@ -167,7 +166,6 @@ public class ExecutivePDFReporter extends PDFReporter {
 
       Section sectionN2 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
           Style.TITLE_FONT));
-      printRulesCategories(subproject, sectionN2);
       printMostViolatedRules(subproject, sectionN2);
       printMostViolatedFiles(subproject, sectionN2);
       printMostComplexFiles(subproject, sectionN2);
@@ -326,7 +324,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     codingRulesViolationsTable.setSpacingBefore(10);
     codingRulesViolationsTable.addCell(rulesCompliance);
     codingRulesViolationsTable.addCell(violations);
-    codingRulesViolationsTable.addCell(getRadarGraphic(project));
+    codingRulesViolationsTable.addCell("");
     codingRulesViolationsTable.setSpacingAfter(20);
 
     section.add(Chunk.NEWLINE);
@@ -406,29 +404,6 @@ public class ExecutivePDFReporter extends PDFReporter {
     PdfPTable mostViolatedFilesTable = Style.createSimpleTable(left, right,
         getTextProperty("general.most_violated_files"), getTextProperty("general.no_violated_files"));
     section.add(mostViolatedFilesTable);
-  }
-
-  protected void printRulesCategories(Project project, Section section) {
-    PdfPTable categoriesTable = new PdfPTable(2);
-    categoriesTable.getDefaultCell().setColspan(2);
-    categoriesTable.addCell(new Phrase(getTextProperty("general.violations_by_category"), Style.DASHBOARD_TITLE_FONT));
-    categoriesTable.getDefaultCell().setBackgroundColor(Color.GRAY);
-    categoriesTable.addCell("");
-    categoriesTable.getDefaultCell().setColspan(1);
-    categoriesTable.getDefaultCell().setBackgroundColor(Color.WHITE);
-    categoriesTable.addCell("Maintainability");
-    categoriesTable.addCell(project.getMaintainabilityViolations().toString());
-    categoriesTable.addCell("Reliability");
-    categoriesTable.addCell(project.getReliabilityViolations().toString());
-    categoriesTable.addCell("Efficiency");
-    categoriesTable.addCell(project.getEfficiencyViolations().toString());
-    categoriesTable.addCell("Portability");
-    categoriesTable.addCell(project.getPortabilityViolations().toString());
-    categoriesTable.addCell("Usability");
-    categoriesTable.addCell(project.getUsabilityViolations().toString());
-    categoriesTable.setSpacingBefore(10);
-    categoriesTable.setSpacingAfter(20);
-    section.add(categoriesTable);
   }
 
   @Override

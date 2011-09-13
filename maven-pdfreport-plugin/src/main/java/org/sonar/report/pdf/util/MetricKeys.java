@@ -46,6 +46,5 @@ public class MetricKeys {
   public static final String FUNCTION_COMPLEXITY = "function_complexity";
   public static final String COMMENT_LINES_DENSITY = "comment_lines_density";
   public static final String VIOLATIONS_DENSITY = "violations_density";
-  public static final String UNCOVERED_COMPLEXITY_BY_TESTS = "uncovered_complexity_by_tests";
 
 }

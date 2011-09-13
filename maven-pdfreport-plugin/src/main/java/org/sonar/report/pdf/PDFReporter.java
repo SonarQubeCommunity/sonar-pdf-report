@@ -116,13 +116,6 @@ public abstract class PDFReporter {
     return project;
   }
 
-  public Image getRadarGraphic(Project project) {
-    RadarGraphic radar = new RadarGraphic(project.getEfficiencyRci(), project.getMaintainabilityRci(), project
-        .getPortabilityRci(), project.getReliabilityRci(), project.getUsabilityRci(), getSonarUrl());
-    return radar.getGraphic();
-
-  }
-
   public Image getCCNDistribution(Project project) {
     String data;
     if (project.getMeasure("class_complexity_distribution").getTextValue() != null) {

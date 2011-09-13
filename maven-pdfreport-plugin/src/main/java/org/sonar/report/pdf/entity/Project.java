@@ -66,20 +66,6 @@ public class Project {
   // Most duplicated files
   private List<FileInfo> mostDuplicatedFiles;
 
-  // Rules categories violations
-  private String maintainabilityViolations = "0";
-  private String reliabilityViolations = "0";
-  private String efficiencyViolations = "0";
-  private String portabilityViolations = "0";
-  private String usabilityViolations = "0";
-
-  // Rules compliance index
-  private String maintainabilityRci = "0";
-  private String reliabilityRci = "0";
-  private String efficiencyRci = "0";
-  private String portabilityRci = "0";
-  private String usabilityRci = "0";
-
   // PROJECT INFO XPATH
   private static final String PROJECT = "//resources/resource";
   private static final String KEY = "key";
@@ -91,18 +77,6 @@ public class Project {
 
   // VIOLATIONS (number)
   private static final String DESCRIPTION = "description";
-  private static final String MAINTAINABILITY = "msr[rule_category='Maintainability']/frmt_val";
-  private static final String RELIABILITY = "msr[rule_category='Reliability']/frmt_val";
-  private static final String EFFICIENCY = "msr[rule_category='Efficiency']/frmt_val";
-  private static final String PORTABILITY = "msr[rule_category='Portability']/frmt_val";
-  private static final String USABILITY = "msr[rule_category='Usability']/frmt_val";
-
-  // VIOLATIONS (RCI)
-  private static final String MAINTAINABILITY_RCI = "msr[rule_category='Maintainability']/val";
-  private static final String RELIABILITY_RCI = "msr[rule_category='Reliability']/val";
-  private static final String EFFICIENCY_RCI = "msr[rule_category='Efficiency']/val";
-  private static final String PORTABILITY_RCI = "msr[rule_category='Portability']/val";
-  private static final String USABILITY_RCI = "msr[rule_category='Usability']/val";
 
   public Project(String key) {
     this.key = key;
@@ -126,7 +100,6 @@ public class Project {
     if (parent.selectSingleNode(PROJECT) != null) {
       initFromNode(parent.selectSingleNode(PROJECT));
       initMeasures(sonarAccess);
-      initCategories(sonarAccess);
       initMostViolatedRules(sonarAccess);
       initMostViolatedFiles(sonarAccess);
       initMostComplexElements(sonarAccess);
@@ -228,92 +201,6 @@ public class Project {
     }
   }
 
-  private void initCategories(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
-    Logger.info("    Retrieving categories RCI");
-    Logger.debug("Accessing Sonar: getting categories");
-    Document categories = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
-        + UrlPath.CATEGORIES_VIOLATIONS + UrlPath.XML_SOURCE);
-    if (categories.selectSingleNode(PROJECT) != null) {
-      this.initCategoriesViolationsFromNode(categories.selectSingleNode(PROJECT));
-    } else {
-      Logger.warn("Init Categories. There is not result on select //resources/resource");
-    }
-    Document categoriesRci = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
-        + UrlPath.CATEGORIES_VIOLATIONS_DENSITY + UrlPath.XML_SOURCE);
-    if (categories.selectSingleNode(PROJECT) != null) {
-      this.initCategoriesRciFromNode(categoriesRci.selectSingleNode(PROJECT));
-    } else {
-      Logger.warn("Init Categories RCI. There is not result on select //resources/resource");
-    }
-  }
-
-  private void initCategoriesRciFromNode(Node categoriesRciNode) {
-    Logger.debug("Getting categories RCI (initCategoriesRciFromNode)");
-    if (categoriesRciNode.selectSingleNode(MAINTAINABILITY_RCI) != null) {
-      this.setMaintainabilityRci(categoriesRciNode.selectSingleNode(MAINTAINABILITY_RCI).getText());
-    } else {
-      this.setMaintainabilityRci("100.0");
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Maintainability']/val. Setting 100%");
-    }
-    if (categoriesRciNode.selectSingleNode(RELIABILITY_RCI) != null) {
-      this.setReliabilityRci(categoriesRciNode.selectSingleNode(RELIABILITY_RCI).getText());
-    } else {
-      this.setReliabilityRci("100.0");
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Reliability']/val. Setting 100%");
-    }
-    if (categoriesRciNode.selectSingleNode(EFFICIENCY_RCI) != null) {
-      this.setEfficiencyRci(categoriesRciNode.selectSingleNode(EFFICIENCY_RCI).getText());
-    } else {
-      this.setEfficiencyRci("100.0");
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Efficiency']/val. Setting 100%");
-    }
-    if (categoriesRciNode.selectSingleNode(PORTABILITY_RCI) != null) {
-      this.setPortabilityRci(categoriesRciNode.selectSingleNode(PORTABILITY_RCI).getText());
-    } else {
-      this.setPortabilityRci("100.0");
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Portability']/val. Setting 100%");
-    }
-    if (categoriesRciNode.selectSingleNode(USABILITY_RCI) != null) {
-      this.setUsabilityRci(categoriesRciNode.selectSingleNode(USABILITY_RCI).getText());
-    } else {
-      this.setUsabilityRci("100.0");
-      Logger.debug("Init Categories RCI. There is not result on select msr[rule_category='Usability']/val. Setting 100%");
-    }
-  }
-
-  private void initCategoriesViolationsFromNode(Node categoriesNode) {
-    Logger.debug("Geting category violations count (initCategoriesViolationsFromNode)");
-    if (categoriesNode.selectSingleNode(MAINTAINABILITY) != null) {
-      this.setMaintainabilityViolations(categoriesNode.selectSingleNode(MAINTAINABILITY).getText());
-    } else {
-      Logger
-          .debug("Init Categories violations. There is not result on select msr[rule_category='Maintainability']/frmt_val");
-    }
-    if (categoriesNode.selectSingleNode(RELIABILITY) != null) {
-      this.setReliabilityViolations(categoriesNode.selectSingleNode(RELIABILITY).getText());
-    } else {
-      Logger
-          .debug("Init Categories violations. There is not result on select msr[rule_category='Reliability']/frmt_val");
-    }
-    if (categoriesNode.selectSingleNode(EFFICIENCY) != null) {
-      this.setEfficiencyViolations(categoriesNode.selectSingleNode(EFFICIENCY).getText());
-    } else {
-      Logger
-          .debug("Init Categories violations. There is not result on select msr[rule_category='Efficiency']/frmt_val");
-    }
-    if (categoriesNode.selectSingleNode(PORTABILITY) != null) {
-      this.setPortabilityViolations(categoriesNode.selectSingleNode(PORTABILITY).getText());
-    } else {
-      Logger
-          .debug("Init Categories violations. There is not result on select msr[rule_category='Portability']/frmt_val");
-    }
-    if (categoriesNode.selectSingleNode(USABILITY) != null) {
-      this.setUsabilityViolations(categoriesNode.selectSingleNode(USABILITY).getText());
-    } else {
-      Logger.debug("Init Categories violations. There is not result on select msr[rule_category='Usability']/frmt_val");
-    }
-  }
-
   private void initMostViolatedRulesFromNode(Node mostViolatedNode, SonarAccess sonarAccess) throws HttpException,
     ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
@@ -400,26 +287,6 @@ public class Project {
     this.measures = measures;
   }
 
-  public String getMaintainabilityViolations() {
-    return maintainabilityViolations;
-  }
-
-  public String getReliabilityViolations() {
-    return reliabilityViolations;
-  }
-
-  public String getEfficiencyViolations() {
-    return efficiencyViolations;
-  }
-
-  public String getPortabilityViolations() {
-    return portabilityViolations;
-  }
-
-  public String getUsabilityViolations() {
-    return usabilityViolations;
-  }
-
   public List<Rule> getMostViolatedRules() {
     return mostViolatedRules;
   }
@@ -430,26 +297,6 @@ public class Project {
 
   public void setMostViolatedRules(List<Rule> mostViolatedRules) {
     this.mostViolatedRules = mostViolatedRules;
-  }
-
-  public void setMaintainabilityViolations(String maintainabilityViolations) {
-    this.maintainabilityViolations = maintainabilityViolations;
-  }
-
-  public void setReliabilityViolations(String reliabilityViolations) {
-    this.reliabilityViolations = reliabilityViolations;
-  }
-
-  public void setEfficiencyViolations(String efficiencyViolations) {
-    this.efficiencyViolations = efficiencyViolations;
-  }
-
-  public void setPortabilityViolations(String portabilityValue) {
-    this.portabilityViolations = portabilityValue;
-  }
-
-  public void setUsabilityViolations(String usabilityValue) {
-    this.usabilityViolations = usabilityValue;
   }
 
   public void setMostViolatedFiles(List<FileInfo> mostViolatedFiles) {
@@ -470,45 +317,5 @@ public class Project {
 
   public void setMostDuplicatedFiles(List<FileInfo> mostDuplicatedFiles) {
     this.mostDuplicatedFiles = mostDuplicatedFiles;
-  }
-
-  public String getMaintainabilityRci() {
-    return maintainabilityRci;
-  }
-
-  public void setMaintainabilityRci(String maintainabilityRci) {
-    this.maintainabilityRci = maintainabilityRci;
-  }
-
-  public String getReliabilityRci() {
-    return reliabilityRci;
-  }
-
-  public void setReliabilityRci(String reliabilityRci) {
-    this.reliabilityRci = reliabilityRci;
-  }
-
-  public String getEfficiencyRci() {
-    return efficiencyRci;
-  }
-
-  public void setEfficiencyRci(String efficiencyRci) {
-    this.efficiencyRci = efficiencyRci;
-  }
-
-  public String getPortabilityRci() {
-    return portabilityRci;
-  }
-
-  public void setPortabilityRci(String portabilityRci) {
-    this.portabilityRci = portabilityRci;
-  }
-
-  public String getUsabilityRci() {
-    return usabilityRci;
-  }
-
-  public void setUsabilityRci(String usabilityRci) {
-    this.usabilityRci = usabilityRci;
   }
 }

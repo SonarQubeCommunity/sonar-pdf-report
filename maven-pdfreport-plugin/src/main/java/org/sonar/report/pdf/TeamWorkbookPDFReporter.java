@@ -60,7 +60,6 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     printDashboard(project, section11);
     Section section12 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
         Style.TITLE_FONT));
-    printRulesCategories(project, section12);
     printMostViolatedRules(project, section12);
     printMostViolatedFiles(project, section12);
     printMostComplexFiles(project, section12);
@@ -83,7 +82,6 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 
       Section sectionN2 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
           Style.TITLE_FONT));
-      printRulesCategories(subproject, sectionN2);
       printMostViolatedRules(subproject, sectionN2);
       printMostViolatedFiles(subproject, sectionN2);
       printMostComplexFiles(subproject, sectionN2);
