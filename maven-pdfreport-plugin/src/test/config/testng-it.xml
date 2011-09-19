@@ -4,6 +4,8 @@
     <test name="BasicTest">
         <groups>
             <define name="root">
+                <include name="metrics" />
+                <include name="report" />
             </define>
             <run>
                 <include name="root" />
