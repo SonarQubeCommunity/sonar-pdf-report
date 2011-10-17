@@ -23,15 +23,17 @@ package org.sonar.report.pdf.test;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
+import org.sonar.report.pdf.util.SonarAccess;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.lowagie.text.DocumentException;
-import java.net.URL;
 
 public class ReporterTest {
 
@@ -66,5 +68,15 @@ public class ReporterTest {
         fos.flush();
         fos.close();
 
+    }
+
+    @Test(enabled = true)
+    public void hostAndPortShouldBeParsedCorrectly() throws ReportException {
+      SonarAccess sonar = new SonarAccess("http://localhost:9000/sonar", null, null);
+      Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 80);
+      sonar = new SonarAccess("https://localhost/sonar", null, null);
+      Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 443);
+      sonar = new SonarAccess("http://host:9000", null, null);
+      Assert.assertTrue(sonar.getHost().equals("host") && sonar.getPort() == 9000);
     }
 }

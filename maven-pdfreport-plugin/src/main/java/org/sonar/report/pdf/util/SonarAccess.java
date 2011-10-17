@@ -51,11 +51,16 @@ public class SonarAccess {
    */
   private String password;
 
+  /**
+   * Sonar host.
+   */
   private String host;
 
+  /**
+   * Sonar port.
+   */
   private int port;
 
-  // TODO: provide POST method
   public SonarAccess(String sonarUrl, String username, String password) throws ReportException {
     if (!sonarUrl.endsWith("/")) {
       this.sonarUrl = sonarUrl;
@@ -84,7 +89,24 @@ public class SonarAccess {
         this.port = 80;
       }
     } else if (sonarUrl.startsWith("https://")) {
-      throw new ReportException("SSL not supported yet: " + sonarUrl);
+      String withoutProtocol = sonarUrl.substring(8);
+      if (withoutProtocol.contains(":")) {
+        this.host = withoutProtocol.substring(0, withoutProtocol.indexOf(':'));
+      } else if (withoutProtocol.contains("/")) {
+        this.host = withoutProtocol.substring(0, withoutProtocol.indexOf('/'));
+      } else {
+        this.host = withoutProtocol;
+      }
+      if (withoutProtocol.contains(":")) {
+        if (withoutProtocol.contains("/")) {
+          this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1, withoutProtocol
+              .indexOf('/')));
+        } else {
+          this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1));
+        }
+      } else {
+        this.port = 443;
+      }
     } else {
       throw new ReportException("Unknown URL format: " + sonarUrl + " (forgot http:// before host?)");
     }
@@ -112,5 +134,40 @@ public class SonarAccess {
     Logger.debug("Received response.");
     SAXReader reader = new SAXReader();
     return reader.read(method.getResponseBodyAsStream());
+  }
+
+  /**
+   * @return the sonarUrl
+   */
+  public String getSonarUrl() {
+      return sonarUrl;
+  }
+
+  /**
+   * @return the username
+   */
+  public String getUsername() {
+      return username;
+  }
+
+  /**
+   * @return the password
+   */
+  public String getPassword() {
+      return password;
+  }
+
+  /**
+   * @return the host
+   */
+  public String getHost() {
+      return host;
+  }
+
+  /**
+   * @return the port
+   */
+  public int getPort() {
+      return port;
   }
 }
