@@ -46,5 +46,10 @@ public class MetricKeys {
   public static final String FUNCTION_COMPLEXITY = "function_complexity";
   public static final String COMMENT_LINES_DENSITY = "comment_lines_density";
   public static final String VIOLATIONS_DENSITY = "violations_density";
+  public static final String BLOCKER_VIOLATIONS = "blocker_violations";
+  public static final String CRITICAL_VIOLATIONS = "critical_violations";
+  public static final String MAJOR_VIOLATIONS = "major_violations";
+  public static final String MINOR_VIOLATIONS = "minor_violations";
+  public static final String INFO_VIOLATIONS = "info_violations";
 
 }

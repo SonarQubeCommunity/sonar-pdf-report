@@ -160,16 +160,20 @@ public class Project {
     Logger.info("    Retrieving most violated rules");
     Logger.debug("Accessing Sonar: getting most violated rules");
     String[] priorities = Priority.getPrioritiesArray();
-    for(int i = 0; i < priorities.length; i++) {
-        String violationLevel = Violation.getViolationLevelByKey(priorities[i]);
-        // TODO: build URL
-    }
-    Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
-        + UrlPath.MOST_VIOLATED_RULES + UrlPath.XML_SOURCE);
-    if (mostViolatedRules.selectSingleNode(PROJECT) != null) {
-      initMostViolatedRulesFromNode(mostViolatedRules.selectSingleNode(PROJECT), sonarAccess);
-    } else {
-      Logger.warn("There is not result on select //resources/resource");
+
+    // Reverse iteration to get violations with upper level first
+    int limit = 10;
+    for(int i = priorities.length - 1; i >= 0 && limit > 0; i--) {
+      Document mostViolatedRulesByLevel = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
+          + UrlPath.getViolationsLevelPath(priorities[i]) + UrlPath.XML_SOURCE + UrlPath.getLimit(limit));
+      if (mostViolatedRulesByLevel.selectSingleNode(PROJECT) != null) {
+        int count = initMostViolatedRulesFromNode(mostViolatedRulesByLevel.selectSingleNode(PROJECT), sonarAccess);
+        Logger.debug("\t " + count + " " + priorities[i] + " violations");
+        limit = limit - count;
+      } else {
+        Logger.debug("There is not result on select //resources/resource");
+        Logger.debug("There are no violations with level " + priorities[i]);
+      }
     }
   }
 
@@ -206,13 +210,14 @@ public class Project {
     }
   }
 
-  private void initMostViolatedRulesFromNode(final Node mostViolatedNode, final SonarAccess sonarAccess) throws HttpException,
+  private int initMostViolatedRulesFromNode(final Node mostViolatedNode, final SonarAccess sonarAccess) throws HttpException,
     ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
     if (!it.hasNext()) {
       Logger.warn("There is not result on select //resources/resource/msr");
     }
+    int count = 0;
     while (it.hasNext()) {
       Node measure = it.next();
       if (!measure.selectSingleNode(MEASURE_FRMT_VAL).getText().equals("0")) {
@@ -221,8 +226,10 @@ public class Project {
           rule.loadViolatedResources(sonarAccess, this.key);
         }
         this.mostViolatedRules.add(rule);
+        count++;
       }
     }
+    return count;
   }
 
   public Project getChildByKey(final String key) {
