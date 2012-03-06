@@ -78,21 +78,21 @@ public class Project {
   // VIOLATIONS (number)
   private static final String DESCRIPTION = "description";
 
-  public Project(String key) {
+  public Project(final String key) {
     this.key = key;
   }
 
   /**
    * Initialize: - Project basic data - Project measures - Project categories violations - Project most violated rules -
    * Project most violated files - Project most duplicated files
-   * 
+   *
    * @param sonarAccess
    * @throws HttpException
    * @throws IOException
    * @throws DocumentException
    * @throws ReportException
    */
-  public void initializeProject(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
+  public void initializeProject(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
     ReportException {
     Logger.info("Retrieving project info for " + this.key);
     Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
@@ -130,7 +130,7 @@ public class Project {
   /**
    * Initialize project object and his childs (except categories violations).
    */
-  private void initFromNode(Node projectNode) {
+  private void initFromNode(final Node projectNode) {
     Node name = projectNode.selectSingleNode(NAME);
     if (name != null) {
       this.setName(name.getText());
@@ -148,17 +148,22 @@ public class Project {
     this.setMostViolatedFiles(new LinkedList<FileInfo>());
   }
 
-  private void initMeasures(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMeasures(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Measures measures = new Measures();
     Logger.info("    Retrieving measures");
     measures.initMeasuresByProjectKey(sonarAccess, this.key);
     this.setMeasures(measures);
   }
 
-  private void initMostViolatedRules(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
+  private void initMostViolatedRules(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
     ReportException {
     Logger.info("    Retrieving most violated rules");
     Logger.debug("Accessing Sonar: getting most violated rules");
+    String[] priorities = Priority.getPrioritiesArray();
+    for(int i = 0; i < priorities.length; i++) {
+        String violationLevel = Violation.getViolationLevelByKey(priorities[i]);
+        // TODO: build URL
+    }
     Document mostViolatedRules = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
         + UrlPath.MOST_VIOLATED_RULES + UrlPath.XML_SOURCE);
     if (mostViolatedRules.selectSingleNode(PROJECT) != null) {
@@ -168,7 +173,7 @@ public class Project {
     }
   }
 
-  private void initMostViolatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostViolatedFiles(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most violated files");
     Logger.debug("Accessing Sonar: getting most violated files");
     Document mostViolatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
@@ -177,7 +182,7 @@ public class Project {
 
   }
 
-  private void initMostComplexElements(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostComplexElements(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most complex elements");
     Logger.debug("Accessing Sonar: getting most complex elements");
     Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
@@ -185,7 +190,7 @@ public class Project {
     this.setMostComplexFiles(FileInfo.initFromDocument(mostComplexFilesDoc, FileInfo.CCN_CONTENT));
   }
 
-  private void initMostDuplicatedFiles(SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostDuplicatedFiles(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
     Logger.info("    Retrieving most duplicated files");
     Logger.debug("Accessing Sonar: getting most duplicated files");
     Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
@@ -193,7 +198,7 @@ public class Project {
     this.setMostDuplicatedFiles(FileInfo.initFromDocument(mostDuplicatedFilesDoc, FileInfo.DUPLICATIONS_CONTENT));
   }
 
-  public Measure getMeasure(String measureKey) {
+  public Measure getMeasure(final String measureKey) {
     if (measures.containsMeasure(measureKey)) {
       return measures.getMeasure(measureKey);
     } else {
@@ -201,7 +206,7 @@ public class Project {
     }
   }
 
-  private void initMostViolatedRulesFromNode(Node mostViolatedNode, SonarAccess sonarAccess) throws HttpException,
+  private void initMostViolatedRulesFromNode(final Node mostViolatedNode, final SonarAccess sonarAccess) throws HttpException,
     ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
@@ -220,7 +225,7 @@ public class Project {
     }
   }
 
-  public Project getChildByKey(String key) {
+  public Project getChildByKey(final String key) {
     Iterator<Project> it = this.subprojects.iterator();
     while (it.hasNext()) {
       Project child = it.next();
@@ -231,23 +236,23 @@ public class Project {
     return null;
   }
 
-  public void setId(short id) {
+  public void setId(final short id) {
     this.id = id;
   }
 
-  public void setKey(String key) {
+  public void setKey(final String key) {
     this.key = key;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
-  public void setDescription(String description) {
+  public void setDescription(final String description) {
     this.description = description;
   }
 
-  public void setLinks(List<String> links) {
+  public void setLinks(final List<String> links) {
     this.links = links;
   }
 
@@ -275,7 +280,7 @@ public class Project {
     return subprojects;
   }
 
-  public void setSubprojects(List<Project> subprojects) {
+  public void setSubprojects(final List<Project> subprojects) {
     this.subprojects = subprojects;
   }
 
@@ -283,7 +288,7 @@ public class Project {
     return measures;
   }
 
-  public void setMeasures(Measures measures) {
+  public void setMeasures(final Measures measures) {
     this.measures = measures;
   }
 
@@ -295,15 +300,15 @@ public class Project {
     return mostViolatedFiles;
   }
 
-  public void setMostViolatedRules(List<Rule> mostViolatedRules) {
+  public void setMostViolatedRules(final List<Rule> mostViolatedRules) {
     this.mostViolatedRules = mostViolatedRules;
   }
 
-  public void setMostViolatedFiles(List<FileInfo> mostViolatedFiles) {
+  public void setMostViolatedFiles(final List<FileInfo> mostViolatedFiles) {
     this.mostViolatedFiles = mostViolatedFiles;
   }
 
-  public void setMostComplexFiles(List<FileInfo> mostComplexFiles) {
+  public void setMostComplexFiles(final List<FileInfo> mostComplexFiles) {
     this.mostComplexFiles = mostComplexFiles;
   }
 
@@ -315,7 +320,7 @@ public class Project {
     return mostDuplicatedFiles;
   }
 
-  public void setMostDuplicatedFiles(List<FileInfo> mostDuplicatedFiles) {
+  public void setMostDuplicatedFiles(final List<FileInfo> mostDuplicatedFiles) {
     this.mostDuplicatedFiles = mostDuplicatedFiles;
   }
 }
