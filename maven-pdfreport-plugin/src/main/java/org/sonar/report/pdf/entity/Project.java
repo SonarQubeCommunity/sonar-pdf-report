@@ -92,7 +92,7 @@ public class Project {
    * @throws DocumentException
    * @throws ReportException
    */
-  public void initializeProject(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
+  public void initializeProject(final SonarAccess sonarAccess) throws IOException, DocumentException,
     ReportException {
     Logger.info("Retrieving project info for " + this.key);
     Document parent = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
@@ -148,14 +148,14 @@ public class Project {
     this.setMostViolatedFiles(new LinkedList<FileInfo>());
   }
 
-  private void initMeasures(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMeasures(final SonarAccess sonarAccess) throws IOException, DocumentException {
     Measures measures = new Measures();
     Logger.info("    Retrieving measures");
     measures.initMeasuresByProjectKey(sonarAccess, this.key);
     this.setMeasures(measures);
   }
 
-  private void initMostViolatedRules(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException,
+  private void initMostViolatedRules(final SonarAccess sonarAccess) throws IOException, DocumentException,
     ReportException {
     Logger.info("    Retrieving most violated rules");
     Logger.debug("Accessing Sonar: getting most violated rules");
@@ -177,7 +177,7 @@ public class Project {
     }
   }
 
-  private void initMostViolatedFiles(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostViolatedFiles(final SonarAccess sonarAccess) throws IOException, DocumentException {
     Logger.info("    Retrieving most violated files");
     Logger.debug("Accessing Sonar: getting most violated files");
     Document mostViolatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
@@ -186,7 +186,7 @@ public class Project {
 
   }
 
-  private void initMostComplexElements(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostComplexElements(final SonarAccess sonarAccess) throws IOException, DocumentException {
     Logger.info("    Retrieving most complex elements");
     Logger.debug("Accessing Sonar: getting most complex elements");
     Document mostComplexFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
@@ -194,7 +194,7 @@ public class Project {
     this.setMostComplexFiles(FileInfo.initFromDocument(mostComplexFilesDoc, FileInfo.CCN_CONTENT));
   }
 
-  private void initMostDuplicatedFiles(final SonarAccess sonarAccess) throws HttpException, IOException, DocumentException {
+  private void initMostDuplicatedFiles(final SonarAccess sonarAccess) throws IOException, DocumentException {
     Logger.info("    Retrieving most duplicated files");
     Logger.debug("Accessing Sonar: getting most duplicated files");
     Document mostDuplicatedFilesDoc = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key
@@ -210,8 +210,8 @@ public class Project {
     }
   }
 
-  private int initMostViolatedRulesFromNode(final Node mostViolatedNode, final SonarAccess sonarAccess) throws HttpException,
-    ReportException, IOException, DocumentException {
+  private int initMostViolatedRulesFromNode(final Node mostViolatedNode, final SonarAccess sonarAccess)
+      throws ReportException, IOException, DocumentException {
     List<Node> measures = mostViolatedNode.selectNodes(ALL_MEASURES);
     Iterator<Node> it = measures.iterator();
     if (!it.hasNext()) {

@@ -46,24 +46,23 @@ public class UrlPath {
   public static final String XML_SOURCE = "&format=xml";
   public static final String LIMIT10 = "&limit=5";
 
-  public static String getViolationsLevelPath(String priority) {
+  public static String getViolationsLevelPath(final String priority) {
     if(priority.equals(Priority.INFO)) {
-        return MOST_VIOLATED_INFO_RULES;
+      return MOST_VIOLATED_INFO_RULES;
     } else if(priority.equals(Priority.MINOR)) {
-        return MOST_VIOLATED_MINOR_RULES;
+      return MOST_VIOLATED_MINOR_RULES;
     } else if(priority.equals(Priority.MAJOR)) {
-        return MOST_VIOLATED_MAJOR_RULES;
+      return MOST_VIOLATED_MAJOR_RULES;
     } else if(priority.equals(Priority.CRITICAL)) {
-        return MOST_VIOLATED_CRITICAL_RULES;
+      return MOST_VIOLATED_CRITICAL_RULES;
     } else if(priority.equals(Priority.BLOCKER)) {
-        return MOST_VIOLATED_BLOCKER_RULES;
+      return MOST_VIOLATED_BLOCKER_RULES;
     } else {
-        return null;
+      return null;
     }
   }
 
   public static String getLimit(final Integer limit) {
     return "&limit=" + limit;
   }
-
 }

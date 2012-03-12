@@ -43,13 +43,14 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 
-  public TeamWorkbookPDFReporter(URL logo, String projectKey, String sonarUrl, Properties configProperties,
-      Properties langProperties) {
+  public TeamWorkbookPDFReporter(final URL logo, final String projectKey, final String sonarUrl, final Properties configProperties,
+      final Properties langProperties) {
     super(logo, projectKey, sonarUrl, configProperties, langProperties);
     reportType = "workbook";
   }
 
-  public void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
+  @Override
+public void printPdfBody(final Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
     ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
@@ -93,7 +94,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     }
   }
 
-  private void printMostViolatedRulesDetails(Project project, Section section13) {
+  private void printMostViolatedRulesDetails(final Project project, final Section section13) {
     Iterator<Rule> it = project.getMostViolatedRules().iterator();
 
     while (it.hasNext()) {
@@ -111,13 +112,11 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     }
   }
 
-  private PdfPTable createViolationsDetailedTable(String ruleName, List<String> files, List<String> lines) {
+  private PdfPTable createViolationsDetailedTable(final String ruleName, final List<String> files, final List<String> lines) {
 
     // TODO: internationalize this
 
     PdfPTable table = new PdfPTable(10);
-    Iterator<String> itLeft = files.iterator();
-    Iterator<String> itRight = lines.iterator();
     table.getDefaultCell().setColspan(1);
     table.getDefaultCell().setBackgroundColor(new Color(255, 228, 181));
     table.addCell(new Phrase("Rule", Style.NORMAL_FONT));
