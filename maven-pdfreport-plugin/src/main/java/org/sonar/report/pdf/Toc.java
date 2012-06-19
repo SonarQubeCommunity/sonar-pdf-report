@@ -57,7 +57,6 @@ public class Toc extends PdfPageEventHelper {
 
   @Override
   public void onChapter(PdfWriter writer, Document document, float position, Paragraph title) {
-    // toc.add(new Paragraph(title.getContent() + " page " + document.getPageNumber()));
     content.getDefaultCell().setBorderColorBottom(Color.LIGHT_GRAY);
     content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
     content.getDefaultCell().setUseBorderPadding(true);
@@ -94,9 +93,6 @@ public class Toc extends PdfPageEventHelper {
 
   @Override
   public void onCloseDocument(PdfWriter writer, Document document) {
-    // Rectangle page = toc.getPageSize();
-    // content.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - 200,
-    // this.writer.getDirectContent());
     try {
       toc.add(content);
     } catch (DocumentException e) {
