@@ -71,9 +71,9 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/pdf-report</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/pdf-report</developerConnection>
-    <url>http://svn.sonar-plugins.codehaus.org</url>
+    <connection>scm:git:git@github.com:SonarCommunity/sonar-pdf-report.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-pdf-report.git</developerConnection>
+    <url>https://github.com/SonarCommunity/sonar-pdf-report</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
