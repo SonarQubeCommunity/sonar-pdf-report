@@ -35,7 +35,7 @@
   <artifactId>parent</artifactId>
   <version>1.4-SNAPSHOT</version>
   <packaging>pom</packaging>
-  
+
   <name>Sonar PDF Report (parent)</name>
   <description>Sonar and Maven plugin for PDF reporting</description>
   <inceptionYear>2010</inceptionYear>
@@ -49,7 +49,7 @@
       <url>http://www.gnu.org/licenses/lgpl.txt</url>
     </license>
   </licenses>
-  
+
   <developers>
     <developer>
       <id>amuniz</id>
@@ -67,7 +67,7 @@
 
   <modules>
     <module>sonar-pdfreport-plugin</module>
-    <module>maven-pdfreport-plugin</module>
+    <module>sonarpdf-maven-plugin</module>
   </modules>
 
   <scm>
@@ -79,11 +79,11 @@
     <system>JIRA</system>
     <url>http://jira.codehaus.org/browse/SONARPLUGINS/component/14372</url>
   </issueManagement>
-  
+
   <properties>
     <sonar.version>2.13</sonar.version>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>

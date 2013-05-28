@@ -37,7 +37,7 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
   }
 
   public String getArtifactId() {
-    return "maven-pdfreport-plugin";
+    return "sonar-pdf-maven-plugin";
   }
 
   public String getVersion() {
