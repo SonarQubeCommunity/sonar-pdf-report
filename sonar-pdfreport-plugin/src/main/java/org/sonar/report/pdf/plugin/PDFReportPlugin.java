@@ -24,6 +24,7 @@ import org.sonar.api.Extension;
 import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
+import org.sonar.api.PropertyType;
 import org.sonar.report.pdf.batch.PDFMavenPluginHandler;
 import org.sonar.report.pdf.batch.PDFPostJob;
 import org.sonar.report.pdf.web.ReportWebService;
@@ -31,7 +32,7 @@ import org.sonar.report.pdf.web.ReportWebService;
 import java.util.ArrayList;
 import java.util.List;
 
-@Properties({
+@Properties({ 
   @Property(
     key=PDFPostJob.SKIP_PDF_KEY,
     name="Skip",
@@ -39,16 +40,19 @@ import java.util.List;
     defaultValue = "" + PDFPostJob.SKIP_PDF_DEFAULT_VALUE,
     global = true,
     project = true,
-    module = false
+    module = false,
+    type = PropertyType.BOOLEAN
   ),
   @Property(
     key=PDFPostJob.REPORT_TYPE,
     name="Type",
-    description = "Report type (executive or workbook).",
+    description = "Report type.",
     defaultValue = PDFPostJob.REPORT_TYPE_DEFAULT_VALUE,
     global = true,
     project = true,
-    module = false
+    module = false,
+    type = PropertyType.SINGLE_SELECT_LIST,
+    options = { "executive", "workbook" }
   ),
   @Property(
     key=PDFPostJob.USERNAME,
@@ -66,7 +70,8 @@ import java.util.List;
     defaultValue = PDFPostJob.PASSWORD_DEFAULT_VALUE,
     global = true,
     project = true,
-    module = false
+    module = false,
+    type = PropertyType.PASSWORD
   )
 })
 public class PDFReportPlugin implements Plugin {

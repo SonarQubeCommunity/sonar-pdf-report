@@ -81,7 +81,7 @@
   </issueManagement>
 
   <properties>
-    <sonar.version>2.13</sonar.version>
+    <sonar.version>3.0</sonar.version>
   </properties>
 
   <build>
