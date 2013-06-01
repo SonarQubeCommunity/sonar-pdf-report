@@ -23,6 +23,7 @@ package org.sonar.report.pdf.entity;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -38,43 +39,94 @@ import org.sonar.report.pdf.util.SonarAccess;
 import org.sonar.report.pdf.util.UrlPath;
 
 /**
- *This class encapsulates the measures info.
+ * This class encapsulates the measures info.
  */
 public class Measures {
 
   private final static String MEASURES = "//resources/resource/msr";
   private final static String DATE = "//resources/resource/date";
   private final static String VERSION = "//resources/resource/version";
-  private static String measuresKeys = null;
+  private static List<String> measuresKeys = null;
 
   private Hashtable<String, Measure> measuresTable = new Hashtable<String, Measure>();
   private Date date;
   private String version = "N/A";
 
+  private static Integer DEFAULT_SPLIT_LIMIT = 20;
+
   public void initMeasuresByProjectKey(SonarAccess sonarAccess, String projectKey) throws HttpException, IOException,
-    DocumentException {
+      DocumentException {
     if (measuresKeys == null) {
       measuresKeys = getAllMetricKeys(sonarAccess);
     }
-    Logger.debug("Accessing Sonar: getting measures for project " + projectKey);
-    String urlAllMesaures = UrlPath.RESOURCES + projectKey + "&depth=0&format=xml&includetrends=true" + "&metrics="
-        + measuresKeys;
-    this.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
+
+    // Avoid "Post too large"
+    if (measuresKeys.size() > DEFAULT_SPLIT_LIMIT) {
+      initMeasuresSplittingRequests(sonarAccess, projectKey);
+    } else {
+      String keys = measuresKeys.toString();
+      keys = keys.substring(1, keys.length() - 1);
+      this.addMeasures(keys, sonarAccess, projectKey);
+    }
+
   }
 
-  public String getAllMetricKeys(SonarAccess sonarAccess) throws HttpException, IOException,
-    org.dom4j.DocumentException {
+  public List<String> getAllMetricKeys(SonarAccess sonarAccess) throws HttpException, IOException,
+      org.dom4j.DocumentException {
+
     String urlAllMetrics = "/api/metrics?format=xml";
     Logger.debug("Accessing Sonar: getting all metric keys");
     org.dom4j.Document allMetricsDocument = sonarAccess.getUrlAsDocument(urlAllMetrics);
     List<Node> allMetricKeysNodes = allMetricsDocument.selectNodes("//metrics/metric/key");
-    String allMetricKeys = "";
+    List<String> allMetricKeys = new ArrayList<String>();
     Iterator<Node> it = allMetricKeysNodes.iterator();
-    allMetricKeys += it.next().getText();
     while (it.hasNext()) {
-      allMetricKeys += "," + it.next().getText();
+      allMetricKeys.add(it.next().getText());
     }
     return allMetricKeys;
+  }
+
+  /**
+   * This method does the required requests to get all measures from Sonar, but
+   * taking care to avoid too large requests (measures are taken by 20).
+   */
+  private void initMeasuresSplittingRequests(final SonarAccess sonarAccess, final String projectKey)
+      throws HttpException, IOException, DocumentException {
+    Iterator<String> it = measuresKeys.iterator();
+    Logger.debug("Getting " + measuresKeys.size() + " metric measures from Sonar by splitting requests");
+    String twentyMeasures = "";
+    int i = 0;
+    boolean isTheFirst = true;
+    while (it.hasNext()) {
+      if (isTheFirst) {
+        twentyMeasures += it.next();
+        isTheFirst = false;
+      } else {
+        twentyMeasures += "," + it.next();
+      }
+      i++;
+      if (i % DEFAULT_SPLIT_LIMIT == 0) {
+        Logger.debug("Split request for: " + twentyMeasures);
+        this.addMeasures(twentyMeasures, sonarAccess, projectKey);
+        i = 0;
+        isTheFirst = true;
+        twentyMeasures = "";
+      }
+    }
+    if (i != 0) {
+      Logger.debug("Split request for remain metric measures: " + twentyMeasures);
+      this.addMeasures(twentyMeasures, sonarAccess, projectKey);
+    }
+  }
+
+  /**
+   * Add measures to this.
+   */
+  private void addMeasures(final String measuresAsString, final SonarAccess sonarAccess, final String projectKey)
+      throws HttpException, IOException, DocumentException {
+    String urlAllMesaures = UrlPath.RESOURCES + projectKey + "&depth=0&format=xml&includetrends=true" + "&metrics="
+        + measuresAsString;
+    this.addAllMeasuresFromDocument(sonarAccess.getUrlAsDocument(urlAllMesaures));
   }
 
   public Date getDate() {

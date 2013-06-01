@@ -23,6 +23,7 @@ package org.sonar.report.pdf.test;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 import org.dom4j.DocumentException;
@@ -48,7 +49,7 @@ public class MetricsTest {
 
         SonarAccess sonarAccess = new SonarAccess("http://localhost:9000", null, null);
         Measures measures = new Measures();
-        String allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
+        List<String> allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
 
         System.out.println("Checking metrics consistency...");
         Field[] fields = MetricKeys.class.getFields();
