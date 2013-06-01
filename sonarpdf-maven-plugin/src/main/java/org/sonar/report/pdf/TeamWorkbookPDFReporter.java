@@ -152,15 +152,17 @@ public void printPdfBody(final Document document) throws DocumentException, IOEx
       i++;
     }
 
-    table.getDefaultCell().setColspan(7);
-    table.addCell(files.get(files.size() - 1));
-    table.getDefaultCell().setColspan(3);
-    if (lineNumbers.equals("")) {
-      lineNumbers += lines.get(i);
-    } else {
-      lineNumbers += ", " + lines.get(lines.size() - 1);
+    if(files.size() != 0) {
+      table.getDefaultCell().setColspan(7);
+      table.addCell(files.get(files.size() - 1));
+      table.getDefaultCell().setColspan(3);
+      if (lineNumbers.equals("")) {
+        lineNumbers += lines.get(i);
+      } else {
+        lineNumbers += ", " + lines.get(lines.size() - 1);
+      }
+      table.addCell(lineNumbers);
     }
-    table.addCell(lineNumbers);
 
     table.setSpacingBefore(20);
     table.setSpacingAfter(20);
