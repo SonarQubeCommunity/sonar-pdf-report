@@ -52,7 +52,7 @@ import java.util.List;
     project = true,
     module = false,
     type = PropertyType.SINGLE_SELECT_LIST,
-    options = { "executive", "workbook" }
+    options = { "executive", "workbook","detailed" }
   ),
   @Property(
     key=PDFPostJob.USERNAME,

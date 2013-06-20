@@ -65,7 +65,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     this.sonarUrl = sonarUrl;
     this.configProperties = configProperties;
     this.langProperties = langProperties;
-    reportType = "executive";
+    reportType = "executive"; //TODO: Use Polymorphism!!!
   }
 
   @Override
@@ -377,7 +377,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     List<String> left = new LinkedList<String>();
     List<String> right = new LinkedList<String>();
     int limit = 0;
-    while (it.hasNext() && limit < 5) {
+    while (it.hasNext()) {
       Rule rule = it.next();
       left.add(rule.getName());
       right.add(String.valueOf(rule.getViolationsNumberFormatted()));

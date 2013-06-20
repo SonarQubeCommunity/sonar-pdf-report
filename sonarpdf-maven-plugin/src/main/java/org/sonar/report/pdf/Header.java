@@ -54,6 +54,7 @@ public class Header extends PdfPageEventHelper {
       Image logoImage = Image.getInstance(logo);
       Rectangle page = document.getPageSize();
       PdfPTable head = new PdfPTable(4);
+      head.getDefaultCell().setBorder(0);
       head.getDefaultCell().setVerticalAlignment(PdfCell.ALIGN_MIDDLE);
       head.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_CENTER);
       head.addCell(logoImage);

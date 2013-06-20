@@ -20,9 +20,16 @@
 
 package org.sonar.report.pdf.mojo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.sonar.report.pdf.DetailedPDFReporter;
 import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
@@ -31,12 +38,6 @@ import org.sonar.report.pdf.util.Credentials;
 import org.sonar.report.pdf.util.Logger;
 
 import com.lowagie.text.DocumentException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Generate a PDF report. WARNING, Sonar server must be started.
@@ -148,6 +149,10 @@ public class SonarPDFMojo extends AbstractMojo {
         } else if (reportType.equals("workbook")) {
           Logger.info("Team workbook report type selected");
           reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
+              .getProperty("sonar.base.url"), config, configLang);
+        } else if (reportType.equals("detailed")) {
+          Logger.info("Detailed report type selected");
+          reporter = new DetailedPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
               .getProperty("sonar.base.url"), config, configLang);
         }
       } else {

@@ -19,6 +19,11 @@
  */
 package org.sonar.report.pdf.entity;
 
+import java.awt.Color;
+import java.util.HashMap;
+
+import com.lowagie.text.Font;
+
 /**
  * Priorities.
  */
@@ -30,7 +35,24 @@ public class Priority {
   public static final String CRITICAL = "CRITICAL";
   public static final String BLOCKER = "BLOCKER";
 
+  public static HashMap<String,Color> priorityColors;
+  
   public static String[] getPrioritiesArray() {
     return new String[]{INFO, MINOR, MAJOR, CRITICAL, BLOCKER};
+  }
+  
+  public static Font getPriorityFont(Font f,String priority){
+	  if(priorityColors == null){
+		  priorityColors = new HashMap<String,Color>();
+		  priorityColors.put(INFO, Color.black);
+		  priorityColors.put(MINOR, new Color(0,128,0));
+		  priorityColors.put(MAJOR, new Color(205,145,0));
+		  priorityColors.put(CRITICAL, new Color(255,36,0));
+		  priorityColors.put(BLOCKER, new Color(255,0,0));
+	  }
+	  Font resp = new Font(f);
+	  resp.setColor(priorityColors.get(priority));
+	  //resp.setStyle(Font.)
+	  return resp;
   }
 }

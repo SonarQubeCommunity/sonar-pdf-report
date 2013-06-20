@@ -28,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import org.sonar.report.pdf.Style.Backgrounds;
+import org.sonar.report.pdf.entity.Priority;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.Violation;
@@ -36,9 +38,11 @@ import org.sonar.report.pdf.entity.exception.ReportException;
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Section;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
@@ -113,61 +117,88 @@ public void printPdfBody(final Document document) throws DocumentException, IOEx
   }
 
   private PdfPTable createViolationsDetailedTable(final String ruleName, final List<String> files, final List<String> lines) {
+	  PdfPTable table = new PdfPTable(10);
+	    table.setWidthPercentage(100f);
+	    table.setHeaderRows(3);
+	    table.getDefaultCell().setBorderWidth(0f);
+	    table.getDefaultCell().setUseBorderPadding(true);
+	    table.getDefaultCell().setPaddingBottom(4.0f);
+	    table.getDefaultCell().setColspan(1);
+	    table.addCell(new Phrase(getTextProperty("general.rule"), Style.NORMAL_FONT));
+	    table.getDefaultCell().setColspan(10);
+	    table.getDefaultCell().setBackgroundColor(Color.WHITE);
+	    table.addCell(new Phrase(ruleName, Style.NORMAL_FONT));
+	    table.getDefaultCell().setColspan(10);
+	    table.getDefaultCell().setBackgroundColor(Color.GRAY);
+	    table.addCell("");
+	    table.getDefaultCell().setBackgroundColor(Style.Backgrounds.TABLE_TH_BACKGROUND.color);
+	    table.getDefaultCell().setColspan(7);
+	    table.addCell(new Phrase(getTextProperty("general.file"), Style.NORMAL_FONT));
+	    table.getDefaultCell().setColspan(3);
+	    table.addCell(new Phrase(getTextProperty("general.line"), Style.NORMAL_FONT));
+	    table.getDefaultCell().setBackgroundColor(Color.WHITE);
+	    
+	    int i = 0;
+	    String lineNumbers = "";
+	    boolean even = true;
+	    while (i < files.size() - 1) {
+	      if (lineNumbers.equals("")) {
+	        lineNumbers += lines.get(i);
+	      } else {
+	        lineNumbers += ", " + lines.get(i);
+	      }
 
-    // TODO: internationalize this
+	      if (!files.get(i).equals(files.get(i + 1))) {
+	        //table.getDefaultCell().setColspan(7);
+	    	even = !even;
+	  		Color backgroundColor = Backgrounds.TABLE_ROW_ODD.getColor();
+	  		if (even)
+	  			backgroundColor = Backgrounds.TABLE_ROW_EVEN.getColor();
+	  		
+	        PdfPCell fileCell = new PdfPCell(new Phrase(files.get(i),Style.smallFont));
+	        fileCell.setColspan(7);
+	        fileCell.setBackgroundColor(backgroundColor);
+	        fileCell.setBorder(0);
+	        table.addCell(fileCell);
+	        PdfPCell linenumbersCell = new PdfPCell(new Phrase(lineNumbers,Style.smallFont));
+	        linenumbersCell.setColspan(3);
+	        linenumbersCell.setBackgroundColor(backgroundColor);
+	        linenumbersCell.setBorder(0);
+	        table.addCell(linenumbersCell);
+	        lineNumbers = "";
+	      }
+	      i++;
+	    }
 
-    PdfPTable table = new PdfPTable(10);
-    table.getDefaultCell().setColspan(1);
-    table.getDefaultCell().setBackgroundColor(new Color(255, 228, 181));
-    table.addCell(new Phrase("Rule", Style.NORMAL_FONT));
-    table.getDefaultCell().setColspan(9);
-    table.getDefaultCell().setBackgroundColor(Color.WHITE);
-    table.addCell(new Phrase(ruleName, Style.NORMAL_FONT));
-    table.getDefaultCell().setColspan(10);
-    table.getDefaultCell().setBackgroundColor(Color.GRAY);
-    table.addCell("");
-    table.getDefaultCell().setColspan(7);
-    table.getDefaultCell().setBackgroundColor(new Color(255, 228, 181));
-    table.addCell(new Phrase("File", Style.NORMAL_FONT));
-    table.getDefaultCell().setColspan(3);
-    table.addCell(new Phrase("Line", Style.NORMAL_FONT));
-    table.getDefaultCell().setBackgroundColor(Color.WHITE);
+	    if(files.size() != 0) {
+	    	
+	      even = !even;
+		  Color backgroundColor = Backgrounds.TABLE_ROW_ODD.getColor();
+		  if (even)
+		    backgroundColor = Backgrounds.TABLE_ROW_EVEN.getColor();
+			
+	      if (lineNumbers.equals("")) {
+	        lineNumbers += lines.get(i);
+	      } else {
+	        lineNumbers += ", " + lines.get(lines.size() - 1);
+	      }
+	      
+	      PdfPCell fileCell = new PdfPCell(new Phrase(files.get(files.size() - 1),Style.smallFont));
+	      fileCell.setColspan(7);
+	      fileCell.setBackgroundColor(backgroundColor);
+	      fileCell.setBorder(0);
+	      table.addCell(fileCell);
+	      
+	      PdfPCell linenumbersCell = new PdfPCell(new Phrase(lineNumbers,Style.smallFont));
+	      linenumbersCell.setColspan(3);
+	      linenumbersCell.setBackgroundColor(backgroundColor);
+	      linenumbersCell.setBorder(0);
+	      table.addCell(linenumbersCell);
+	    }
 
-    int i = 0;
-    String lineNumbers = "";
-    while (i < files.size() - 1) {
-      if (lineNumbers.equals("")) {
-        lineNumbers += lines.get(i);
-      } else {
-        lineNumbers += ", " + lines.get(i);
-      }
-
-      if (!files.get(i).equals(files.get(i + 1))) {
-        table.getDefaultCell().setColspan(7);
-        table.addCell(files.get(i));
-        table.getDefaultCell().setColspan(3);
-        table.addCell(lineNumbers);
-        lineNumbers = "";
-      }
-      i++;
-    }
-
-    if(files.size() != 0) {
-      table.getDefaultCell().setColspan(7);
-      table.addCell(files.get(files.size() - 1));
-      table.getDefaultCell().setColspan(3);
-      if (lineNumbers.equals("")) {
-        lineNumbers += lines.get(i);
-      } else {
-        lineNumbers += ", " + lines.get(lines.size() - 1);
-      }
-      table.addCell(lineNumbers);
-    }
-
-    table.setSpacingBefore(20);
-    table.setSpacingAfter(20);
-    table.setLockedWidth(false);
-    table.setWidthPercentage(90);
-    return table;
+	    table.setSpacingBefore(20);
+	    table.setSpacingAfter(20);
+	    table.setLockedWidth(false);
+	    return table;
   }
 }

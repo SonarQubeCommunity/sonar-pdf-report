@@ -22,54 +22,66 @@ package org.sonar.report.pdf.entity;
 
 public class Violation {
 
-  private String resource;
-  private String line;
-  private String source;
+	private String resource;
+	private String line;
+	private String source;
+	private String priority;
 
-  public Violation(final String line, final String resource, final String source) {
-    this.line = line;
-    this.resource = resource;
-    this.source = source;
-  }
 
-  public String getResource() {
-    return resource;
-  }
+	public Violation(final String line, final String resource,
+			final String source, final String priority) {
+		this.line = line;
+		this.resource = resource;
+		this.source = source;
+		this.priority = priority;
+	}
 
-  public String getLine() {
-    return line;
-  }
+	public String getResource() {
+		return resource;
+	}
 
-  public void setResource(final String resource) {
-    this.resource = resource;
-  }
+	public String getLine() {
+		return line;
+	}
 
-  public void setLine(final String line) {
-    this.line = line;
-  }
+	public void setResource(final String resource) {
+		this.resource = resource;
+	}
 
-  public String getSource() {
-    return source;
-  }
+	public void setLine(final String line) {
+		this.line = line;
+	}
 
-  public void setSource(final String source) {
-    this.source = source;
-  }
+	public String getSource() {
+		return source;
+	}
 
-  public static String getViolationLevelByKey(final String level) {
-    String violationLevel = null;
-    if(level.equals(Priority.INFO)) {
-        violationLevel = "info_violations";
-    } else if(level.equals(Priority.MINOR)) {
-        violationLevel = "minor_violations";
-    } else if(level.equals(Priority.MAJOR)) {
-        violationLevel = "major_violations";
-    } else if(level.equals(Priority.CRITICAL)) {
-        violationLevel = "critical_violations";
-    } else if(level.equals(Priority.BLOCKER)) {
-        violationLevel = "blocker_violations";
-    }
-    return violationLevel;
-  }
+	public void setSource(final String source) {
+		this.source = source;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+	
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+	
+	public static String getViolationLevelByKey(final String level) {
+		String violationLevel = null;
+		if (level.equals(Priority.INFO)) {
+			violationLevel = "info_violations";
+		} else if (level.equals(Priority.MINOR)) {
+			violationLevel = "minor_violations";
+		} else if (level.equals(Priority.MAJOR)) {
+			violationLevel = "major_violations";
+		} else if (level.equals(Priority.CRITICAL)) {
+			violationLevel = "critical_violations";
+		} else if (level.equals(Priority.BLOCKER)) {
+			violationLevel = "blocker_violations";
+		}
+		return violationLevel;
+	}
 
 }

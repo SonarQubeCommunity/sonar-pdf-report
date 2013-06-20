@@ -54,8 +54,18 @@ public class Rule {
 
   // Total vilations of this rule
   private String violationsNumberFormatted;
+  
+  private String priority;
 
-  private static final String RULE_NAME = "rule_name";
+  public String getPriority() {
+	return priority;
+}
+
+public void setPriority(String priority) {
+	this.priority = priority;
+}
+
+private static final String RULE_NAME = "rule_name";
   private static final String RULE_KEY = "rule_key";
   private static final String RULE_VIOLATIONS_NUMBER = "val";
   private static final String RULE_VIOLATIONS_NUMBER_FORMATTED = "frmt_val";
@@ -63,6 +73,8 @@ public class Rule {
   private static final String RULE_VIOLATIONS = "/violations/violation";
   private static final String RESOURCE_LINE = "line";
   private static final String RESOURCE_KEY = "resource/key";
+  private static final String RULE_VIOLATION_PRIORITY = "priority";
+  private static final String RULE_PRIORITY = "rule_priority";
   private static final String SOURCE = "/source/line/val";
 
   /**
@@ -74,6 +86,7 @@ public class Rule {
     Rule rule = new Rule();
     rule.setKey(ruleNode.selectSingleNode(RULE_KEY).getText());
     rule.setName(ruleNode.selectSingleNode(RULE_NAME).getText());
+    rule.setPriority(ruleNode.selectSingleNode(RULE_PRIORITY).getText());
     rule.setViolationsNumber(Float.valueOf(ruleNode.selectSingleNode(RULE_VIOLATIONS_NUMBER).getText()));
     rule.setViolationsNumberFormatted(ruleNode.selectSingleNode(RULE_VIOLATIONS_NUMBER_FORMATTED).getText());
     return rule;
@@ -88,6 +101,11 @@ public class Rule {
    * @throws HttpException
    */
   public void loadViolatedResources(SonarAccess sonarAccess, String projectKey) throws ReportException, HttpException,
+  IOException, DocumentException {
+	  this.loadViolatedResources(sonarAccess, projectKey,UrlPath.VIOLATED_RESOURCES_BY_RULE);
+  }
+  
+  private void loadViolatedResources(SonarAccess sonarAccess, String projectKey,String urlPath) throws ReportException, HttpException,
     IOException, DocumentException {
     String ruleKey = getKey();
 
@@ -97,7 +115,7 @@ public class Rule {
       ruleKey = URLEncoder.encode(ruleKey, "UTF8");
       Logger.debug("Accessing Sonar: getting violated resurces by one given rule (" + getKey() + ")");
       Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.VIOLATIONS + projectKey
-          + UrlPath.VIOLATED_RESOURCES_BY_RULE + ruleKey + UrlPath.XML_SOURCE);
+          + urlPath + ruleKey + UrlPath.XML_SOURCE);
       List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);
       topViolatedResources = new LinkedList<Violation>();
       Iterator<Node> it = violatedResources.iterator();
@@ -106,12 +124,27 @@ public class Rule {
         Node resource = it.next();
         String resourceKey = resource.selectSingleNode(RESOURCE_KEY).getText();
         String line = "N/A";
+        String priority = resource.selectSingleNode(RULE_VIOLATION_PRIORITY).getText();
+        //String source = resource.selectSingleNode(SOURCE).getText();
         if (resource.selectSingleNode(RESOURCE_LINE) != null) {
           line = resource.selectSingleNode(RESOURCE_LINE).getText();
         }
-        topViolatedResources.add(new Violation(line, resourceKey, ""));
+        topViolatedResources.add(new Violation(line, resourceKey, "" ,priority));
       }
     }
+  }
+  
+  /**
+   * Init a Rule initializing all violated resources.
+   * 
+   * @return
+   * @throws DocumentException
+   * @throws IOException
+   * @throws HttpException
+   */
+  public void loadAllViolatedResources(SonarAccess sonarAccess, String projectKey) throws ReportException, HttpException,
+  IOException, DocumentException {
+  	this.loadViolatedResources(sonarAccess,projectKey,UrlPath.VIOLATED_RESOURCES_BY_RULE_ALL);
   }
 
   public String getName() {
