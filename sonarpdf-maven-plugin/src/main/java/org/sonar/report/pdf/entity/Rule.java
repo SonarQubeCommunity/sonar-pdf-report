@@ -57,15 +57,7 @@ public class Rule {
   
   private String priority;
 
-  public String getPriority() {
-	return priority;
-}
-
-public void setPriority(String priority) {
-	this.priority = priority;
-}
-
-private static final String RULE_NAME = "rule_name";
+  private static final String RULE_NAME = "rule_name";
   private static final String RULE_KEY = "rule_key";
   private static final String RULE_VIOLATIONS_NUMBER = "val";
   private static final String RULE_VIOLATIONS_NUMBER_FORMATTED = "frmt_val";
@@ -194,5 +186,12 @@ private static final String RULE_NAME = "rule_name";
   public void setViolationsNumberFormatted(String violationsNumberFormatted) {
     this.violationsNumberFormatted = violationsNumberFormatted;
   }
+  
+  public String getPriority() {
+	return priority;
+  }
 
+  public void setPriority(String priority) {
+	this.priority = priority;
+  }
 }
