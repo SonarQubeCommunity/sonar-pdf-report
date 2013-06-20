@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.sonar.report.pdf.DetailedPDFReporter;
+import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
@@ -46,7 +48,32 @@ public class ReporterTest {
      * @throws ReportException
      */
     @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
-    public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
+    public void getReportExecutiveTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
+        URL resource = this.getClass().getClassLoader().getResource("report.properties");
+        Properties config = new Properties();
+        config.load(resource.openStream());
+        config.setProperty("sonar.base.url", "http://localhost:9000");
+
+        URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
+        Properties configText = new Properties();
+        configText.load(resourceText.openStream());
+
+        PDFReporter reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"),
+                "ar.com.osde:workflowContacto", "http://localhost:9000", config, configText);
+        
+        ByteArrayOutputStream baos = reporter.getReport();
+        FileOutputStream fos = null;
+
+        fos = new FileOutputStream("target/testExecutiveReport.pdf");
+
+        baos.writeTo(fos);
+        fos.flush();
+        fos.close();
+
+    }
+    
+    @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
+    public void getReportTeamWorkbookPDFReporterTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
         URL resource = this.getClass().getClassLoader().getResource("report.properties");
         Properties config = new Properties();
         config.load(resource.openStream());
@@ -57,12 +84,37 @@ public class ReporterTest {
         configText.load(resourceText.openStream());
 
         PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
-                "org.apache.struts:struts-parent", "http://localhost:9000", config, configText);
-
+                "ar.com.osde:workflowContacto", "http://localhost:9000", config, configText);
+        
         ByteArrayOutputStream baos = reporter.getReport();
         FileOutputStream fos = null;
 
-        fos = new FileOutputStream("target/testReport.pdf");
+        fos = new FileOutputStream("target/testTeamWorkbookReport.pdf");
+
+        baos.writeTo(fos);
+        fos.flush();
+        fos.close();
+
+    }
+    
+    @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
+    public void getReportDetailedPDFReporterTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
+        URL resource = this.getClass().getClassLoader().getResource("report.properties");
+        Properties config = new Properties();
+        config.load(resource.openStream());
+        config.setProperty("sonar.base.url", "http://localhost:9000");
+
+        URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
+        Properties configText = new Properties();
+        configText.load(resourceText.openStream());
+
+        PDFReporter reporter = new DetailedPDFReporter(this.getClass().getResource("/sonar.png"),
+                "ar.com.osde:workflowContacto", "http://localhost:9000", config, configText);
+        
+        ByteArrayOutputStream baos = reporter.getReport();
+        FileOutputStream fos = null;
+
+        fos = new FileOutputStream("target/testDetailedReport.pdf");
 
         baos.writeTo(fos);
         fos.flush();
@@ -72,9 +124,9 @@ public class ReporterTest {
 
     @Test(enabled = true)
     public void hostAndPortShouldBeParsedCorrectly() throws ReportException {
-      SonarAccess sonar = new SonarAccess("http://localhost:9000/sonar", null, null);
+      SonarAccess sonar = new SonarAccess("http://localhost:80/sonar", null, null);
       Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 80);
-      sonar = new SonarAccess("https://localhost/sonar", null, null);
+      sonar = new SonarAccess("https://localhost:443/sonar", null, null);
       Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 443);
       sonar = new SonarAccess("http://host:9000", null, null);
       Assert.assertTrue(sonar.getHost().equals("host") && sonar.getPort() == 9000);

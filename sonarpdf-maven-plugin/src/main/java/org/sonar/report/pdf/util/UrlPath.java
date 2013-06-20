@@ -43,6 +43,7 @@ public class UrlPath {
   public static final String MOST_COMPLEX_FILES = "&metrics=" + MetricKeys.COMPLEXITY + "&scopes=FIL&depth=-1&limit=5";
   public static final String MOST_DUPLICATED_FILES = "&metrics=" + MetricKeys.DUPLICATED_LINES + "&scopes=FIL&depth=-1&limit=5";
   public static final String VIOLATED_RESOURCES_BY_RULE = "&scopes=FIL&depth=-1&limit=20&rules=";
+  public static final String VIOLATED_RESOURCES_BY_RULE_ALL = "&scopes=FIL&depth=-1&rules=";
   public static final String XML_SOURCE = "&format=xml";
   public static final String LIMIT10 = "&limit=5";
 

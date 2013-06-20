@@ -163,19 +163,30 @@ public class Project {
 
     // Reverse iteration to get violations with upper level first
     int limit = 10;
-    for(int i = priorities.length - 1; i >= 0 && limit > 0; i--) {
+    if(PDFReporter.reportType.equals("detailed"))
+    	limit = -1;
+    for(int i = priorities.length - 1; i >= 0 && limit != 0; i--)
+    	limit = this.initViolatedRulesByPriority(sonarAccess, priorities, limit,i);
+  }
+
+  private int initViolatedRulesByPriority(final SonarAccess sonarAccess,
+		String[] priorities, int limit,int i) throws HttpException, IOException,
+		DocumentException, ReportException {
+	
       Document mostViolatedRulesByLevel = sonarAccess.getUrlAsDocument(UrlPath.RESOURCES + this.key + UrlPath.PARENT_PROJECT
-          + UrlPath.getViolationsLevelPath(priorities[i]) + UrlPath.XML_SOURCE + UrlPath.getLimit(limit));
+          + UrlPath.getViolationsLevelPath(priorities[i]) + UrlPath.XML_SOURCE + (limit == -1?"":UrlPath.getLimit(limit)));
       if (mostViolatedRulesByLevel.selectSingleNode(PROJECT) != null) {
         int count = initMostViolatedRulesFromNode(mostViolatedRulesByLevel.selectSingleNode(PROJECT), sonarAccess);
         Logger.debug("\t " + count + " " + priorities[i] + " violations");
-        limit = limit - count;
+        if(limit != -1)
+        	limit = limit - count;
       } else {
         Logger.debug("There is not result on select //resources/resource");
         Logger.debug("There are no violations with level " + priorities[i]);
       }
-    }
-  }
+    
+	return limit;
+}
 
   private void initMostViolatedFiles(final SonarAccess sonarAccess) throws IOException, DocumentException {
     Logger.info("    Retrieving most violated files");
@@ -224,6 +235,8 @@ public class Project {
         Rule rule = Rule.initFromNode(measure);
         if (PDFReporter.reportType.equals("workbook")) {
           rule.loadViolatedResources(sonarAccess, this.key);
+        } else if (PDFReporter.reportType.equals("detailed")) {
+          rule.loadAllViolatedResources(sonarAccess, this.key);
         }
         this.mostViolatedRules.add(rule);
         count++;
