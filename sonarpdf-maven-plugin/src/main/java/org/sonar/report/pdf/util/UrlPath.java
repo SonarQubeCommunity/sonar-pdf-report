@@ -39,10 +39,10 @@ public class UrlPath {
   public static final String MOST_VIOLATED_MAJOR_RULES = "&metrics=" + MetricKeys.MAJOR_VIOLATIONS + "&filter_rules=false&filter_rules_cats=true";
   public static final String MOST_VIOLATED_CRITICAL_RULES = "&metrics=" + MetricKeys.CRITICAL_VIOLATIONS + "&filter_rules=false&filter_rules_cats=true";
   public static final String MOST_VIOLATED_BLOCKER_RULES = "&metrics=" + MetricKeys.BLOCKER_VIOLATIONS + "&filter_rules=false&filter_rules_cats=true";
-  public static final String MOST_VIOLATED_FILES = "&metrics=" + MetricKeys.VIOLATIONS + "&scopes=FIL&depth=-1&limit=5";
-  public static final String MOST_COMPLEX_FILES = "&metrics=" + MetricKeys.COMPLEXITY + "&scopes=FIL&depth=-1&limit=5";
-  public static final String MOST_DUPLICATED_FILES = "&metrics=" + MetricKeys.DUPLICATED_LINES + "&scopes=FIL&depth=-1&limit=5";
-  public static final String VIOLATED_RESOURCES_BY_RULE = "&scopes=FIL&depth=-1&limit=20&rules=";
+  public static final String MOST_VIOLATED_FILES = "&metrics=" + MetricKeys.VIOLATIONS + "&scope=FIL&depth=-1&limit=5";
+  public static final String MOST_COMPLEX_FILES = "&metrics=" + MetricKeys.COMPLEXITY + "&scope=FIL&depth=-1&limit=5";
+  public static final String MOST_DUPLICATED_FILES = "&metrics=" + MetricKeys.DUPLICATED_LINES + "&scope=FIL&depth=-1&limit=5";
+  public static final String VIOLATED_RESOURCES_BY_RULE = "&scope=FIL&depth=-1&limit=20&rules=";
   public static final String XML_SOURCE = "&format=xml";
   public static final String LIMIT10 = "&limit=5";
 
