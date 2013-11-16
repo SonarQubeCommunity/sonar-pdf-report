@@ -26,8 +26,6 @@ public class UrlPath {
 
   // First level
   public static final String RESOURCES = "/api/resources?resource=";
-  // public static final String VIOLATIONS = "/api/violations?resource=";
-  public static final String COMPONENTS = "/issues/components/component";
   public static final String ISSUES = "/api/issues/search?resource=";
   public static final String SOURCES = "/api/sources?resource=";
 
