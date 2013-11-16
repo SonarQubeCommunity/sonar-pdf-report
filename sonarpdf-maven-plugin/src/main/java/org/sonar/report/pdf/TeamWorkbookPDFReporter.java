@@ -43,15 +43,15 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 
-  public TeamWorkbookPDFReporter(final URL logo, final String projectKey, final String sonarUrl, final Properties configProperties,
-      final Properties langProperties) {
+  public TeamWorkbookPDFReporter(final URL logo, final String projectKey, final String sonarUrl,
+      final Properties configProperties, final Properties langProperties) {
     super(logo, projectKey, sonarUrl, configProperties, langProperties);
     reportType = "workbook";
   }
 
   @Override
-public void printPdfBody(final Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
-    ReportException {
+  public void printPdfBody(final Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
+      ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
     ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(project.getName(), Style.CHAPTER_FONT));
@@ -112,7 +112,8 @@ public void printPdfBody(final Document document) throws DocumentException, IOEx
     }
   }
 
-  private PdfPTable createViolationsDetailedTable(final String ruleName, final List<String> files, final List<String> lines) {
+  private PdfPTable createViolationsDetailedTable(final String ruleName, final List<String> files,
+      final List<String> lines) {
 
     // TODO: internationalize this
 
@@ -135,24 +136,26 @@ public void printPdfBody(final Document document) throws DocumentException, IOEx
 
     int i = 0;
     String lineNumbers = "";
-    while (i < files.size() - 1) {
-      if (lineNumbers.equals("")) {
-        lineNumbers += lines.get(i);
-      } else {
-        lineNumbers += ", " + lines.get(i);
-      }
+    if (files.size() > 0) {
+      while (i < files.size() - 1) {
+        if (lineNumbers.equals("")) {
+          lineNumbers += lines.get(i);
+        } else {
+          lineNumbers += ", " + lines.get(i);
+        }
 
-      if (!files.get(i).equals(files.get(i + 1))) {
-        table.getDefaultCell().setColspan(7);
-        table.addCell(files.get(i));
-        table.getDefaultCell().setColspan(3);
-        table.addCell(lineNumbers);
-        lineNumbers = "";
+        if (!files.get(i).equals(files.get(i + 1))) {
+          table.getDefaultCell().setColspan(7);
+          table.addCell(files.get(i));
+          table.getDefaultCell().setColspan(3);
+          table.addCell(lineNumbers);
+          lineNumbers = "";
+        }
+        i++;
       }
-      i++;
     }
 
-    if(files.size() != 0) {
+    if (files.size() != 0) {
       table.getDefaultCell().setColspan(7);
       table.addCell(files.get(files.size() - 1));
       table.getDefaultCell().setColspan(3);

@@ -35,7 +35,7 @@
   <packaging>sonar-plugin</packaging>
   
   <name>Sonar PDF Report (Sonar Plugin)</name>
-  <description>Sonar plugin for PDF reporting</description>
+  <description>Generates PDF report</description>
   <url>http://docs.codehaus.org/display/SONAR/Sonar+PDF+Plugin</url>
   
   <properties>
