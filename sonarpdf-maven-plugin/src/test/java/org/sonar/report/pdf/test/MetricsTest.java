@@ -47,7 +47,7 @@ public class MetricsTest {
         Properties configText = new Properties();
         configText.load(resourceText.openStream());
 
-        SonarAccess sonarAccess = new SonarAccess("http://localhost:9000", null, null);
+        SonarAccess sonarAccess = new SonarAccess("http://nemo.sonarsource.org", null, null);
         Measures measures = new Measures();
         List<String> allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
 
@@ -55,7 +55,7 @@ public class MetricsTest {
         Field[] fields = MetricKeys.class.getFields();
         for (int i = 0; i < fields.length; i++) {
             String metricKey = (String) fields[i].get(MetricKeys.class);
-            Assert.assertTrue(allMetricsKeys.contains((String) fields[i].get(MetricKeys.class)), "Metric " + metricKey
+            Assert.assertTrue(allMetricsKeys.contains(fields[i].get(MetricKeys.class)), "Metric " + metricKey
                     + " is not provided");
             System.out.println(metricKey + "... OK");
         }

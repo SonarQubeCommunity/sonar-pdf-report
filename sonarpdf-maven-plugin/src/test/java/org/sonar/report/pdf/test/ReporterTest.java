@@ -57,7 +57,7 @@ public class ReporterTest {
         configText.load(resourceText.openStream());
 
         PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
-                "org.apache.struts:struts-parent", "http://localhost:9000", config, configText);
+                "org.apache.bcel:bcel", "http://nemo.sonarsource.org", config, configText);
 
         ByteArrayOutputStream baos = reporter.getReport();
         FileOutputStream fos = null;
@@ -72,11 +72,11 @@ public class ReporterTest {
 
     @Test(enabled = true)
     public void hostAndPortShouldBeParsedCorrectly() throws ReportException {
-      SonarAccess sonar = new SonarAccess("http://localhost:9000/sonar", null, null);
-      Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 80);
-      sonar = new SonarAccess("https://localhost/sonar", null, null);
-      Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 443);
-      sonar = new SonarAccess("http://host:9000", null, null);
-      Assert.assertTrue(sonar.getHost().equals("host") && sonar.getPort() == 9000);
+        SonarAccess sonar = new SonarAccess("http://localhost/sonar", null, null);
+        Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 80);
+        sonar = new SonarAccess("https://localhost/sonar", null, null);
+        Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 443);
+        sonar = new SonarAccess("http://host:9000", null, null);
+        Assert.assertTrue(sonar.getHost().equals("host") && sonar.getPort() == 9000);
     }
 }

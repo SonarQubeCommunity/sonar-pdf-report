@@ -21,10 +21,10 @@
 package org.sonar.report.pdf.entity;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpException;
 import org.dom4j.Document;
@@ -55,22 +55,24 @@ public class Rule {
   // Total vilations of this rule
   private String violationsNumberFormatted;
 
+  private String message;
+
   private static final String RULE_NAME = "rule_name";
   private static final String RULE_KEY = "rule_key";
   private static final String RULE_VIOLATIONS_NUMBER = "val";
   private static final String RULE_VIOLATIONS_NUMBER_FORMATTED = "frmt_val";
 
-  private static final String RULE_VIOLATIONS = "/violations/violation";
-  private static final String RESOURCE_LINE = "line";
-  private static final String RESOURCE_KEY = "resource/key";
-  private static final String SOURCE = "/source/line/val";
+  private static final String ISSUES = "/issues/issues/issue";
+  private static final String COMPONENT = "component";
+  private static final String MESSAGE = "message";
+  private static final String LINE = "line";
 
   /**
    * Initialize a rule given an XML Node that contains one rule
    * 
    * @return
    */
-  public static Rule initFromNode(Node ruleNode) {
+  public static Rule initFromNode(final Node ruleNode) {
     Rule rule = new Rule();
     rule.setKey(ruleNode.selectSingleNode(RULE_KEY).getText());
     rule.setName(ruleNode.selectSingleNode(RULE_NAME).getText());
@@ -80,15 +82,16 @@ public class Rule {
   }
 
   /**
-   * This method provide the possibility of init a Rule without init all violated resources.
+   * This method provide the possibility of init a Rule without init all
+   * violated resources.
    * 
    * @return
    * @throws DocumentException
    * @throws IOException
    * @throws HttpException
    */
-  public void loadViolatedResources(SonarAccess sonarAccess, String projectKey) throws ReportException, HttpException,
-    IOException, DocumentException {
+  public void loadViolatedResources(final SonarAccess sonarAccess, final String projectKey) throws ReportException,
+      HttpException, IOException, DocumentException {
     String ruleKey = getKey();
 
     if (ruleKey == null) {
@@ -96,18 +99,22 @@ public class Rule {
     } else {
       ruleKey = URLEncoder.encode(ruleKey, "UTF8");
       Logger.debug("Accessing Sonar: getting violated resurces by one given rule (" + getKey() + ")");
-      Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.VIOLATIONS + projectKey
+      Document violatedResourcesDocument = sonarAccess.getUrlAsDocument(UrlPath.ISSUES + projectKey
           + UrlPath.VIOLATED_RESOURCES_BY_RULE + ruleKey + UrlPath.XML_SOURCE);
-      List<Node> violatedResources = violatedResourcesDocument.selectNodes(RULE_VIOLATIONS);
+      List<Node> violatedResources = violatedResourcesDocument.selectNodes(ISSUES);
       topViolatedResources = new LinkedList<Violation>();
       Iterator<Node> it = violatedResources.iterator();
 
       while (it.hasNext()) {
         Node resource = it.next();
-        String resourceKey = resource.selectSingleNode(RESOURCE_KEY).getText();
+        if (this.message == null) {
+          this.message = resource.selectSingleNode(MESSAGE).getText();
+        }
+        String resourceKey = resource.selectSingleNode(COMPONENT).getText();
         String line = "N/A";
-        if (resource.selectSingleNode(RESOURCE_LINE) != null) {
-          line = resource.selectSingleNode(RESOURCE_LINE).getText();
+        Node resourceLine = resource.selectSingleNode(LINE);
+        if (resourceLine != null) {
+          line = resourceLine.getText();
         }
         topViolatedResources.add(new Violation(line, resourceKey, ""));
       }
@@ -126,15 +133,15 @@ public class Rule {
     return topViolatedResources;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
-  public void setDescription(String description) {
+  public void setDescription(final String description) {
     this.description = description;
   }
 
-  public void setTopViolations(List<Violation> violations) {
+  public void setTopViolations(final List<Violation> violations) {
     this.topViolatedResources = violations;
   }
 
@@ -142,7 +149,7 @@ public class Rule {
     return key;
   }
 
-  public void setKey(String key) {
+  public void setKey(final String key) {
     this.key = key;
   }
 
@@ -150,7 +157,7 @@ public class Rule {
     return violationsNumber;
   }
 
-  public void setViolationsNumber(float violationsNumber) {
+  public void setViolationsNumber(final float violationsNumber) {
     this.violationsNumber = violationsNumber;
   }
 
@@ -158,7 +165,7 @@ public class Rule {
     return violationsNumberFormatted;
   }
 
-  public void setViolationsNumberFormatted(String violationsNumberFormatted) {
+  public void setViolationsNumberFormatted(final String violationsNumberFormatted) {
     this.violationsNumberFormatted = violationsNumberFormatted;
   }
 

@@ -2,13 +2,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="PDFReporterTestSuite" verbose="1">
     <test name="BasicTest">
-        <groups>
-            <define name="root">
-            </define>
-            <run>
-                <include name="root" />
-            </run>
-        </groups>
         <packages>
             <package name="org.sonar.report.pdf.test"></package>
         </packages>
