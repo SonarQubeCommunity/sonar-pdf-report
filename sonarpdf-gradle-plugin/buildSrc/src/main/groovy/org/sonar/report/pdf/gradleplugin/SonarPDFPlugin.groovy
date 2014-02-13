@@ -17,101 +17,43 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-
-
-import org.gradle.api.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.slf4j.Logger
-import org.gradle.api.logging.Logger
-import org.gradle.api.logging.Logging
-
 
 import org.sonar.report.pdf.ExecutivePDFReporter
 import org.sonar.report.pdf.PDFReporter
 import org.sonar.report.pdf.TeamWorkbookPDFReporter
 import org.sonar.report.pdf.entity.exception.ReportException
 import org.sonar.report.pdf.util.Credentials
+import org.sonar.report.pdf.util.Logger
 
 import com.lowagie.text.DocumentException
-//import org.sonar.report.pdf.util.Logger
 
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.util.Properties
-
-/**
- * Generate a PDF report. WARNING, Sonar server must be started.
- * 
- * @goal generate
- * @aggregator
- */
 class SonarPDFPlugin extends DefaultTask {
-  /**
-   * Project build directory
-   * 
-   * @parameter expression="${project.build.directory}"
-   * @required
-   */
+
     File outputDirectory
 
-
-  /**
-   * Sonar Base URL.
-   * 
-   * @parameter expression="${sonar.host.url}"
-   * @optional
-   */
     String sonarHostUrl
 
-  /**
-   * Branch to be used.
-   * 
-   * @parameter expression="${branch}"
-   * @optional
-   */
     String branch
 
-  /**
-   * Branch to be used.
-   * 
-   * @parameter expression="${sonar.branch}"
-   * @optional
-   */
     String sonarBranch
 
-  /**
-   * Type of report.
-   * 
-   * @parameter expression="${report.type}"
-   * @optional
-   */
     String reportType
 
-  /**
-   * Username to access WS API.
-   * 
-   * @parameter expression="${sonar.pdf.username}"
-   * @optional
-   */
     String username
 
-  /**
-   * Password to access WS API.
-   * 
-   * @parameter expression="${sonar.pdf.password}"
-   * @optional
-   */
     String password
 
-    Logger sl4jLogger = Logging.getLogger('logger')
+
+    SonarPDFPlugin() {
+      description = "Generate a project quality report in PDF format"
+      group = "SonarPDF"
+    }
 
   @TaskAction
   def run() {
 
-    
 
     Properties config = new Properties()
     Properties configLang = new Properties()
@@ -132,24 +74,24 @@ class SonarPDFPlugin extends DefaultTask {
 
       if (branch != null) {
         sonarProjectId += ":" + branch;
-          sl4jLogger.warn("Use of branch parameter is deprecated, use sonar.branch instead");
-          sl4jLogger.info("Branch " + branch + " selected");
+          Logger.warn("Use of branch parameter is deprecated, use sonar.branch instead");
+          Logger.info("Branch " + branch + " selected");
       } else if (sonarBranch != null) {
         sonarProjectId += ":" + sonarBranch;
-          sl4jLogger.info("Branch " + sonarBranch + " selected");
+          Logger.info("Branch " + sonarBranch + " selected");
       }
 
       PDFReporter reporter = null;
       if (reportType != null) {
         if (reportType.equals("executive")) {
-            sl4jLogger.info("Executive report type selected");
+            Logger.info("Executive report type selected");
           reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang);
         } else if (reportType.equals("workbook")) {
-            sl4jLogger.info("Team workbook report type selected");
+            Logger.info("Team workbook report type selected");
           reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang);
         }
       } else {
-          sl4jLogger.info("No report type provided. Default report selected (Team workbook)");
+          Logger.info("No report type provided. Default report selected (Team workbook)");
         reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang);
       }
 
@@ -166,17 +108,17 @@ class SonarPDFPlugin extends DefaultTask {
       baos.writeTo(fos);
       fos.flush();
       fos.close();
-      sl4jLogger.info("PDF report generated (see " + project.name + ".pdf on build output directory)");
+      Logger.info("PDF report generated (see " + project.name + ".pdf on build output directory)");
     } catch (IOException e) {
       e.printStackTrace();
     } catch (DocumentException e) {
-        sl4jLogger.error("Problem generating PDF file.");
+        Logger.error("Problem generating PDF file.");
       e.printStackTrace();
     } catch (org.dom4j.DocumentException e) {
-        sl4jLogger.error("Problem parsing response data.");
+        Logger.error("Problem parsing response data.");
       e.printStackTrace();
     } catch (ReportException e) {
-        sl4jLogger.error("Internal error: " + e.getMessage());
+        Logger.error("Internal error: " + e.getMessage());
       e.printStackTrace();
     }
   }

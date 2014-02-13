@@ -1,9 +1,10 @@
+group = "org.sonar.report.pdf"
 
 task testReport(type: SonarPDFPlugin){
 
     outputDirectory = buildDir
     sonarHostUrl = "http://localhost:9000/"
     username = "admin"
-    password = " "
-
+    password = "admin"
+    reportType = "workbook" // or executive
 }
