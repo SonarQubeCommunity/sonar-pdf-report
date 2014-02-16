@@ -1,8 +1,8 @@
+import org.sonar.report.pdf.gradle.SonarPDF
+
 group = "org.sonar.report.pdf"
 
-task testReport(type: SonarPDFPlugin){
-
-    outputDirectory = buildDir
+task testReport(type: SonarPDF){
     sonarHostUrl = "http://localhost:9000/"
     username = "admin"
     password = "admin"

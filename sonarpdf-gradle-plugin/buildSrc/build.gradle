@@ -14,17 +14,7 @@ dependencies {
         exclude(module: 'icu4j')
     }
     compile group: 'commons-httpclient', name: 'commons-httpclient', version:'3.1'
-    testCompile group: 'org.testng', name: 'testng', version:'5.7', classifier:'jdk15'
-    testCompile (group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.5.6') {
-        exclude module: 'mail'
-        exclude module: 'jms'
-        exclude group: 'com.sun.jdmk', module: 'jmxtools'
-        exclude module: 'jmxri'
-    }
-    testCompile(group: 'log4j', name: 'log4j', version:'1.2.15') {
-        exclude module: 'mail'
-        exclude module: 'jms'
-        exclude group: 'com.sun.jdmk', module: 'jmxtools'
-        exclude module: 'jmxri'
-    }
+
+    testCompile localGroovy()
+    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }
