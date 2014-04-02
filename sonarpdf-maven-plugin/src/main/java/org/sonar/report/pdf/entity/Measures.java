@@ -170,7 +170,7 @@ public class Measures {
     return measuresTable.containsKey(measureKey);
   }
 
-  public void addMesaureFromNode(Node measureNode) {
+  public void addMeasureFromNode(Node measureNode) {
     Measure measure = new Measure();
     measure.initFromNode(measureNode);
     measuresTable.put(measure.getKey(), measure);
@@ -180,11 +180,17 @@ public class Measures {
     List<Node> allNodes = allMeasuresNode.selectNodes(MEASURES);
     Iterator<Node> it = allNodes.iterator();
     while (it.hasNext()) {
-      addMesaureFromNode(it.next());
+      addMeasureFromNode(it.next());
     }
     try {
-      setDate(allMeasuresNode.selectSingleNode(DATE).getText());
-      setVersion(allMeasuresNode.selectSingleNode(VERSION).getText());
+      Node dateNode = allMeasuresNode.selectSingleNode(DATE);
+      if (dateNode != null) {
+        setDate(dateNode.getText());
+      }
+      Node versionNode = allMeasuresNode.selectSingleNode(VERSION);
+      if (versionNode != null) {
+        setVersion(versionNode.getText());
+      }
     } catch (ParseException e) {
       e.printStackTrace();
     }

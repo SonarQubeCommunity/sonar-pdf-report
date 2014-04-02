@@ -4,6 +4,7 @@
     <test name="BasicTest">
         <packages>
             <package name="org.sonar.report.pdf.test"></package>
+            <package name="org.sonar.report.pdf.entity"></package>
         </packages>
     </test>
 </suite>
