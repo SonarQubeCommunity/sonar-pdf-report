@@ -1,8 +1,20 @@
 apply plugin: 'groovy'
+apply plugin: 'bintray'
 
 group = 'org.sonar.report.pdf.gradle'
 description = 'Sonar PDF Report (Gradle plugin)'
 version = '0.2'
+
+buildscript {
+    repositories {
+        maven { url 'http://jcenter.bintray.com' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+    }
+}
 
 repositories {
     mavenLocal()
@@ -23,7 +35,23 @@ dependencies {
     testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }
 
+ext.artifactBaseName = 'sonarpdf-plugin'
+
+task sourcesJar(type: Jar){
+    baseName artifactBaseName
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc){
+    baseName artifactBaseName
+    classifier 'groovydoc'
+    from groovydoc.destinationDir
+}
+
 jar {
+    baseName artifactBaseName
+
     manifest {
         attributes 'Implementation-Title': 'Gradle SonarPDF plugin',
                 'Implementation-Version': version,
@@ -33,25 +61,36 @@ jar {
     }
 }
 
-ext {
-    bintrayBaseUrl = 'https://api.bintray.com/maven'
-    bintrayUsername = 'sion5 '
-    bintrayRepository = 'gradle-plugins'
-    bintrayPackage = 'sonarpdf-gradle-plugin'
+artifacts {
+    archives sourcesJar
+    archives groovydocJar
 }
 
 apply plugin: 'maven-publish'
 
+// Use publishGsheetsPublicationToMavenLocal task to publish to Maven local repo
 publishing {
-    repositories {
-        maven {
-            name 'Bintray'
-            url "$bintrayBaseUrl/$bintrayUsername/$bintrayRepository/$bintrayPackage"
-
-            credentials {
-                username = bintrayUsername
-                password = bintrayApiKey
-            }
+    publications {
+        plugin(MavenPublication) {
+            from components.java
         }
     }
+}
+
+bintrayUpload.dependsOn jar
+
+ext.myBintray = [ apiKey: bintrayApiKey ]   // Set 'binTrayAPIKey' in ~/.gradle/gradle.properties
+
+bintray {
+    user = 'sion5'
+    key = myBintray.apiKey
+    publications = ['plugin'] // When uploading Maven-based publication files
+    pkg {
+        repo = 'gradle-plugins'
+        name = 'sonarpdf-gradle-plugin'
+        desc = 'SNAPSHOT version of sonarpdf-gradle-plugin'
+        labels = ['gradle', 'groovy', 'sonarpdf']
+        licenses = ['Apache-2.0']
+    }
+    dryRun = false // whether to run this as dry-run, without deploying
 }
