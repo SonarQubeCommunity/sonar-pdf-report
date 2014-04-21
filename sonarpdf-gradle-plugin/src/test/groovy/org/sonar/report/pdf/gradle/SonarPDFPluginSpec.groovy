@@ -21,7 +21,7 @@ class SonarPDFPluginSpec extends Specification {
         expect:
             project.tasks.findByName(PDF_TASK_NAME) == null
         when:
-            project.apply plugin: 'SonarPDF'
+            project.apply plugin: 'sonarpdf'
         then:
             project.extensions.findByName(SonarPDFPlugin.EXTENSION_NAME) != null
 
@@ -32,7 +32,7 @@ class SonarPDFPluginSpec extends Specification {
         expect:
             project.tasks.findByName(PDF_TASK_NAME) == null
         when:
-            project.apply plugin: 'SonarPDF'
+            project.apply plugin: 'sonarpdf'
         then:
             project.extensions.findByName(SonarPDFPlugin.EXTENSION_NAME) != null
 
@@ -50,7 +50,7 @@ class SonarPDFPluginSpec extends Specification {
         expect:
             project.tasks.findByName(PDF_TASK_NAME) == null
         when:
-            project.apply plugin: 'SonarPDF'
+            project.apply plugin: 'sonarpdf'
 
         project.sonarPDF {
             sonarHostUrl = 'http://localhost:9001/'
