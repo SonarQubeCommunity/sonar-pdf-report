@@ -25,29 +25,29 @@ import org.gradle.api.logging.Logging;
 
 public class Logger {
 
-  private static org.gradle.api.logging.Logger log = Logging.getLogger("logger");
+    private static org.gradle.api.logging.Logger log = Logging.getLogger("logger");
 
-  public static void info(String message) {
-    if (log != null) {
-      log.info(message);
+    public static void info(String message) {
+        if (log != null) {
+            log.info(message);
+        }
     }
-  }
 
-  public static void error(String message) {
-    if (log != null) {
-      log.error(message);
+    public static void error(String message) {
+        if (log != null) {
+            log.error(message);
+        }
     }
-  }
 
-  public static void debug(String message) {
-    if (log != null) {
-      log.debug(message);
+    public static void debug(String message) {
+        if (log != null) {
+            log.debug(message);
+        }
     }
-  }
 
-  public static void warn(String message) {
-    if (log != null) {
-      log.warn(message);
+    public static void warn(String message) {
+        if (log != null) {
+            log.warn(message);
+        }
     }
-  }
 }

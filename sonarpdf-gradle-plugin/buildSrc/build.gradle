@@ -1,4 +1,8 @@
+apply plugin: 'groovy'
+
+group = 'org.sonar.report.pdf.gradle'
 description = 'Sonar PDF Report (Gradle plugin)'
+version = '0.2'
 
 repositories {
     mavenLocal()
@@ -17,4 +21,27 @@ dependencies {
 
     testCompile localGroovy()
     testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+}
+
+ext {
+    bintrayBaseUrl = 'https://api.bintray.com/maven'
+    bintrayUsername = 'sion5 '
+    bintrayRepository = 'gradle-plugins'
+    bintrayPackage = 'sonarpdf-gradle-plugin'
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        maven {
+            name 'Bintray'
+            url "$bintrayBaseUrl/$bintrayUsername/$bintrayRepository/$bintrayPackage"
+
+            credentials {
+                username = bintrayUsername
+                password = bintrayApiKey
+            }
+        }
+    }
 }

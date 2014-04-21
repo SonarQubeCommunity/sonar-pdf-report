@@ -22,15 +22,16 @@ package org.sonar.report.pdf.entity;
 /**
  * Priorities.
  */
+
 public class Priority {
 
-  public static final String INFO = "INFO";
-  public static final String MINOR = "MINOR";
-  public static final String MAJOR = "MAJOR";
-  public static final String CRITICAL = "CRITICAL";
-  public static final String BLOCKER = "BLOCKER";
+    public static final String INFO = "INFO";
+    public static final String MINOR = "MINOR";
+    public static final String MAJOR = "MAJOR";
+    public static final String CRITICAL = "CRITICAL";
+    public static final String BLOCKER = "BLOCKER";
 
-  public static String[] getPrioritiesArray() {
-    return new String[]{INFO, MINOR, MAJOR, CRITICAL, BLOCKER};
-  }
+    public static String[] getPrioritiesArray() {
+        return new String[]{INFO, MINOR, MAJOR, CRITICAL, BLOCKER};
+    }
 }

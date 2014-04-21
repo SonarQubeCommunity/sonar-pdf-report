@@ -20,13 +20,7 @@
 
 package org.sonar.report.pdf.util;
 
-import java.io.IOException;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.dom4j.Document;
@@ -34,140 +28,142 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.sonar.report.pdf.entity.exception.ReportException;
 
+import java.io.IOException;
+
 public class SonarAccess {
 
-  /**
-   * Sonar URL (i.e. http://localhost:9000/sonar).
-   */
-  private String sonarUrl;
+    /**
+     * Sonar URL (i.e. http://localhost:9000/sonar).
+     */
+    private String sonarUrl;
 
-  /**
-   * Username for access Sonar WS API. Null for no authentication.
-   */
-  private String username;
+    /**
+     * Username for access Sonar WS API. Null for no authentication.
+     */
+    private String username;
 
-  /**
-   * Password for access Sonar WS API. Only used if username != null.
-   */
-  private String password;
+    /**
+     * Password for access Sonar WS API. Only used if username != null.
+     */
+    private String password;
 
-  /**
-   * Sonar host.
-   */
-  private String host;
+    /**
+     * Sonar host.
+     */
+    private String host;
 
-  /**
-   * Sonar port.
-   */
-  private int port;
+    /**
+     * Sonar port.
+     */
+    private int port;
 
-  public SonarAccess(String sonarUrl, String username, String password) throws ReportException {
-    if (!sonarUrl.endsWith("/")) {
-      this.sonarUrl = sonarUrl;
-    } else {
-      this.sonarUrl = sonarUrl.substring(0, sonarUrl.length() - 1);
-    }
-    this.username = username;
-    this.password = password;
-    if (sonarUrl.startsWith("http://")) {
-      String withoutProtocol = sonarUrl.substring(7);
-      if (withoutProtocol.contains(":")) {
-        this.host = withoutProtocol.substring(0, withoutProtocol.indexOf(':'));
-      } else if (withoutProtocol.contains("/")) {
-        this.host = withoutProtocol.substring(0, withoutProtocol.indexOf('/'));
-      } else {
-        this.host = withoutProtocol;
-      }
-      if (withoutProtocol.contains(":")) {
-        if (withoutProtocol.contains("/")) {
-          this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1, withoutProtocol
-              .indexOf('/')));
+    public SonarAccess(String sonarUrl, String username, String password) throws ReportException {
+        if (!sonarUrl.endsWith("/")) {
+            this.sonarUrl = sonarUrl;
         } else {
-          this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1));
+            this.sonarUrl = sonarUrl.substring(0, sonarUrl.length() - 1);
         }
-      } else {
-        this.port = 80;
-      }
-    } else if (sonarUrl.startsWith("https://")) {
-      String withoutProtocol = sonarUrl.substring(8);
-      if (withoutProtocol.contains(":")) {
-        this.host = withoutProtocol.substring(0, withoutProtocol.indexOf(':'));
-      } else if (withoutProtocol.contains("/")) {
-        this.host = withoutProtocol.substring(0, withoutProtocol.indexOf('/'));
-      } else {
-        this.host = withoutProtocol;
-      }
-      if (withoutProtocol.contains(":")) {
-        if (withoutProtocol.contains("/")) {
-          this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1, withoutProtocol
-              .indexOf('/')));
+        this.username = username;
+        this.password = password;
+        if (sonarUrl.startsWith("http://")) {
+            String withoutProtocol = sonarUrl.substring(7);
+            if (withoutProtocol.contains(":")) {
+                this.host = withoutProtocol.substring(0, withoutProtocol.indexOf(':'));
+            } else if (withoutProtocol.contains("/")) {
+                this.host = withoutProtocol.substring(0, withoutProtocol.indexOf('/'));
+            } else {
+                this.host = withoutProtocol;
+            }
+            if (withoutProtocol.contains(":")) {
+                if (withoutProtocol.contains("/")) {
+                    this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1, withoutProtocol
+                            .indexOf('/')));
+                } else {
+                    this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1));
+                }
+            } else {
+                this.port = 80;
+            }
+        } else if (sonarUrl.startsWith("https://")) {
+            String withoutProtocol = sonarUrl.substring(8);
+            if (withoutProtocol.contains(":")) {
+                this.host = withoutProtocol.substring(0, withoutProtocol.indexOf(':'));
+            } else if (withoutProtocol.contains("/")) {
+                this.host = withoutProtocol.substring(0, withoutProtocol.indexOf('/'));
+            } else {
+                this.host = withoutProtocol;
+            }
+            if (withoutProtocol.contains(":")) {
+                if (withoutProtocol.contains("/")) {
+                    this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1, withoutProtocol
+                            .indexOf('/')));
+                } else {
+                    this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1));
+                }
+            } else {
+                this.port = 443;
+            }
         } else {
-          this.port = Integer.valueOf(withoutProtocol.substring(withoutProtocol.indexOf(':') + 1));
+            throw new ReportException("Unknown URL format: " + sonarUrl + " (forgot http:// before host?)");
         }
-      } else {
-        this.port = 443;
-      }
-    } else {
-      throw new ReportException("Unknown URL format: " + sonarUrl + " (forgot http:// before host?)");
     }
-  }
 
-  public Document getUrlAsDocument(String urlPath) throws HttpException, IOException, DocumentException {
-    HttpClient client = new HttpClient();
-    HttpMethod method = new GetMethod(this.sonarUrl + urlPath);
-    int status = 0;
+    public Document getUrlAsDocument(String urlPath) throws HttpException, IOException, DocumentException {
+        HttpClient client = new HttpClient();
+        HttpMethod method = new GetMethod(this.sonarUrl + urlPath);
+        int status = 0;
 
-    Logger.debug("HTTP Request: " + this.sonarUrl + urlPath);
-    if (this.username != null) {
-      Logger.debug("Setting authentication with username: " + this.username);
-      client.getParams().setAuthenticationPreemptive(true);
-      client.getState().setCredentials(new AuthScope(this.host, this.port),
-          new UsernamePasswordCredentials(this.username, this.password));
-      method.setDoAuthentication(true);
+        Logger.debug("HTTP Request: " + this.sonarUrl + urlPath);
+        if (this.username != null) {
+            Logger.debug("Setting authentication with username: " + this.username);
+            client.getParams().setAuthenticationPreemptive(true);
+            client.getState().setCredentials(new AuthScope(this.host, this.port),
+                    new UsernamePasswordCredentials(this.username, this.password));
+            method.setDoAuthentication(true);
+        }
+        status = client.executeMethod(method);
+        if (!(status == HttpStatus.SC_OK)) {
+            Logger.error("Can´t access to Sonar or project doesn't exist on Sonar instance. HTTP KO to " + this.sonarUrl
+                    + urlPath);
+            throw new IOException("Can´t access to Sonar or project doesn't exist on Sonar instance.");
+        }
+        Logger.debug("Received response.");
+        SAXReader reader = new SAXReader();
+        return reader.read(method.getResponseBodyAsStream());
     }
-    status = client.executeMethod(method);
-    if (!(status == HttpStatus.SC_OK)) {
-      Logger.error("Can´t access to Sonar or project doesn't exist on Sonar instance. HTTP KO to " + this.sonarUrl
-          + urlPath);
-      throw new IOException("Can´t access to Sonar or project doesn't exist on Sonar instance.");
+
+    /**
+     * @return the sonarUrl
+     */
+    public String getSonarUrl() {
+        return sonarUrl;
     }
-    Logger.debug("Received response.");
-    SAXReader reader = new SAXReader();
-    return reader.read(method.getResponseBodyAsStream());
-  }
 
-  /**
-   * @return the sonarUrl
-   */
-  public String getSonarUrl() {
-      return sonarUrl;
-  }
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
 
-  /**
-   * @return the username
-   */
-  public String getUsername() {
-      return username;
-  }
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
 
-  /**
-   * @return the password
-   */
-  public String getPassword() {
-      return password;
-  }
+    /**
+     * @return the host
+     */
+    public String getHost() {
+        return host;
+    }
 
-  /**
-   * @return the host
-   */
-  public String getHost() {
-      return host;
-  }
-
-  /**
-   * @return the port
-   */
-  public int getPort() {
-      return port;
-  }
+    /**
+     * @return the port
+     */
+    public int getPort() {
+        return port;
+    }
 }

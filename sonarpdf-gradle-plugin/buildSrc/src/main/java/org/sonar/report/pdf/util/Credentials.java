@@ -22,35 +22,35 @@ package org.sonar.report.pdf.util;
 
 public class Credentials {
 
-  private static String username = null;
-  private static String password = null;
+    private static String username = null;
+    private static String password = null;
 
-  /**
-   * @return the username
-   */
-  public static String getUsername() {
-    return username;
-  }
+    /**
+     * @return the username
+     */
+    public static String getUsername() {
+        return username;
+    }
 
-  /**
-   * @param username the username to set
-   */
-  public static void setUsername(String username) {
-    Credentials.username = username;
-  }
+    /**
+     * @param username the username to set
+     */
+    public static void setUsername(String username) {
+        Credentials.username = username;
+    }
 
-  /**
-   * @return the password
-   */
-  public static String getPassword() {
-    return password;
-  }
+    /**
+     * @return the password
+     */
+    public static String getPassword() {
+        return password;
+    }
 
-  /**
-   * @param password the password to set
-   */
-  public static void setPassword(String password) {
-    Credentials.password = password;
-  }
+    /**
+     * @param password the password to set
+     */
+    public static void setPassword(String password) {
+        Credentials.password = password;
+    }
 
 }
