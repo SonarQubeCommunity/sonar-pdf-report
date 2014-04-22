@@ -1,13 +1,36 @@
-Sonar PDF Report Plugin
-=========================
+# Overview
+![SonarQube Logo](http://upload.wikimedia.org/wikipedia/commons/e/e6/Sonarqube-48x200.png)
 
-This is the Sonar PDF Report Plugin.
+This plugin allows you to generate a PDF report directly from your project. It will connect to the popular SonarQube tool and collate all
+stats in to a well presented readable format. 
 
-Project homepage:
-http://docs.codehaus.org/display/SONAR/Sonar+PDF+Plugin
+# Usage
+To use the plugin, configure your `build.gradle` script and add the plugin:
+```groovy
+    buildscript {
+        repositories {
+            maven { url 'http://jcenter.bintray.com' }
+        }
+        dependencies {
+            classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:VERSION'
+        }
+    }
+    apply plugin: 'sonarpdf'
+```
 
-Issue tracking:
-https://jira.codehaus.org/browse/SONARPLUGINS/component/14372
+# Tasks
+The plugin adds the `generateSonarPDFReport` task to your projects, which allows you to generate a PDF quality report for your project.
 
-CI builds:
-https://sonarplugins.ci.cloudbees.com/job/report-pdf
+## Configuration
+
+### build.gradle
+```groovy
+    sonarPDF {
+	        sonarHostUrl = 'http://localhost:9001/'
+            reportType = 'executive'
+            username = 'admin'
+            password = 'secret'
+            branch = 'someBranch' 			// can be left empty
+            sonarBranch = 'someSonarBranch' // can be left empty
+    }
+```
