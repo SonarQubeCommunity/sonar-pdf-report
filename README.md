@@ -9,7 +9,8 @@ To use the plugin, configure your `build.gradle` script and add the plugin:
 ```groovy
     buildscript {
         repositories {
-            maven { url 'http://jcenter.bintray.com' }
+            mavenCentral()
+            maven { url 'http://dl.bintray.com/sion5/gradle-plugins/' }
         }
         dependencies {
             classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:VERSION'
