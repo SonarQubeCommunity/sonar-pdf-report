@@ -1,9 +1,0 @@
-<% if @snapshot.measure('pdf-data') %>
-<div class="yui-g">
-    <div class="dashbox">
-        <h3>PDF Report</h3>
-        <h4>Get quality info in a pdf document</h4>
-        <a href="<%= ApplicationController.root_context -%>/api/plugins/Pdfreport/getReport?resource=<%= @snapshot.project_id %>">Download</a>
-    </div>
-</div>
-<% end %>
