@@ -20,15 +20,17 @@
 
 package org.sonar.report.pdf.entity;
 
-import org.dom4j.Element;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 public class MeasuresTest {
 
@@ -36,7 +38,7 @@ public class MeasuresTest {
   private static final String MEASURES_GROUP = "measures";
   private static final String RESOURCES_ELEMENT = "resources";
   private static final String VERSION_TO_TEST = "1.0";
-  private static final String DATE_TO_TEST = "2014-03-27T00:00:00-0300";
+  private static final String DATE_TO_TEST = "2014-03-27T00:00:00";
   private static final String RESOURCE_ELEMENT = "resource";
   private static final String VERSION_ELEMENT = "version";
   private static final String DATE_ELEMENT = "date";
@@ -45,6 +47,7 @@ public class MeasuresTest {
 
   /**
    * This method simply creates an empty document
+   * 
    * @return
    */
   private Document createEmptyDocument() {
@@ -53,33 +56,33 @@ public class MeasuresTest {
   }
 
   /**
-   * This method adds //resources/resource to the document and returns
-   * the resource element.
-   *
+   * This method adds //resources/resource to the document and returns the
+   * resource element.
+   * 
    * @param document
    * @return
    */
-  private Element addResourcesAndResourceElements(Document document) {
-    return document.addElement(RESOURCES_ELEMENT)
-      .addElement(RESOURCE_ELEMENT);
+  private Element addResourcesAndResourceElements(final Document document) {
+    return document.addElement(RESOURCES_ELEMENT).addElement(RESOURCE_ELEMENT);
   }
 
   /**
-   * This method builds a small msr element with the given key.
-   * This appears to be the minimal viable definition of a measure.
-   * This returns the resulting measure element.
-   *
-   * @param element - this should be the //resources/resource element
+   * This method builds a small msr element with the given key. This appears to
+   * be the minimal viable definition of a measure. This returns the resulting
+   * measure element.
+   * 
+   * @param element
+   *          - this should be the //resources/resource element
    * @param key
    * @return the measure element for reuse
    */
-  private Element addMeasureToElementWithKey(Element element, String key) {
+  private Element addMeasureToElementWithKey(final Element element, final String key) {
     Element measureElement = element.addElement(MEASURE_ELEMENT);
     measureElement.addElement(KEY_ELEMENT).addText(key);
     return measureElement;
   }
 
-  @Test(alwaysRun = true, enabled = true, groups = {MEASURES_GROUP})
+  @Test(alwaysRun = true, enabled = true, groups = { MEASURES_GROUP })
   public void testAddMeasureFromNode() {
     Document document = createEmptyDocument();
     Element resource = addResourcesAndResourceElements(document);
@@ -94,7 +97,7 @@ public class MeasuresTest {
     assertEquals(myMeasureKey, measures.getMeasure(myMeasureKey).getKey());
   }
 
-  @Test(alwaysRun = true, enabled = true, groups = {MEASURES_GROUP})
+  @Test(alwaysRun = true, enabled = true, groups = { MEASURES_GROUP })
   public void testAddAllMeasuresFromDocument() {
     Document document = createEmptyDocument();
     Element resource = addResourcesAndResourceElements(document);
@@ -111,7 +114,7 @@ public class MeasuresTest {
     assertEquals(someElementKey, measures.getMeasuresKeys().toArray()[0]);
   }
 
-  @Test(alwaysRun = true, enabled = true, groups = {MEASURES_GROUP})
+  @Test(alwaysRun = true, enabled = true, groups = { MEASURES_GROUP })
   public void testAddAllMeasuresFromDocumentWithEmptyDocument() {
     Document document = createEmptyDocument();
 
@@ -123,11 +126,10 @@ public class MeasuresTest {
 
   }
 
-  @Test(alwaysRun = true, enabled = true, groups = {MEASURES_GROUP})
+  @Test(alwaysRun = true, enabled = true, groups = { MEASURES_GROUP })
   public void testDateFromAddAllMeasuresFromDocument() {
     Document document = createEmptyDocument();
-    addResourcesAndResourceElements(document)
-      .addElement(DATE_ELEMENT).addText(DATE_TO_TEST);
+    addResourcesAndResourceElements(document).addElement(DATE_ELEMENT).addText(DATE_TO_TEST);
 
     Measures measures = new Measures();
     measures.addAllMeasuresFromDocument(document);
@@ -135,19 +137,18 @@ public class MeasuresTest {
     assertEquals(DATE_TO_TEST, formattedMeasuresDate);
   }
 
-  @Test(alwaysRun = true, enabled = true, groups = {MEASURES_GROUP})
+  @Test(alwaysRun = true, enabled = true, groups = { MEASURES_GROUP })
   public void testVersionFromAddAllMeasuresFromDocument() {
     Document document = createEmptyDocument();
-    addResourcesAndResourceElements(document)
-      .addElement(VERSION_ELEMENT).addText(VERSION_TO_TEST);
+    addResourcesAndResourceElements(document).addElement(VERSION_ELEMENT).addText(VERSION_TO_TEST);
 
     Measures measures = new Measures();
     measures.addAllMeasuresFromDocument(document);
     assertEquals(VERSION_TO_TEST, measures.getVersion());
   }
 
-  private String getFormattedDateString(Date date) {
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+  private String getFormattedDateString(final Date date) {
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     return df.format(date);
   }
 
