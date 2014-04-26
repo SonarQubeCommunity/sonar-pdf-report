@@ -4,7 +4,7 @@ Sonar PDF Report Plugin
 This is the Sonar PDF Report Plugin.
 
 Project homepage:
-http://docs.codehaus.org/display/SONAR/Sonar+PDF+Plugin
+http://docs.codehaus.org/display/SONAR/PDF+Plugin
 
 Issue tracking:
 https://jira.codehaus.org/browse/SONARPLUGINS/component/14372
