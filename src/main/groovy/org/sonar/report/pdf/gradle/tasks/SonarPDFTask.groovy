@@ -25,7 +25,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.sonar.report.pdf.ExecutivePDFReporter
 import org.sonar.report.pdf.PDFReporter
@@ -38,6 +38,7 @@ import org.sonar.report.pdf.util.Credentials
  *
  * @author Sion Williams
  */
+
 class SonarPDFTask extends DefaultTask {
 
     /**
@@ -82,6 +83,10 @@ class SonarPDFTask extends DefaultTask {
     @Optional
     String password
 
+
+    @OutputFile
+    File reportFile
+
     SonarPDFTask() {
         description = "Generate a project quality report in PDF format"
         group = "SonarPDF"
@@ -99,9 +104,9 @@ class SonarPDFTask extends DefaultTask {
         Properties configLang = new Properties()
 
         try {
-            if (sonarHostUrl != null) {
-                if (sonarHostUrl.endsWith("/")) {
-                    sonarHostUrl = sonarHostUrl.substring(0, sonarHostUrl.length() - 1)
+            if (getSonarHostUrl()) {
+                if (getSonarHostUrl().endsWith("/")) {
+                    sonarHostUrl = getSonarHostUrl().substring(0, getSonarHostUrl().length() - 1)
                 }
                 config.put("sonar.base.url", sonarHostUrl);
                 config.put("front.page.logo", "sonar.png");
@@ -110,21 +115,21 @@ class SonarPDFTask extends DefaultTask {
             }
             configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"))
 
-            if (branch != null) {
-                sonarProjectId += ":" + branch
+            if (getBranch()) {
+                sonarProjectId += ":" + getBranch()
                 logger.warn("Use of branch parameter is deprecated, use sonar.branch instead")
-                logger.info("Branch " + branch + " selected")
+                logger.info("Branch " + getBranch() + " selected")
             } else if (sonarBranch != null) {
-                sonarProjectId += ":" + sonarBranch
-                logger.info("Branch " + sonarBranch + " selected")
+                sonarProjectId += ":" + getBranch()
+                logger.info("Branch " + getBranch() + " selected")
             }
 
             PDFReporter reporter = null
-            if (reportType != null) {
-                if (reportType.equals("executive")) {
+            if (getReportType()) {
+                if (getReportType() == "executive") {
                     logger.info("Executive report type selected")
                     reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang)
-                } else if (reportType.equals("workbook")) {
+                } else if (reportType == "workbook") {
                     logger.info("Team workbook report type selected")
                     reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang)
                 }
@@ -142,7 +147,7 @@ class SonarPDFTask extends DefaultTask {
             def outputDir = project.file("$project.buildDir/sonar")
             outputDir.parentFile.mkdirs()
 
-            File reportFile = new File(outDir, project.name + ".pdf")
+            reportFile = new File(outputDir, project.name + ".pdf")
             fos = new FileOutputStream(reportFile)
             baos.writeTo(fos)
             fos.flush()
@@ -150,13 +155,13 @@ class SonarPDFTask extends DefaultTask {
             logger.info("PDF report generated (see " + project.name + ".pdf in build output directory)")
 
         } catch (IOException e) {
-            throw new GradleException(e.getMessage())
+            throw new GradleException(e.message)
         } catch (DocumentException e) {
             throw new GradleException("Problem generating PDF file.")
         } catch (org.dom4j.DocumentException e) {
             throw new GradleException("Problem parsing response data.")
         } catch (ReportException e) {
-            throw new GradleException(e.getMessage())
+            throw new GradleException(e.message)
         }
     }
 }
