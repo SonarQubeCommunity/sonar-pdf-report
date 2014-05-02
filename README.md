@@ -2,7 +2,11 @@
 ![SonarQube Logo](http://upload.wikimedia.org/wikipedia/commons/e/e6/Sonarqube-48x200.png)
 
 This plugin allows you to generate a PDF report directly from your project. It will connect to the popular SonarQube tool and collate all
-stats in to a well presented readable format. 
+stats in to a well presented readable format.
+
+# Build Status
+
+[![Build Status](https://travis-ci.org/willis7/sonarpdf-gradle-plugin.svg?branch=master)](https://travis-ci.org/willis7/sonarpdf-gradle-plugin)
 
 # Usage
 To use the plugin, configure your `build.gradle` script and add the plugin:
