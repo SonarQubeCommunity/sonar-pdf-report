@@ -99,7 +99,7 @@ class SonarPDFTask extends DefaultTask {
     @TaskAction
     def run() {
 
-        String sonarProjectId = project.group + ":" + project.name
+        String sonarProjectId = "${project.group}:${project.name}"
         Properties config = new Properties()
         Properties configLang = new Properties()
 
@@ -147,12 +147,12 @@ class SonarPDFTask extends DefaultTask {
             def outputDir = project.file("$project.buildDir/sonar")
             outputDir.parentFile.mkdirs()
 
-            reportFile = new File(outputDir, project.name + ".pdf")
+            reportFile = new File(outputDir, "${project.name}.pdf")
             fos = new FileOutputStream(reportFile)
             baos.writeTo(fos)
             fos.flush()
             fos.close()
-            logger.info("PDF report generated (see " + project.name + ".pdf in build output directory)")
+            logger.info("PDF report generated (see ${project.name}.pdf in build output directory)")
 
         } catch (IOException e) {
             throw new GradleException(e.message)

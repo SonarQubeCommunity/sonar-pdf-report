@@ -17,14 +17,14 @@ To use the plugin, configure your `build.gradle` script and add the plugin:
             maven { url 'http://dl.bintray.com/sion5/gradle-plugins/' }
         }
         dependencies {
-            classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:VERSION'
+            classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:0.3'
         }
     }
     apply plugin: 'sonarpdf'
 ```
 
 # Tasks
-The plugin adds the `generateSonarPDFReport` task to your projects, which allows you to generate a PDF quality report for your project.
+The plugin adds the `generateSonarPDFReport` task to your projects which allows you to generate a PDF quality report for your project.
 
 ## Configuration
 

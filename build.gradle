@@ -38,14 +38,23 @@ dependencies {
 
 ext.artifactBaseName = 'sonarpdf-plugin'
 
-task sourcesJar(type: Jar){
-    baseName artifactBaseName
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Sonar PDF plugin',
+                'Implementation-Version': version,
+                'Built-By': System.getProperty('user.name'),
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version'),
+                'Built-Gradle': gradle.gradleVersion
+    }
+}
+
+task sourcesJar(type: Jar) {
     classifier 'sources'
     from sourceSets.main.allSource
 }
 
-task groovydocJar(type: Jar, dependsOn: groovydoc){
-    baseName artifactBaseName
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
     classifier 'groovydoc'
     from groovydoc.destinationDir
 }
