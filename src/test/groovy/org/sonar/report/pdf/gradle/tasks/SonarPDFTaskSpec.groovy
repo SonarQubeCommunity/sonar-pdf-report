@@ -1,5 +1,6 @@
 package org.sonar.report.pdf.gradle.tasks
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
@@ -36,4 +37,19 @@ class SonarPDFTaskSpec extends Specification{
             task.reportType == 'executive'
     }
 
+    def "Ensure no exception is thrown when running task"() {
+        expect:
+            project.tasks.findByName(TASK_NAME) == null
+
+        when:
+            project.task(TASK_NAME, type: SonarPDFTask) {
+                sonarHostUrl = 'http://nemo.sonarqube.org/'
+                sonarProjectId = 'net.sourceforge.pmd:pmd'
+                reportType = 'executive'
+            }
+
+        then:
+            Task task = project.tasks.findByName(TASK_NAME)
+            task.run()
+    }
 }

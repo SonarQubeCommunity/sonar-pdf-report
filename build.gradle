@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 
 group = 'org.sonar.report.pdf.gradle'
 description = 'Sonar PDF Report (Gradle plugin)'
-version = '0.3'
+version = '0.4'
 
 repositories {
     mavenLocal()

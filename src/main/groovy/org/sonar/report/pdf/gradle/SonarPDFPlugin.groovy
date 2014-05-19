@@ -35,6 +35,7 @@ class SonarPDFPlugin implements Plugin <Project>{
             conventionMapping.reportType = { sonarPDFExtension.reportType }
             conventionMapping.username = { sonarPDFExtension.username }
             conventionMapping.password = { sonarPDFExtension.password }
+            conventionMapping.sonarProjectId = { sonarPDFExtension.sonarProjectId }
         }
 
         project.task(PDF_TASK_NAME, type: SonarPDFTask)

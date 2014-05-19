@@ -11,4 +11,5 @@ class SonarPDFExtension {
     String reportType = 'executive'
     String username = 'admin'
     String password = 'admin'
+    String sonarProjectId
 }

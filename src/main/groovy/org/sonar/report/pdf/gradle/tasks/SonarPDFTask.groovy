@@ -42,6 +42,12 @@ import org.sonar.report.pdf.util.Credentials
 class SonarPDFTask extends DefaultTask {
 
     /**
+     * Sonar Project ID.
+     */
+    @Input
+    String sonarProjectId = "${project.group}:${project.name}"
+
+    /**
      * Sonar Base URL.
      */
     @Input
@@ -92,19 +98,14 @@ class SonarPDFTask extends DefaultTask {
         group = "SonarPDF"
     }
 
-    File getOutputDirectory() {
-        project.file(outputDirectory)
-    }
-
     @TaskAction
     def run() {
-
-        String sonarProjectId = "${project.group}:${project.name}"
         Properties config = new Properties()
         Properties configLang = new Properties()
 
         try {
             if (getSonarHostUrl()) {
+                logger.info("The Sonar host url is: " + getSonarHostUrl())
                 if (getSonarHostUrl().endsWith("/")) {
                     sonarHostUrl = getSonarHostUrl().substring(0, getSonarHostUrl().length() - 1)
                 }
@@ -116,26 +117,26 @@ class SonarPDFTask extends DefaultTask {
             configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"))
 
             if (getBranch()) {
-                sonarProjectId += ":" + getBranch()
+                setSonarProjectId(sonarProjectId += ":" + getBranch())
                 logger.warn("Use of branch parameter is deprecated, use sonar.branch instead")
                 logger.info("Branch " + getBranch() + " selected")
-            } else if (sonarBranch != null) {
-                sonarProjectId += ":" + getBranch()
-                logger.info("Branch " + getBranch() + " selected")
+            } else if (getSonarBranch()) {
+                setSonarProjectId(sonarProjectId += ":" + getSonarBranch())
+                logger.info("Branch " + getSonarBranch() + " selected")
             }
 
             PDFReporter reporter = null
             if (getReportType()) {
                 if (getReportType() == "executive") {
                     logger.info("Executive report type selected")
-                    reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang)
+                    reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), getSonarProjectId(), config.getProperty("sonar.base.url"), config, configLang)
                 } else if (reportType == "workbook") {
                     logger.info("Team workbook report type selected")
-                    reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang)
+                    reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), getSonarProjectId(), config.getProperty("sonar.base.url"), config, configLang)
                 }
             } else {
                 logger.info("No report type provided. Default report selected (Team workbook)");
-                reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config.getProperty("sonar.base.url"), config, configLang)
+                reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), getSonarProjectId(), config.getProperty("sonar.base.url"), config, configLang)
             }
 
             Credentials.setUsername(username)
@@ -144,15 +145,13 @@ class SonarPDFTask extends DefaultTask {
             ByteArrayOutputStream baos = reporter.getReport()
             FileOutputStream fos = null
 
-            def outputDir = project.file("$project.buildDir/sonar")
-            outputDir.parentFile.mkdirs()
-
-            reportFile = new File(outputDir, "${project.name}.pdf")
+            new File("$project.buildDir/sonar").mkdirs()
+            reportFile = new File("$project.buildDir/sonar", "${project.name}.pdf")
             fos = new FileOutputStream(reportFile)
             baos.writeTo(fos)
             fos.flush()
             fos.close()
-            logger.info("PDF report generated (see ${project.name}.pdf in build output directory)")
+            logger.info("PDF report generated (see ${project.name}.pdf ${project.buildDir}/sonar)")
 
         } catch (IOException e) {
             throw new GradleException(e.message)
@@ -163,5 +162,6 @@ class SonarPDFTask extends DefaultTask {
         } catch (ReportException e) {
             throw new GradleException(e.message)
         }
+        return 1
     }
 }

@@ -20,22 +20,24 @@ class SonarPDFPluginSpec extends Specification {
     def "Applies plugin and checks created tasks"() {
         expect:
             project.tasks.findByName(PDF_TASK_NAME) == null
+
         when:
             project.apply plugin: 'sonarpdf'
+
         then:
             project.extensions.findByName(SonarPDFPlugin.EXTENSION_NAME) != null
-
             project.tasks.findByName(PDF_TASK_NAME) != null
     }
 
     def "Applies plugin for sample task without custom extension configuration"() {
         expect:
             project.tasks.findByName(PDF_TASK_NAME) == null
+
         when:
             project.apply plugin: 'sonarpdf'
+
         then:
             project.extensions.findByName(SonarPDFPlugin.EXTENSION_NAME) != null
-
             Task task = project.tasks.findByName(PDF_TASK_NAME)
             task != null
             task.sonarHostUrl == 'http://localhost:9000/'
@@ -49,18 +51,18 @@ class SonarPDFPluginSpec extends Specification {
     def "Applies plugin and configures sample task through extension"() {
         expect:
             project.tasks.findByName(PDF_TASK_NAME) == null
+
         when:
             project.apply plugin: 'sonarpdf'
+            project.sonarPDF {
+                sonarHostUrl = 'http://localhost:9001/'
+                reportType = 'executive'
+                username = 'admin'
+                password = 'secret'
+            }
 
-        project.sonarPDF {
-            sonarHostUrl = 'http://localhost:9001/'
-            reportType = 'executive'
-            username = 'admin'
-            password = 'secret'
-        }
         then:
             project.extensions.findByName(SonarPDFPlugin.EXTENSION_NAME) != null
-
             Task task = project.tasks.findByName(PDF_TASK_NAME)
             task != null
             task.sonarHostUrl == 'http://localhost:9001/'
@@ -71,4 +73,20 @@ class SonarPDFPluginSpec extends Specification {
             task.password == 'secret'
     }
 
+    def "Ensure no exception is thrown when running task"() {
+        expect:
+            project.tasks.findByName(PDF_TASK_NAME) == null
+
+        when:
+            project.apply plugin: 'sonarpdf'
+            project.sonarPDF {
+                sonarHostUrl = 'http://nemo.sonarqube.org/'
+                sonarProjectId = 'net.sourceforge.pmd:pmd'
+                reportType = 'executive'
+            }
+
+        then:
+            Task task = project.tasks.findByName(PDF_TASK_NAME)
+            task.run()
+    }
 }
