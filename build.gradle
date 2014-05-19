@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 
 group = 'org.sonar.report.pdf.gradle'
 description = 'Sonar PDF Report (Gradle plugin)'
-version = '0.4'
+version = '0.5'
 
 repositories {
     mavenLocal()
@@ -101,6 +101,7 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.getProperty('bintrayUser') : null
     key = project.hasProperty('bintrayKey') ? project.getProperty('bintrayKey') : null
     publications = ['mavenJava']
+
     pkg {
         repo = 'gradle-plugins'
         name = 'sonarpdf-gradle-plugin'
