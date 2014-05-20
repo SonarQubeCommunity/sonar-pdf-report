@@ -10,6 +10,7 @@ buildscript {
 }
 
 apply plugin: 'groovy'
+apply plugin: 'idea'
 apply plugin: 'bintray'
 apply plugin: 'maven-publish'
 
@@ -34,6 +35,28 @@ dependencies {
 
     testCompile localGroovy()
     testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+}
+
+sourceSets {
+    integrationTest {
+        groovy.srcDir file('src/integTest/groovy')
+        resources.srcDir file('src/integTest/resources')
+        compileClasspath = sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
+    }
+}
+
+task integrationTest(type: Test, dependsOn: test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+
+idea.module {
+    testSourceDirs += file('src/integTest/groovy')
 }
 
 ext.artifactBaseName = 'sonarpdf-plugin'

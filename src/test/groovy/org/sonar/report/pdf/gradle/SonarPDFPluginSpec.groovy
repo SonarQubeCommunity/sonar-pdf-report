@@ -72,21 +72,4 @@ class SonarPDFPluginSpec extends Specification {
             task.username == 'admin'
             task.password == 'secret'
     }
-
-    def "Ensure no exception is thrown when running task"() {
-        expect:
-            project.tasks.findByName(PDF_TASK_NAME) == null
-
-        when:
-            project.apply plugin: 'sonarpdf'
-            project.sonarPDF {
-                sonarHostUrl = 'http://nemo.sonarqube.org/'
-                sonarProjectId = 'net.sourceforge.pmd:pmd'
-                reportType = 'executive'
-            }
-
-        then:
-            Task task = project.tasks.findByName(PDF_TASK_NAME)
-            task.run()
-    }
 }

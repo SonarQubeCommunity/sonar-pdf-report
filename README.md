@@ -17,7 +17,7 @@ To use the plugin, configure your `build.gradle` script and add the plugin:
             maven { url 'http://dl.bintray.com/sion5/gradle-plugins/' }
         }
         dependencies {
-            classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:0.3'
+            classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:VERSION'
         }
     }
     apply plugin: 'sonarpdf'
@@ -31,7 +31,8 @@ The plugin adds the `generateSonarPDFReport` task to your projects which allows 
 ### build.gradle
 ```groovy
     sonarPDF {
-	        sonarHostUrl = 'http://localhost:9001/'
+	        sonarProjectId = 'net.sourceforge.pmd:pmd'
+            sonarHostUrl = 'http://nemo.sonarqube.org/'
             reportType = 'executive'
             username = 'admin'
             password = 'secret'

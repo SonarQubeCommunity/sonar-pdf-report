@@ -25,6 +25,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.sonar.report.pdf.ExecutivePDFReporter
@@ -89,8 +90,15 @@ class SonarPDFTask extends DefaultTask {
     @Optional
     String password
 
+    /**
+     * Output directory for PDF report
+     */
+    @OutputDirectory
+    def destDir = new File(project.buildDir, 'sonar')
 
-    @OutputFile
+    /**
+     * Generated PDF report
+     */
     File reportFile
 
     SonarPDFTask() {
@@ -99,7 +107,7 @@ class SonarPDFTask extends DefaultTask {
     }
 
     @TaskAction
-    def run() {
+    void run() {
         Properties config = new Properties()
         Properties configLang = new Properties()
 
@@ -145,13 +153,13 @@ class SonarPDFTask extends DefaultTask {
             ByteArrayOutputStream baos = reporter.getReport()
             FileOutputStream fos = null
 
-            new File("$project.buildDir/sonar").mkdirs()
-            reportFile = new File("$project.buildDir/sonar", "${project.name}.pdf")
+            destDir.mkdirs()
+            reportFile = new File(destDir, "${project.name}.pdf")
             fos = new FileOutputStream(reportFile)
             baos.writeTo(fos)
             fos.flush()
             fos.close()
-            logger.info("PDF report generated (see ${project.name}.pdf ${project.buildDir}/sonar)")
+            logger.info("PDF report generated (see ${project.name}.pdf ${destDir})")
 
         } catch (IOException e) {
             throw new GradleException(e.message)
@@ -162,6 +170,5 @@ class SonarPDFTask extends DefaultTask {
         } catch (ReportException e) {
             throw new GradleException(e.message)
         }
-        return 1
     }
 }
