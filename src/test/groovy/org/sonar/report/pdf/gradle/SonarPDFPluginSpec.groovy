@@ -44,8 +44,8 @@ class SonarPDFPluginSpec extends Specification {
             task.branch == null
             task.sonarBranch == null
             task.reportType == 'executive'
-            task.username == 'admin'
-            task.password == 'admin'
+            task.username == null
+            task.password == null
     }
 
     def "Applies plugin and configures sample task through extension"() {

@@ -23,20 +23,40 @@ To use the plugin, configure your `build.gradle` script and add the plugin:
     apply plugin: 'sonarpdf'
 ```
 
+NOTE: As the sonarpdf plugin uses the group property its important to ensure it is set before the plugin is applied.
+Failure to do so will result in an error such as: 
+
+Execution failed for task ':generateSonarPDFReport'. 
+Can┬┤t access to Sonar or project doesn't exist on Sonar instance.   
+
+Alternatively, you can set the `sonarProjectId` property in the `sonarPDF` extension.
+ 
+
 # Tasks
-The plugin adds the `generateSonarPDFReport` task to your projects which allows you to generate a PDF quality report for your project.
+The plugin adds the `generateSonarPDFReport` task to your project which allows you to generate a PDF quality report.
 
 ## Configuration
 
 ### build.gradle
 ```groovy
     sonarPDF {
-	        sonarProjectId = 'net.sourceforge.pmd:pmd'
             sonarHostUrl = 'http://nemo.sonarqube.org/'
             reportType = 'executive'
             username = 'admin'
             password = 'secret'
-            branch = 'someBranch' 			// can be left empty
-            sonarBranch = 'someSonarBranch' // can be left empty
     }
 ```
+
+## Task properties
+### generateSonarPDFReport properties
+
+To configure the `generateSonarPDFReport` task you can choose to set the following properties within the 
+`sonarPDF` extension:
+
+* `sonarProjectId` : Specify the name of the Sonar project. Default is *"${project.group}:${project.name}"*.
+* `sonarHostUrl` : Sonar Base URL.
+* `username` : Username to access WS API. *Optional*.
+* `password` : Password to access WS API. *Optional*.
+* `sonarBranch` : Branch to be used. *Optional*.
+* `branch` : Use of branch parameter is deprecated, use sonarBranch instead.
+* `reportType` : Type of report. Options are `executive` or `workbook`.

@@ -8,14 +8,11 @@ buildscript {
         classpath 'org.sonar.report.pdf.gradle:sonarpdf-gradle-plugin:0.+'
     }
 }
+group = 'org.codehaus.sonar'
+
 apply plugin: 'sonarpdf'
 
 sonarPDF {
-    sonarProjectId = 'net.sourceforge.pmd:pmd'
     sonarHostUrl = 'http://nemo.sonarqube.org/'
     reportType = 'executive'
-    //username = 'admin'
-    //password = 'secret'
-    //branch = 'someBranch'           // can be left empty
-    //sonarBranch = 'someSonarBranch' // can be left empty
 }

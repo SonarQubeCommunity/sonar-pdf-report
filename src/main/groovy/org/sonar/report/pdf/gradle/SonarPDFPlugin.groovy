@@ -16,7 +16,7 @@ class SonarPDFPlugin implements Plugin <Project>{
 
     @Override
     void apply(Project project){
-        project.extensions.create(EXTENSION_NAME, SonarPDFExtension)
+        project.extensions.create(EXTENSION_NAME, SonarPDFExtension, project)
 
         configSonarPDFTask(project)
     }
@@ -35,7 +35,7 @@ class SonarPDFPlugin implements Plugin <Project>{
             conventionMapping.reportType = { sonarPDFExtension.reportType }
             conventionMapping.username = { sonarPDFExtension.username }
             conventionMapping.password = { sonarPDFExtension.password }
-            conventionMapping.sonarProjectId = { sonarPDFExtension.sonarProjectId ?: "${project.group}:${project.name}" }
+            conventionMapping.sonarProjectId = { sonarPDFExtension.sonarProjectId }
         }
 
         project.task(PDF_TASK_NAME, type: SonarPDFTask)

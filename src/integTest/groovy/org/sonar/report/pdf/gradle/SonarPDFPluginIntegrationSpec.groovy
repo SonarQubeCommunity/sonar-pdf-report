@@ -22,10 +22,12 @@ class SonarPDFPluginIntegrationSpec extends Specification {
             project.tasks.findByName(PDF_TASK_NAME) == null
 
         when:
+        project.metaClass.getName {"pmd"}
+        project.group = 'net.sourceforge.pmd'
             project.apply plugin: 'sonarpdf'
             project.sonarPDF {
                 sonarHostUrl = 'http://nemo.sonarqube.org/'
-                sonarProjectId = 'net.sourceforge.pmd:pmd'
+                //sonarProjectId = 'net.sourceforge.pmd:pmd'
                 reportType = 'executive'
             }
 
