@@ -30,7 +30,10 @@ Execution failed for task ':generateSonarPDFReport'.
 Can┬┤t access to Sonar or project doesn't exist on Sonar instance.   
 
 Alternatively, you can set the `sonarProjectId` property in the `sonarPDF` extension.
- 
+
+# Bintray
+
+https://bintray.com/sion5/gradle-plugins/sonarpdf-gradle-plugin/view
 
 # Tasks
 The plugin adds the `generateSonarPDFReport` task to your project which allows you to generate a PDF quality report.
