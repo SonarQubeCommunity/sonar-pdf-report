@@ -29,8 +29,7 @@ import java.util.Properties;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
-import org.sonar.report.pdf.util.SonarAccess;
-import org.testng.Assert;
+import org.sonar.report.pdf.util.Credentials;
 import org.testng.annotations.Test;
 
 import com.lowagie.text.DocumentException;
@@ -46,18 +45,20 @@ public class ReporterTest {
      * @throws ReportException
      */
     @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
-    public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
+    public void getReportTest() throws DocumentException, IOException, ReportException {
         URL resource = this.getClass().getClassLoader().getResource("report.properties");
         Properties config = new Properties();
         config.load(resource.openStream());
-        config.setProperty("sonar.base.url", "http://localhost:9000");
+        String sonarUrl = config.getProperty("sonar.base.url");
 
         URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
         Properties configText = new Properties();
         configText.load(resourceText.openStream());
+        
+        Credentials credentials = new Credentials(sonarUrl, null, null);
 
-        PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
-                "org.apache.bcel:bcel", "http://nemo.sonarsource.org", config, configText);
+        PDFReporter reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"),
+                "net.java.openjdk:jdk7", config, configText);
 
         ByteArrayOutputStream baos = reporter.getReport();
         FileOutputStream fos = null;
@@ -68,15 +69,5 @@ public class ReporterTest {
         fos.flush();
         fos.close();
 
-    }
-
-    @Test(enabled = true)
-    public void hostAndPortShouldBeParsedCorrectly() throws ReportException {
-        SonarAccess sonar = new SonarAccess("http://localhost/sonar", null, null);
-        Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 80);
-        sonar = new SonarAccess("https://localhost/sonar", null, null);
-        Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 443);
-        sonar = new SonarAccess("http://host:9000", null, null);
-        Assert.assertTrue(sonar.getHost().equals("host") && sonar.getPort() == 9000);
     }
 }

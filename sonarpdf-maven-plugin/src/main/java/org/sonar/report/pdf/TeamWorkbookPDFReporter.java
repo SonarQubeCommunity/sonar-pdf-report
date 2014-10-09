@@ -32,6 +32,7 @@ import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.Violation;
 import org.sonar.report.pdf.entity.exception.ReportException;
+import org.sonar.report.pdf.util.Credentials;
 
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Document;
@@ -42,15 +43,16 @@ import com.lowagie.text.Section;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
+	
+	private static final String REPORT_TYPE_WORKBOOK = "workbook";
 
-  public TeamWorkbookPDFReporter(final URL logo, final String projectKey, final String sonarUrl,
+  public TeamWorkbookPDFReporter(Credentials credentials, final URL logo, final String projectKey,
       final Properties configProperties, final Properties langProperties) {
-    super(logo, projectKey, sonarUrl, configProperties, langProperties);
-    reportType = "workbook";
+    super(credentials, logo, projectKey, configProperties, langProperties);
   }
 
   @Override
-  public void printPdfBody(final Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
+  public void printPdfBody(final Document document) throws DocumentException, IOException,
       ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
@@ -172,5 +174,10 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     table.setLockedWidth(false);
     table.setWidthPercentage(90);
     return table;
+  }
+  
+  @Override
+  public String getReportType() {
+	  return REPORT_TYPE_WORKBOOK;
   }
 }

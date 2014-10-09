@@ -33,6 +33,7 @@ import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.exception.ReportException;
+import org.sonar.report.pdf.util.Credentials;
 import org.sonar.report.pdf.util.MetricKeys;
 
 import com.lowagie.text.BadElementException;
@@ -51,21 +52,21 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class ExecutivePDFReporter extends PDFReporter {
+	
+	private static final String REPORT_TYPE_EXECUTIVE = "executive";
 
   private URL logo;
   private String projectKey;
-  private String sonarUrl;
   private Properties configProperties;
   private Properties langProperties;
 
-  public ExecutivePDFReporter(URL logo, String projectKey, String sonarUrl, Properties configProperties,
+  public ExecutivePDFReporter(Credentials credentials, URL logo, String projectKey, Properties configProperties,
       Properties langProperties) {
+	  super(credentials);
     this.logo = logo;
     this.projectKey = projectKey;
-    this.sonarUrl = sonarUrl;
     this.configProperties = configProperties;
     this.langProperties = langProperties;
-    reportType = "executive";
   }
 
   @Override
@@ -76,11 +77,6 @@ public class ExecutivePDFReporter extends PDFReporter {
   @Override
   protected String getProjectKey() {
     return this.projectKey;
-  }
-
-  @Override
-  protected String getSonarUrl() {
-    return this.sonarUrl;
   }
 
   @Override
@@ -95,7 +91,7 @@ public class ExecutivePDFReporter extends PDFReporter {
 
   @Override
   protected void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
-    throws org.dom4j.DocumentException, ReportException {
+    throws ReportException {
     try {
       URL largeLogo;
       if (super.getConfigProperty("front.page.logo").startsWith("http://")) {
@@ -138,7 +134,7 @@ public class ExecutivePDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printPdfBody(Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
+  protected void printPdfBody(Document document) throws DocumentException, IOException,
     ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
@@ -413,4 +409,9 @@ public class ExecutivePDFReporter extends PDFReporter {
     tocDocument.getTocDocument().add(tocTitle);
     tocDocument.getTocDocument().add(Chunk.NEWLINE);
   }
+  
+  @Override
+	public String getReportType() {
+		return REPORT_TYPE_EXECUTIVE;
+	}
 }

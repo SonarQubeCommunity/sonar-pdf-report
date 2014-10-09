@@ -27,13 +27,14 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpException;
+import org.sonar.report.pdf.builder.ComplexityDistributionBuilder;
+import org.sonar.report.pdf.builder.ProjectBuilder;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
 import org.sonar.report.pdf.entity.Project;
-import org.sonar.report.pdf.entity.RadarGraphic;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.Credentials;
 import org.sonar.report.pdf.util.Logger;
-import org.sonar.report.pdf.util.SonarAccess;
+import org.sonar.wsclient.Sonar;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
@@ -45,163 +46,187 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- * This is the superclass of concrete reporters. It provides the access to Sonar data (project, measures, graphics) and
- * report config data.
+ * This is the superclass of concrete reporters. It provides the access to Sonar
+ * data (project, measures, graphics) and report config data.
  * 
- * The concrete reporter class will provide: sonar base URL, logo (it will be used in yhe PDF document), the project key
- * and the implementation of printPdfBody method.
+ * The concrete reporter class will provide: sonar base URL, logo (it will be
+ * used in yhe PDF document), the project key and the implementation of
+ * printPdfBody method.
  */
 public abstract class PDFReporter {
 
-  private Project project = null;
-  public static String reportType = "workbook";
+	private Credentials credentials;
 
-  public ByteArrayOutputStream getReport() throws DocumentException, IOException, org.dom4j.DocumentException,
-    ReportException {
-    // Creation of documents
-    Document mainDocument = new Document(PageSize.A4, 50, 50, 110, 50);
-    Toc tocDocument = new Toc();
-    Document frontPageDocument = new Document(PageSize.A4, 50, 50, 110, 50);
-    ByteArrayOutputStream mainDocumentBaos = new ByteArrayOutputStream();
-    ByteArrayOutputStream frontPageDocumentBaos = new ByteArrayOutputStream();
-    PdfWriter mainDocumentWriter = PdfWriter.getInstance(mainDocument, mainDocumentBaos);
-    PdfWriter frontPageDocumentWriter = PdfWriter.getInstance(frontPageDocument, frontPageDocumentBaos);
+	private Project project = null;
 
-    // Events for TOC, header and pages numbers
-    Events events = new Events(tocDocument, new Header(this.getLogo(), this.getProject()));
-    mainDocumentWriter.setPageEvent(events);
+	public PDFReporter(Credentials credentials) {
+		this.credentials = credentials;
+	}
 
-    mainDocument.open();
-    tocDocument.getTocDocument().open();
-    frontPageDocument.open();
+	public ByteArrayOutputStream getReport() throws DocumentException,
+			IOException, ReportException {
+		// Creation of documents
+		Document mainDocument = new Document(PageSize.A4, 50, 50, 110, 50);
+		Toc tocDocument = new Toc();
+		Document frontPageDocument = new Document(PageSize.A4, 50, 50, 110, 50);
+		ByteArrayOutputStream mainDocumentBaos = new ByteArrayOutputStream();
+		ByteArrayOutputStream frontPageDocumentBaos = new ByteArrayOutputStream();
+		PdfWriter mainDocumentWriter = PdfWriter.getInstance(mainDocument,
+				mainDocumentBaos);
+		PdfWriter frontPageDocumentWriter = PdfWriter.getInstance(
+				frontPageDocument, frontPageDocumentBaos);
 
-    Logger.info("Generating PDF report...");
-    printFrontPage(frontPageDocument, frontPageDocumentWriter);
-    printTocTitle(tocDocument);
-    printPdfBody(mainDocument);
-    mainDocument.close();
-    tocDocument.getTocDocument().close();
-    frontPageDocument.close();
+		// Events for TOC, header and pages numbers
+		Events events = new Events(tocDocument, new Header(this.getLogo(),
+				this.getProject()));
+		mainDocumentWriter.setPageEvent(events);
 
-    // Get Readers
-    PdfReader mainDocumentReader = new PdfReader(mainDocumentBaos.toByteArray());
-    PdfReader tocDocumentReader = new PdfReader(tocDocument.getTocOutputStream().toByteArray());
-    PdfReader frontPageDocumentReader = new PdfReader(frontPageDocumentBaos.toByteArray());
+		mainDocument.open();
+		tocDocument.getTocDocument().open();
+		frontPageDocument.open();
 
-    // New document
-    Document documentWithToc = new Document(tocDocumentReader.getPageSizeWithRotation(1));
-    ByteArrayOutputStream finalBaos = new ByteArrayOutputStream();
-    PdfCopy copy = new PdfCopy(documentWithToc, finalBaos);
+		Logger.info("Generating PDF report...");
+		printFrontPage(frontPageDocument, frontPageDocumentWriter);
+		printTocTitle(tocDocument);
+		printPdfBody(mainDocument);
+		mainDocument.close();
+		tocDocument.getTocDocument().close();
+		frontPageDocument.close();
 
-    documentWithToc.open();
-    copy.addPage(copy.getImportedPage(frontPageDocumentReader, 1));
-    for (int i = 1; i <= tocDocumentReader.getNumberOfPages(); i++) {
-      copy.addPage(copy.getImportedPage(tocDocumentReader, i));
-    }
-    for (int i = 1; i <= mainDocumentReader.getNumberOfPages(); i++) {
-      copy.addPage(copy.getImportedPage(mainDocumentReader, i));
-    }
-    documentWithToc.close();
+		// Get Readers
+		PdfReader mainDocumentReader = new PdfReader(
+				mainDocumentBaos.toByteArray());
+		PdfReader tocDocumentReader = new PdfReader(tocDocument
+				.getTocOutputStream().toByteArray());
+		PdfReader frontPageDocumentReader = new PdfReader(
+				frontPageDocumentBaos.toByteArray());
 
-    // Return the final document (with TOC)
-    return finalBaos;
-  }
+		// New document
+		Document documentWithToc = new Document(
+				tocDocumentReader.getPageSizeWithRotation(1));
+		ByteArrayOutputStream finalBaos = new ByteArrayOutputStream();
+		PdfCopy copy = new PdfCopy(documentWithToc, finalBaos);
 
-  public Project getProject() throws HttpException, IOException, org.dom4j.DocumentException, ReportException {
-    if (project == null) {
-      SonarAccess sonarAccess = new SonarAccess(getSonarUrl(), Credentials.getUsername(), Credentials.getPassword());
-      project = new Project(getProjectKey());
-      project.initializeProject(sonarAccess);
-    }
-    return project;
-  }
+		documentWithToc.open();
+		copy.addPage(copy.getImportedPage(frontPageDocumentReader, 1));
+		for (int i = 1; i <= tocDocumentReader.getNumberOfPages(); i++) {
+			copy.addPage(copy.getImportedPage(tocDocumentReader, i));
+		}
+		for (int i = 1; i <= mainDocumentReader.getNumberOfPages(); i++) {
+			copy.addPage(copy.getImportedPage(mainDocumentReader, i));
+		}
+		documentWithToc.close();
 
-  public Image getCCNDistribution(Project project) {
-    String data;
-    if (project.getMeasure("class_complexity_distribution").getTextValue() != null) {
-      data = project.getMeasure("class_complexity_distribution").getTextValue();
-    } else {
-      data = "N/A";
-    }
-    ComplexityDistribution ccnDist = new ComplexityDistribution(data, getSonarUrl());
-    return ccnDist.getGraphic();
-  }
+		// Return the final document (with TOC)
+		return finalBaos;
+	}
 
-  public String getTextProperty(String key) {
-    return getLangProperties().getProperty(key);
-  }
+	public Project getProject() throws HttpException, IOException,
+			ReportException {
+		if (project == null) {
+			Sonar sonar = Sonar.create(credentials.getUrl(),
+					credentials.getUsername(), credentials.getPassword());
+			ProjectBuilder projectBuilder = ProjectBuilder.getInstance(
+					credentials, sonar, this);
+			project = projectBuilder.initializeProject(getProjectKey());
+		}
+		return project;
+	}
 
-  public String getConfigProperty(String key) {
-    return getReportProperties().getProperty(key);
-  }
+	public Image getCCNDistribution(Project project) {
+		String data;
+		if (project.getMeasure("class_complexity_distribution").getTextValue() != null) {
+			data = project.getMeasure("class_complexity_distribution")
+					.getTextValue();
+		} else {
+			data = "N/A";
+		}
+		ComplexityDistributionBuilder complexityDistributionBuilder = ComplexityDistributionBuilder
+				.getInstance(credentials.getUrl());
+		ComplexityDistribution ccnDist = new ComplexityDistribution(data);
+		return complexityDistributionBuilder.getGraphic(ccnDist);
+	}
 
-  public Image getTendencyImage(int tendencyQualitative, int tendencyCuantitative) {
-    // tendency parameters are t_qual and t_quant tags returned by webservices api
-    String iconName;
-    if (tendencyQualitative == 0) {
-      switch (tendencyCuantitative) {
-        case -2:
-          iconName = "-2-black.png";
-          break;
-        case -1:
-          iconName = "-1-black.png";
-          break;
-        case 1:
-          iconName = "1-black.png";
-          break;
-        case 2:
-          iconName = "2-black.png";
-          break;
-        default:
-          iconName = "none.png";
-      }
-    } else {
-      switch (tendencyQualitative) {
-        case -2:
-          iconName = "-2-red.png";
-          break;
-        case -1:
-          iconName = "-1-red.png";
-          break;
-        case 1:
-          iconName = "1-green.png";
-          break;
-        case 2:
-          iconName = "2-green.png";
-          break;
-        default:
-          iconName = "none.png";
-      }
-    }
-    Image tendencyImage = null;
-    try {
-      tendencyImage = Image.getInstance(this.getClass().getResource("/tendency/" + iconName));
-    } catch (BadElementException e) {
-      e.printStackTrace();
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return tendencyImage;
-  }
+	public String getTextProperty(String key) {
+		return getLangProperties().getProperty(key);
+	}
 
-  protected abstract String getSonarUrl();
+	public String getConfigProperty(String key) {
+		return getReportProperties().getProperty(key);
+	}
 
-  protected abstract void printPdfBody(Document document) throws DocumentException, IOException,
-    org.dom4j.DocumentException, ReportException;
+	public Image getTendencyImage(int tendencyQualitative,
+			int tendencyCuantitative) {
+		// tendency parameters are t_qual and t_quant tags returned by
+		// webservices api
+		String iconName;
+		if (tendencyQualitative == 0) {
+			switch (tendencyCuantitative) {
+			case -2:
+				iconName = "-2-black.png";
+				break;
+			case -1:
+				iconName = "-1-black.png";
+				break;
+			case 1:
+				iconName = "1-black.png";
+				break;
+			case 2:
+				iconName = "2-black.png";
+				break;
+			default:
+				iconName = "none.png";
+			}
+		} else {
+			switch (tendencyQualitative) {
+			case -2:
+				iconName = "-2-red.png";
+				break;
+			case -1:
+				iconName = "-1-red.png";
+				break;
+			case 1:
+				iconName = "1-green.png";
+				break;
+			case 2:
+				iconName = "2-green.png";
+				break;
+			default:
+				iconName = "none.png";
+			}
+		}
+		Image tendencyImage = null;
+		try {
+			tendencyImage = Image.getInstance(this.getClass().getResource(
+					"/tendency/" + iconName));
+		} catch (BadElementException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return tendencyImage;
+	}
 
-  protected abstract void printTocTitle(Toc tocDocument) throws DocumentException, IOException;
+	protected abstract void printPdfBody(Document document)
+			throws DocumentException, IOException, ReportException;
 
-  protected abstract URL getLogo();
+	protected abstract void printTocTitle(Toc tocDocument)
+			throws DocumentException, IOException;
 
-  protected abstract String getProjectKey();
+	protected abstract URL getLogo();
 
-  protected abstract void printFrontPage(Document frontPageDocument, PdfWriter frontPageWriter)
-    throws org.dom4j.DocumentException, ReportException;
+	protected abstract String getProjectKey();
 
-  protected abstract Properties getReportProperties();
+	protected abstract void printFrontPage(Document frontPageDocument,
+			PdfWriter frontPageWriter) throws ReportException;
 
-  protected abstract Properties getLangProperties();
+	protected abstract Properties getReportProperties();
+
+	protected abstract Properties getLangProperties();
+
+	public abstract String getReportType();
+
 
 }

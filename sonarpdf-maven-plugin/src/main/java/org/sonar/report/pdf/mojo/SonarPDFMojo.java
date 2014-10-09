@@ -129,6 +129,9 @@ public class SonarPDFMojo extends AbstractMojo {
       }
       configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"));
 
+      
+      Credentials credentials = new Credentials(sonarHostUrl, username, password);
+      
       String sonarProjectId = project.getGroupId() + ":" + project.getArtifactId();
       if (branch != null) {
         sonarProjectId += ":" + branch;
@@ -143,21 +146,15 @@ public class SonarPDFMojo extends AbstractMojo {
       if (reportType != null) {
         if (reportType.equals("executive")) {
           Logger.info("Executive report type selected");
-          reporter = new ExecutivePDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
-              .getProperty("sonar.base.url"), config, configLang);
+          reporter = new ExecutivePDFReporter(credentials, this.getClass().getResource("/sonar.png"), sonarProjectId, config, configLang);
         } else if (reportType.equals("workbook")) {
           Logger.info("Team workbook report type selected");
-          reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
-              .getProperty("sonar.base.url"), config, configLang);
+          reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"), sonarProjectId, config, configLang);
         }
       } else {
         Logger.info("No report type provided. Default report selected (Team workbook)");
-        reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"), sonarProjectId, config
-            .getProperty("sonar.base.url"), config, configLang);
+        reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"), sonarProjectId, config, configLang);
       }
-
-      Credentials.setUsername(username);
-      Credentials.setPassword(password);
 
       ByteArrayOutputStream baos = reporter.getReport();
       FileOutputStream fos = null;
@@ -174,9 +171,6 @@ public class SonarPDFMojo extends AbstractMojo {
       e.printStackTrace();
     } catch (DocumentException e) {
       Logger.error("Problem generating PDF file.");
-      e.printStackTrace();
-    } catch (org.dom4j.DocumentException e) {
-      Logger.error("Problem parsing response data.");
       e.printStackTrace();
     } catch (ReportException e) {
       Logger.error("Internal error: " + e.getMessage());

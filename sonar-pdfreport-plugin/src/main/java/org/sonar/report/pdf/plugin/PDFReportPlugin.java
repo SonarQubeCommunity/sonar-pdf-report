@@ -20,6 +20,9 @@
 
 package org.sonar.report.pdf.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sonar.api.Extension;
 import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
@@ -28,9 +31,6 @@ import org.sonar.api.PropertyType;
 import org.sonar.report.pdf.batch.PDFMavenPluginHandler;
 import org.sonar.report.pdf.batch.PDFPostJob;
 import org.sonar.report.pdf.web.ReportWebService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Properties({ 
   @Property(
