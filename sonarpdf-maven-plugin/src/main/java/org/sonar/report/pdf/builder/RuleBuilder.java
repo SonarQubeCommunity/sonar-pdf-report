@@ -22,94 +22,93 @@ import org.sonar.wsclient.issue.Issues;
 import com.lowagie.text.DocumentException;
 
 public class RuleBuilder {
-	
-	private static RuleBuilder builder;
 
-	private Credentials credentials;
+  private static RuleBuilder builder;
 
-	private Sonar sonar;
-	
-	
-	public RuleBuilder(Credentials credentials, Sonar sonar) {
-		this.credentials = credentials;
-		this.sonar = sonar;
-	}
+  private Credentials credentials;
 
-	public static RuleBuilder getInstance(Credentials credentials,
-			Sonar sonar) {
-		if (builder == null) {
-			return new RuleBuilder(credentials, sonar);
-		}
+  private Sonar sonar;
 
-		return builder;
-	}
-	
-	/**
-	   * Initialize a rule given an XML Node that contains one rule
-	   * 
-	   * @return
-	   */
-	  public Rule initFromNode(final org.sonar.wsclient.services.Measure ruleNode) {
-		  Rule rule = new Rule();
-		  rule.setKey(ruleNode.getRuleKey());
-		  rule.setName(ruleNode.getRuleName());
-		  rule.setViolationsNumber(ruleNode.getValue());
-		  rule.setViolationsNumberFormatted(ruleNode.getFormattedValue());
-		  return rule;
-	  }
+  public RuleBuilder(Credentials credentials, Sonar sonar) {
+    this.credentials = credentials;
+    this.sonar = sonar;
+  }
 
-	/**
-	 * This method provide the possibility of init a Rule without init all
-	 * violated resources.
-	 * 
-	 * @return
-	 * @throws UnsupportedEncodingException
-	 * @throws DocumentException
-	 * @throws IOException
-	 * @throws HttpException
-	 */
-	public void loadViolatedResources(Rule rule, String ruleKey, final String projectKey)
-			throws ReportException, UnsupportedEncodingException {
-		
-		
-		if (ruleKey == null) {
-			throw new ReportException(
-					"Rule not initialized. Forget call to initFromNode() previously?");
-		} else {
-			// ruleKey = URLEncoder.encode(ruleKey, "UTF8");
-			Logger.debug("Accessing Sonar: getting violated resurces by one given rule ("
-					+ ruleKey + ")");
+  public static RuleBuilder getInstance(Credentials credentials, Sonar sonar) {
+    if (builder == null) {
+      return new RuleBuilder(credentials, sonar);
+    }
 
-			SonarClient client = SonarClient.create(credentials.getUrl());
-			IssueClient issueClient = client.issueClient();
+    return builder;
+  }
 
-			IssueQuery issueQuery = IssueQuery.create();
-			issueQuery.componentRoots(projectKey);
-			issueQuery.pageSize(20);
-			issueQuery.rules(ruleKey);
-			// "&scopes=FIL&depth=-1&limit=20
+  /**
+   * Initialize a rule given an XML Node that contains one rule
+   * 
+   * @return
+   */
+  public Rule initFromNode(final org.sonar.wsclient.services.Measure ruleNode) {
+    Rule rule = new Rule();
+    rule.setKey(ruleNode.getRuleKey());
+    rule.setName(ruleNode.getRuleName());
+    rule.setViolationsNumber(ruleNode.getValue());
+    rule.setViolationsNumberFormatted(ruleNode.getFormattedValue());
+    return rule;
+  }
 
-			Issues issues = issueClient.find(issueQuery);
+  /**
+   * This method provide the possibility of init a Rule without init all
+   * violated resources.
+   * 
+   * @return
+   * @throws UnsupportedEncodingException
+   * @throws DocumentException
+   * @throws IOException
+   * @throws HttpException
+   */
+  public void loadViolatedResources(Rule rule, String ruleKey,
+      final String projectKey) throws ReportException,
+      UnsupportedEncodingException {
 
-			List<Issue> violatedResources = issues.list();
-			List<Violation> topViolatedResources = new LinkedList<Violation>();
-			rule.setTopViolatedResources(topViolatedResources);
-			Iterator<Issue> it = violatedResources.iterator();
-			
-			while (it.hasNext()) {
-				Issue resource = it.next();
-				if (rule.getMessage() == null) {
-					rule.setMessage(resource.message());
-				}
-				String resourceKey = resource.componentKey();
-				String line = "N/A";
-				Integer resourceLine = resource.line();
-				if (resourceLine != null) {
-					line = String.valueOf(resourceLine);
-				}
-				topViolatedResources.add(new Violation(line, resourceKey, ""));
-			}
-		}
-	}
+    if (ruleKey == null) {
+      throw new ReportException(
+          "Rule not initialized. Forget call to initFromNode() previously?");
+    } else {
+      // ruleKey = URLEncoder.encode(ruleKey, "UTF8");
+      Logger
+          .debug("Accessing Sonar: getting violated resurces by one given rule ("
+              + ruleKey + ")");
+
+      SonarClient client = SonarClient.create(credentials.getUrl());
+      IssueClient issueClient = client.issueClient();
+
+      IssueQuery issueQuery = IssueQuery.create();
+      issueQuery.componentRoots(projectKey);
+      issueQuery.pageSize(20);
+      issueQuery.rules(ruleKey);
+      // "&scopes=FIL&depth=-1&limit=20
+
+      Issues issues = issueClient.find(issueQuery);
+
+      List<Issue> violatedResources = issues.list();
+      List<Violation> topViolatedResources = new LinkedList<Violation>();
+      rule.setTopViolatedResources(topViolatedResources);
+      Iterator<Issue> it = violatedResources.iterator();
+
+      while (it.hasNext()) {
+        Issue resource = it.next();
+        if (rule.getMessage() == null) {
+          rule.setMessage(resource.message());
+        }
+        String resourceKey = resource.componentKey();
+        String line = "N/A";
+        Integer resourceLine = resource.line();
+        if (resourceLine != null) {
+          line = String.valueOf(resourceLine);
+        }
+        topViolatedResources.add(new Violation(line, resourceKey, ""));
+      }
+    }
+  }
 
 }

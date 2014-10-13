@@ -39,5 +39,5 @@ public class UrlPath {
       return null;
     }
   }
-  
+
 }

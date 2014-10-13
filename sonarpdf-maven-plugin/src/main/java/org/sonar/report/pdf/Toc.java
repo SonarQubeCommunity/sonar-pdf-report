@@ -46,7 +46,8 @@ public class Toc extends PdfPageEventHelper {
     toc = new Document(PageSize.A4, 50, 50, 110, 50);
     content = new PdfPTable(2);
     Rectangle page = toc.getPageSize();
-    content.setTotalWidth(page.getWidth() - toc.leftMargin() - toc.rightMargin());
+    content.setTotalWidth(page.getWidth() - toc.leftMargin()
+        - toc.rightMargin());
     content.getDefaultCell().setUseVariableBorders(true);
     content.getDefaultCell().setBorderColorBottom(Color.WHITE);
     content.getDefaultCell().setBorderColorRight(Color.WHITE);
@@ -56,13 +57,16 @@ public class Toc extends PdfPageEventHelper {
   }
 
   @Override
-  public void onChapter(PdfWriter writer, Document document, float position, Paragraph title) {
+  public void onChapter(PdfWriter writer, Document document, float position,
+      Paragraph title) {
     content.getDefaultCell().setBorderColorBottom(Color.LIGHT_GRAY);
     content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
     content.getDefaultCell().setUseBorderPadding(true);
-    content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 11)));
+    content
+        .addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 11)));
     content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_RIGHT);
-    content.addCell(new Phrase("Page " + document.getPageNumber(), new Font(Font.HELVETICA, 11)));
+    content.addCell(new Phrase("Page " + document.getPageNumber(), new Font(
+        Font.HELVETICA, 11)));
     content.getDefaultCell().setBorderColorBottom(Color.WHITE);
     content.getDefaultCell().setUseBorderPadding(false);
   }
@@ -74,20 +78,23 @@ public class Toc extends PdfPageEventHelper {
   }
 
   @Override
-  public void onSection(PdfWriter writer, Document document, float position, int depth, Paragraph title) {
+  public void onSection(PdfWriter writer, Document document, float position,
+      int depth, Paragraph title) {
     content.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_LEFT);
     switch (depth) {
-      case 2:
-        content.getDefaultCell().setIndent(10);
-        content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 10)));
-        content.getDefaultCell().setIndent(0);
-        content.addCell("");
-        break;
-      default:
-        content.getDefaultCell().setIndent(20);
-        content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA, 9)));
-        content.getDefaultCell().setIndent(0);
-        content.addCell("");
+    case 2:
+      content.getDefaultCell().setIndent(10);
+      content.addCell(new Phrase(title.getContent(), new Font(Font.HELVETICA,
+          10)));
+      content.getDefaultCell().setIndent(0);
+      content.addCell("");
+      break;
+    default:
+      content.getDefaultCell().setIndent(20);
+      content.addCell(new Phrase(title.getContent(),
+          new Font(Font.HELVETICA, 9)));
+      content.getDefaultCell().setIndent(0);
+      content.addCell("");
     }
   }
 

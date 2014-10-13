@@ -20,7 +20,6 @@
 
 package org.sonar.report.pdf.entity;
 
-
 public class Measure {
 
   private String key;
@@ -31,7 +30,6 @@ public class Measure {
   private Integer qualitativeTendency;
   private Integer quantitativeTendency;
   private String alert;
-
 
   public Measure(String measureKey, String measureFValue) {
     this.key = measureKey;
@@ -108,5 +106,4 @@ public class Measure {
     this.alert = alert;
   }
 
- 
 }

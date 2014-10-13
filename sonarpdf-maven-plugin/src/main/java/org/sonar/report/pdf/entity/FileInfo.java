@@ -54,14 +54,13 @@ public class FileInfo {
    */
   private String duplicatedLines;
 
-
   /**
-   * It defines the content of this object: used for violations info, complexity info or duplications info.
+   * It defines the content of this object: used for violations info, complexity
+   * info or duplications info.
    */
   public static final int VIOLATIONS_CONTENT = 1;
   public static final int CCN_CONTENT = 2;
   public static final int DUPLICATIONS_CONTENT = 3;
-
 
   public boolean isContentSet(int content) {
     boolean result = false;

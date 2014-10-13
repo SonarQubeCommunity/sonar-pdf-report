@@ -40,7 +40,7 @@ import org.sonar.wsclient.issue.Issues;
 import com.lowagie.text.DocumentException;
 
 public class Rule {
-	
+
   // Rule key
   private String key;
 
@@ -60,8 +60,6 @@ public class Rule {
   private String violationsNumberFormatted;
 
   private String message;
-
-  
 
   public String getName() {
     return name;
@@ -107,32 +105,25 @@ public class Rule {
     return violationsNumberFormatted;
   }
 
-  public void setViolationsNumberFormatted(final String violationsNumberFormatted) {
+  public void setViolationsNumberFormatted(
+      final String violationsNumberFormatted) {
     this.violationsNumberFormatted = violationsNumberFormatted;
   }
 
+  public String getMessage() {
+    return message;
+  }
 
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-public String getMessage() {
-	return message;
-}
+  public List<Violation> getTopViolatedResources() {
+    return topViolatedResources;
+  }
 
-
-
-public void setMessage(String message) {
-	this.message = message;
-}
-
-
-
-public List<Violation> getTopViolatedResources() {
-	return topViolatedResources;
-}
-
-
-
-public void setTopViolatedResources(List<Violation> topViolatedResources) {
-	this.topViolatedResources = topViolatedResources;
-}
+  public void setTopViolatedResources(List<Violation> topViolatedResources) {
+    this.topViolatedResources = topViolatedResources;
+  }
 
 }

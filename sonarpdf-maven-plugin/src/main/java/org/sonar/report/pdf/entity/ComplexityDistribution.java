@@ -20,7 +20,6 @@
 
 package org.sonar.report.pdf.entity;
 
-
 /**
  * This class provides the complexity distribution graphic.
  */
@@ -28,7 +27,6 @@ public class ComplexityDistribution {
 
   private String[] xValues;
   private String[] yValues;
-  
 
   public ComplexityDistribution(String data) {
     String[] unitData = data.split(";");
@@ -42,8 +40,6 @@ public class ComplexityDistribution {
       }
     }
   }
-
-  
 
   public String formatYValues() {
     String formatValues = "";
@@ -69,27 +65,19 @@ public class ComplexityDistribution {
     return formatValues;
   }
 
+  public String[] getxValues() {
+    return xValues;
+  }
 
+  public void setxValues(String[] xValues) {
+    this.xValues = xValues;
+  }
 
-public String[] getxValues() {
-	return xValues;
-}
+  public String[] getyValues() {
+    return yValues;
+  }
 
-
-
-public void setxValues(String[] xValues) {
-	this.xValues = xValues;
-}
-
-
-
-public String[] getyValues() {
-	return yValues;
-}
-
-
-
-public void setyValues(String[] yValues) {
-	this.yValues = yValues;
-}
+  public void setyValues(String[] yValues) {
+    this.yValues = yValues;
+  }
 }

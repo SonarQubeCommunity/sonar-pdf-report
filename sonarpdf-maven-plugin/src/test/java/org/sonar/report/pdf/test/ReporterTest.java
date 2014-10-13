@@ -36,38 +36,44 @@ import com.lowagie.text.DocumentException;
 
 public class ReporterTest {
 
-    /**
-     * Build a PDF report for the Sonar project on "sonar.base.url" instance of Sonar. The property "sonar.base.url" is
-     * set in report.properties, this file will be provided by the artifact consumer.
-     * 
-     * The key of the project is not place in properties, this is provided in execution time.
-     * 
-     * @throws ReportException
-     */
-    @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
-    public void getReportTest() throws DocumentException, IOException, ReportException {
-        URL resource = this.getClass().getClassLoader().getResource("report.properties");
-        Properties config = new Properties();
-        config.load(resource.openStream());
-        String sonarUrl = config.getProperty("sonar.base.url");
+  /**
+   * Build a PDF report for the Sonar project on "sonar.base.url" instance of
+   * Sonar. The property "sonar.base.url" is set in report.properties, this file
+   * will be provided by the artifact consumer.
+   * 
+   * The key of the project is not place in properties, this is provided in
+   * execution time.
+   * 
+   * @throws ReportException
+   */
+  @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
+  public void getReportTest() throws DocumentException, IOException,
+      ReportException {
+    URL resource = this.getClass().getClassLoader()
+        .getResource("report.properties");
+    Properties config = new Properties();
+    config.load(resource.openStream());
+    String sonarUrl = config.getProperty("sonar.base.url");
 
-        URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
-        Properties configText = new Properties();
-        configText.load(resourceText.openStream());
-        
-        Credentials credentials = new Credentials(sonarUrl, null, null);
+    URL resourceText = this.getClass().getClassLoader()
+        .getResource("report-texts-en.properties");
+    Properties configText = new Properties();
+    configText.load(resourceText.openStream());
 
-        PDFReporter reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"),
-                "net.java.openjdk:jdk7", config, configText);
+    Credentials credentials = new Credentials(sonarUrl, null, null);
 
-        ByteArrayOutputStream baos = reporter.getReport();
-        FileOutputStream fos = null;
+    PDFReporter reporter = new TeamWorkbookPDFReporter(credentials, this
+        .getClass().getResource("/sonar.png"), "net.java.openjdk:jdk7", config,
+        configText);
 
-        fos = new FileOutputStream("target/testReport.pdf");
+    ByteArrayOutputStream baos = reporter.getReport();
+    FileOutputStream fos = null;
 
-        baos.writeTo(fos);
-        fos.flush();
-        fos.close();
+    fos = new FileOutputStream("target/testReport.pdf");
 
-    }
+    baos.writeTo(fos);
+    fos.flush();
+    fos.close();
+
+  }
 }

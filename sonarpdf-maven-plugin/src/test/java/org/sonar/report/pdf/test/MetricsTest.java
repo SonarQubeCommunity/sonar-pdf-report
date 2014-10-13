@@ -37,32 +37,34 @@ import org.testng.annotations.Test;
 
 public class MetricsTest {
 
-    @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
-    public void metricsShouldBeConsistent() throws IOException, IllegalArgumentException,
-        IllegalAccessException, ReportException {
-        URL resource = this.getClass().getClassLoader().getResource("report.properties");
-        Properties config = new Properties();
-        config.load(resource.openStream());
-        String baseUrl = config.getProperty("sonar.base.url");
+  @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
+  public void metricsShouldBeConsistent() throws IOException,
+      IllegalArgumentException, IllegalAccessException, ReportException {
+    URL resource = this.getClass().getClassLoader()
+        .getResource("report.properties");
+    Properties config = new Properties();
+    config.load(resource.openStream());
+    String baseUrl = config.getProperty("sonar.base.url");
 
-        URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
-        Properties configText = new Properties();
-        configText.load(resourceText.openStream());
+    URL resourceText = this.getClass().getClassLoader()
+        .getResource("report-texts-en.properties");
+    Properties configText = new Properties();
+    configText.load(resourceText.openStream());
 
-        Sonar sonar = Sonar.create(baseUrl, null, null);
-        MeasuresBuilder measuresBuilder = MeasuresBuilder.getInstance(sonar);
-        List<String> allMetricsKeys = measuresBuilder.getAllMetricKeys();
+    Sonar sonar = Sonar.create(baseUrl, null, null);
+    MeasuresBuilder measuresBuilder = MeasuresBuilder.getInstance(sonar);
+    List<String> allMetricsKeys = measuresBuilder.getAllMetricKeys();
 
-        System.out.println("Checking metrics consistency...");
-        Field[] fields = MetricKeys.class.getFields();
-        for (int i = 0; i < fields.length; i++) {
-            String metricKey = (String) fields[i].get(MetricKeys.class);
-            if (! allMetricsKeys.contains(fields[i].get(MetricKeys.class)) ) {
-            	System.out.println(metricKey + "... is not provided");
-            }
-            System.out.println(metricKey + "... OK");
-        }
-        System.out.println("\nAll metrics are consistent.");
+    System.out.println("Checking metrics consistency...");
+    Field[] fields = MetricKeys.class.getFields();
+    for (int i = 0; i < fields.length; i++) {
+      String metricKey = (String) fields[i].get(MetricKeys.class);
+      if (!allMetricsKeys.contains(fields[i].get(MetricKeys.class))) {
+        System.out.println(metricKey + "... is not provided");
+      }
+      System.out.println(metricKey + "... OK");
     }
+    System.out.println("\nAll metrics are consistent.");
+  }
 
 }

@@ -22,59 +22,59 @@ package org.sonar.report.pdf.entity;
 
 public class RadarGraphic {
 
-	private String efficiency;
-	private String maintainability;
-	private String portability;
-	private String reliavility;
-	private String usability;
+  private String efficiency;
+  private String maintainability;
+  private String portability;
+  private String reliavility;
+  private String usability;
 
-	public RadarGraphic(String efficiency, String maintainability,
-			String portability, String reliavility, String usability) {
-		this.efficiency = efficiency;
-		this.maintainability = maintainability;
-		this.portability = portability;
-		this.reliavility = reliavility;
-		this.usability = usability;
-	}
+  public RadarGraphic(String efficiency, String maintainability,
+      String portability, String reliavility, String usability) {
+    this.efficiency = efficiency;
+    this.maintainability = maintainability;
+    this.portability = portability;
+    this.reliavility = reliavility;
+    this.usability = usability;
+  }
 
-	public String getEfficiency() {
-		return efficiency;
-	}
+  public String getEfficiency() {
+    return efficiency;
+  }
 
-	public void setEfficiency(String efficiency) {
-		this.efficiency = efficiency;
-	}
+  public void setEfficiency(String efficiency) {
+    this.efficiency = efficiency;
+  }
 
-	public String getMaintainability() {
-		return maintainability;
-	}
+  public String getMaintainability() {
+    return maintainability;
+  }
 
-	public void setMaintainability(String maintainability) {
-		this.maintainability = maintainability;
-	}
+  public void setMaintainability(String maintainability) {
+    this.maintainability = maintainability;
+  }
 
-	public String getPortability() {
-		return portability;
-	}
+  public String getPortability() {
+    return portability;
+  }
 
-	public void setPortability(String portability) {
-		this.portability = portability;
-	}
+  public void setPortability(String portability) {
+    this.portability = portability;
+  }
 
-	public String getReliavility() {
-		return reliavility;
-	}
+  public String getReliavility() {
+    return reliavility;
+  }
 
-	public void setReliavility(String reliavility) {
-		this.reliavility = reliavility;
-	}
+  public void setReliavility(String reliavility) {
+    this.reliavility = reliavility;
+  }
 
-	public String getUsability() {
-		return usability;
-	}
+  public String getUsability() {
+    return usability;
+  }
 
-	public void setUsability(String usability) {
-		this.usability = usability;
-	}
+  public void setUsability(String usability) {
+    this.usability = usability;
+  }
 
 }

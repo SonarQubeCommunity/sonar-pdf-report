@@ -45,7 +45,8 @@ public class Events extends PdfPageEventHelper {
   }
 
   @Override
-  public void onChapter(PdfWriter writer, Document document, float position, Paragraph paragraph) {
+  public void onChapter(PdfWriter writer, Document document, float position,
+      Paragraph paragraph) {
     toc.onChapter(writer, document, position, paragraph);
   }
 
@@ -55,7 +56,8 @@ public class Events extends PdfPageEventHelper {
   }
 
   @Override
-  public void onSection(PdfWriter writer, Document document, float position, int depth, Paragraph paragraph) {
+  public void onSection(PdfWriter writer, Document document, float position,
+      int depth, Paragraph paragraph) {
     toc.onSection(writer, document, position, depth, paragraph);
   }
 
@@ -75,7 +77,8 @@ public class Events extends PdfPageEventHelper {
     cb.saveState();
     float textBase = document.bottom() - 20;
     try {
-      cb.setFontAndSize(BaseFont.createFont("Helvetica", BaseFont.WINANSI, false), 12);
+      cb.setFontAndSize(
+          BaseFont.createFont("Helvetica", BaseFont.WINANSI, false), 12);
     } catch (DocumentException e) {
       e.printStackTrace();
     } catch (IOException e) {

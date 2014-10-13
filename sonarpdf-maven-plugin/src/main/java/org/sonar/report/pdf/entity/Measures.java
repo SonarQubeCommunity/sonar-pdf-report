@@ -34,18 +34,15 @@ public class Measures {
   private Date date;
   private String version = "N/A";
 
-  
   public Measures() {
   }
-
-  
 
   public Date getDate() {
     return date;
   }
 
   public void setDate(Date date) throws ParseException {
-      this.date = date;
+    this.date = date;
   }
 
   public String getVersion() {
@@ -75,7 +72,5 @@ public class Measures {
   public boolean containsMeasure(String measureKey) {
     return measuresTable.containsKey(measureKey);
   }
-
-  
 
 }
