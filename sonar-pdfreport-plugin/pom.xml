@@ -36,7 +36,7 @@
   
   <name>Sonar PDF Report (Sonar Plugin)</name>
   <description>Generates PDF report</description>
-  <url>http://docs.codehaus.org/display/SONAR/Sonar+PDF+Plugin</url>
+  <url>http://docs.codehaus.org/display/SONAR/PDF+Plugin</url>
   
   <properties>
     <sonar.pluginName>PDF Report</sonar.pluginName>
