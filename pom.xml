@@ -37,7 +37,7 @@
   <packaging>pom</packaging>
 
   <name>Sonar PDF Report (parent)</name>
-  <description>Sonar and Maven plugin for PDF reporting</description>
+  <description>Sonar plugin for PDF reporting</description>
   <inceptionYear>2010</inceptionYear>
   <organization>
     <name>klicap - ingenieria del puzle</name>
