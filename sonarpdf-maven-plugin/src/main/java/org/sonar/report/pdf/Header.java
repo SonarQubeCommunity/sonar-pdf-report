@@ -57,16 +57,18 @@ public class Header extends PdfPageEventHelper {
       head.getDefaultCell().setVerticalAlignment(PdfCell.ALIGN_MIDDLE);
       head.getDefaultCell().setHorizontalAlignment(PdfCell.ALIGN_CENTER);
       head.addCell(logoImage);
-      Phrase projectName = new Phrase(project.getName(), FontFactory.getFont(FontFactory.COURIER, 12, Font.NORMAL,
-          Color.GRAY));
-      Phrase phrase = new Phrase("Sonar PDF Report", FontFactory.getFont(FontFactory.COURIER, 12, Font.NORMAL,
-          Color.GRAY));
+      Phrase projectName = new Phrase(project.getName(), FontFactory.getFont(
+          FontFactory.COURIER, 12, Font.NORMAL, Color.GRAY));
+      Phrase phrase = new Phrase("Sonar PDF Report", FontFactory.getFont(
+          FontFactory.COURIER, 12, Font.NORMAL, Color.GRAY));
       head.getDefaultCell().setColspan(2);
       head.addCell(phrase);
       head.getDefaultCell().setColspan(1);
       head.addCell(projectName);
-      head.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
-      head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - 20, writer.getDirectContent());
+      head.setTotalWidth(page.getWidth() - document.leftMargin()
+          - document.rightMargin());
+      head.writeSelectedRows(0, -1, document.leftMargin(),
+          page.getHeight() - 20, writer.getDirectContent());
       head.setSpacingAfter(10);
     } catch (BadElementException e) {
       e.printStackTrace();

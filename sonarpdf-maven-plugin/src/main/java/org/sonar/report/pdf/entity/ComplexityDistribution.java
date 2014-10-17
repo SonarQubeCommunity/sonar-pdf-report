@@ -20,23 +20,15 @@
 
 package org.sonar.report.pdf.entity;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Image;
-
 /**
  * This class provides the complexity distribution graphic.
  */
 public class ComplexityDistribution {
 
-  String[] xValues;
-  String[] yValues;
-  String sonarBaseUrl;
+  private String[] xValues;
+  private String[] yValues;
 
-  public ComplexityDistribution(String data, String sonarBaseUrl) {
-    this.sonarBaseUrl = sonarBaseUrl;
+  public ComplexityDistribution(String data) {
     String[] unitData = data.split(";");
     xValues = new String[unitData.length];
     yValues = new String[unitData.length];
@@ -49,30 +41,7 @@ public class ComplexityDistribution {
     }
   }
 
-  public Image getGraphic() {
-    Image image = null;
-    try {
-      if (yValues.length != 0) {
-        image = Image
-            .getInstance(sonarBaseUrl
-                + "/chart?cht=cvb&chdi=300x200&chca="
-                + formatXValues()
-                + "&chov=y&chrav=y&chv="
-                + formatYValues()
-                + "&chorgv=y&chcaaml=0.05&chseamu=0.2&chins=5&chcaamu=0.05&chcav=y&chc=777777,777777,777777,777777,777777,777777,777777");
-        image.setAlignment(Image.ALIGN_MIDDLE);
-      }
-    } catch (BadElementException e) {
-      e.printStackTrace();
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return image;
-  }
-
-  private String formatYValues() {
+  public String formatYValues() {
     String formatValues = "";
     for (int i = 0; i < yValues.length; i++) {
       if (i != yValues.length - 1) {
@@ -84,7 +53,7 @@ public class ComplexityDistribution {
     return formatValues;
   }
 
-  private String formatXValues() {
+  public String formatXValues() {
     String formatValues = "";
     for (int i = 0; i < xValues.length; i++) {
       if (i != xValues.length - 1) {
@@ -94,5 +63,21 @@ public class ComplexityDistribution {
       }
     }
     return formatValues;
+  }
+
+  public String[] getxValues() {
+    return xValues;
+  }
+
+  public void setxValues(String[] xValues) {
+    this.xValues = xValues;
+  }
+
+  public String[] getyValues() {
+    return yValues;
+  }
+
+  public void setyValues(String[] yValues) {
+    this.yValues = yValues;
   }
 }

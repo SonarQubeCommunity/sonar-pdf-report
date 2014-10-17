@@ -31,6 +31,6 @@ public class Priority {
   public static final String BLOCKER = "BLOCKER";
 
   public static String[] getPrioritiesArray() {
-    return new String[]{INFO, MINOR, MAJOR, CRITICAL, BLOCKER};
+    return new String[] { INFO, MINOR, MAJOR, CRITICAL, BLOCKER };
   }
 }

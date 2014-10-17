@@ -32,6 +32,7 @@ import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
 import org.sonar.report.pdf.entity.Violation;
 import org.sonar.report.pdf.entity.exception.ReportException;
+import org.sonar.report.pdf.util.Credentials;
 
 import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Document;
@@ -43,31 +44,35 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 
-  public TeamWorkbookPDFReporter(final URL logo, final String projectKey, final String sonarUrl,
-      final Properties configProperties, final Properties langProperties) {
-    super(logo, projectKey, sonarUrl, configProperties, langProperties);
-    reportType = "workbook";
+  private static final String REPORT_TYPE_WORKBOOK = "workbook";
+
+  public TeamWorkbookPDFReporter(Credentials credentials, final URL logo,
+      final String projectKey, final Properties configProperties,
+      final Properties langProperties) {
+    super(credentials, logo, projectKey, configProperties, langProperties);
   }
 
   @Override
-  public void printPdfBody(final Document document) throws DocumentException, IOException, org.dom4j.DocumentException,
-      ReportException {
+  public void printPdfBody(final Document document) throws DocumentException,
+      IOException, ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
-    ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(project.getName(), Style.CHAPTER_FONT));
-    chapter1.add(new Paragraph(getTextProperty("main.text.misc.overview"), Style.NORMAL_FONT));
-    Section section11 = chapter1
-        .addSection(new Paragraph(getTextProperty("general.report_overview"), Style.TITLE_FONT));
+    ChapterAutoNumber chapter1 = new ChapterAutoNumber(new Paragraph(
+        project.getName(), Style.CHAPTER_FONT));
+    chapter1.add(new Paragraph(getTextProperty("main.text.misc.overview"),
+        Style.NORMAL_FONT));
+    Section section11 = chapter1.addSection(new Paragraph(
+        getTextProperty("general.report_overview"), Style.TITLE_FONT));
     printDashboard(project, section11);
-    Section section12 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
-        Style.TITLE_FONT));
+    Section section12 = chapter1.addSection(new Paragraph(
+        getTextProperty("general.violations_analysis"), Style.TITLE_FONT));
     printMostViolatedRules(project, section12);
     printMostViolatedFiles(project, section12);
     printMostComplexFiles(project, section12);
     printMostDuplicatedFiles(project, section12);
 
-    Section section13 = chapter1.addSection(new Paragraph(getTextProperty("general.violations_details"),
-        Style.TITLE_FONT));
+    Section section13 = chapter1.addSection(new Paragraph(
+        getTextProperty("general.violations_details"), Style.TITLE_FONT));
     printMostViolatedRulesDetails(project, section13);
 
     document.add(chapter1);
@@ -75,26 +80,28 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     Iterator<Project> it = project.getSubprojects().iterator();
     while (it.hasNext()) {
       Project subproject = it.next();
-      ChapterAutoNumber chapterN = new ChapterAutoNumber(new Paragraph(subproject.getName(), Style.CHAPTER_FONT));
+      ChapterAutoNumber chapterN = new ChapterAutoNumber(new Paragraph(
+          subproject.getName(), Style.CHAPTER_FONT));
 
-      Section sectionN1 = chapterN.addSection(new Paragraph(getTextProperty("general.report_overview"),
-          Style.TITLE_FONT));
+      Section sectionN1 = chapterN.addSection(new Paragraph(
+          getTextProperty("general.report_overview"), Style.TITLE_FONT));
       printDashboard(subproject, sectionN1);
 
-      Section sectionN2 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_analysis"),
-          Style.TITLE_FONT));
+      Section sectionN2 = chapterN.addSection(new Paragraph(
+          getTextProperty("general.violations_analysis"), Style.TITLE_FONT));
       printMostViolatedRules(subproject, sectionN2);
       printMostViolatedFiles(subproject, sectionN2);
       printMostComplexFiles(subproject, sectionN2);
       printMostDuplicatedFiles(subproject, sectionN2);
-      Section sectionN3 = chapterN.addSection(new Paragraph(getTextProperty("general.violations_details"),
-          Style.TITLE_FONT));
+      Section sectionN3 = chapterN.addSection(new Paragraph(
+          getTextProperty("general.violations_details"), Style.TITLE_FONT));
       printMostViolatedRulesDetails(subproject, sectionN3);
       document.add(chapterN);
     }
   }
 
-  private void printMostViolatedRulesDetails(final Project project, final Section section13) {
+  private void printMostViolatedRulesDetails(final Project project,
+      final Section section13) {
     Iterator<Rule> it = project.getMostViolatedRules().iterator();
 
     while (it.hasNext()) {
@@ -108,12 +115,13 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
         files.add(components[components.length - 1]);
         lines.add(violation.getLine());
       }
-      section13.add(createViolationsDetailedTable(rule.getName(), files, lines));
+      section13
+          .add(createViolationsDetailedTable(rule.getName(), files, lines));
     }
   }
 
-  private PdfPTable createViolationsDetailedTable(final String ruleName, final List<String> files,
-      final List<String> lines) {
+  private PdfPTable createViolationsDetailedTable(final String ruleName,
+      final List<String> files, final List<String> lines) {
 
     // TODO: internationalize this
 
@@ -172,5 +180,10 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
     table.setLockedWidth(false);
     table.setWidthPercentage(90);
     return table;
+  }
+
+  @Override
+  public String getReportType() {
+    return REPORT_TYPE_WORKBOOK;
   }
 }

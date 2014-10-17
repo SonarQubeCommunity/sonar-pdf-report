@@ -20,8 +20,6 @@
 
 package org.sonar.report.pdf.entity;
 
-import org.dom4j.Node;
-
 public class Measure {
 
   private String key;
@@ -32,13 +30,6 @@ public class Measure {
   private Integer qualitativeTendency;
   private Integer quantitativeTendency;
   private String alert;
-
-  private static final String KEY = "key";
-  private static final String VALUE = "val";
-  private static final String FORMAT_VALUE = "frmt_val";
-  private static final String TREND = "trend";
-  private static final String VAR = "var";
-  private static final String DATA = "data";
 
   public Measure(String measureKey, String measureFValue) {
     this.key = measureKey;
@@ -115,42 +106,4 @@ public class Measure {
     this.alert = alert;
   }
 
-  /**
-   * Init measure from XML node. The root node must be "msr".
-   * 
-   * @param measureNode
-   */
-  public void initFromNode(Node measureNode) {
-    this.setKey(measureNode.selectSingleNode(KEY).getText());
-
-    if (measureNode.selectSingleNode(FORMAT_VALUE) != null) {
-      this.setFormatValue(measureNode.selectSingleNode(FORMAT_VALUE).getText());
-      this.setValue(measureNode.selectSingleNode(VALUE).getText());
-    }
-    if (measureNode.selectSingleNode(TREND) != null) {
-      this.setQualitativeTendency(Integer.parseInt(measureNode.selectSingleNode(TREND).getText()));
-    } else {
-      this.setQualitativeTendency(0);
-    }
-
-    if (measureNode.selectSingleNode(VAR) != null) {
-      this.setQuantitativeTendency(Integer.parseInt(measureNode.selectSingleNode(VAR).getText()));
-    } else {
-      this.setQuantitativeTendency(0);
-    }
-
-    if (measureNode.selectSingleNode(VALUE) != null) {
-      this.setTextValue(measureNode.selectSingleNode(VALUE).getText());
-    } else if (measureNode.selectSingleNode(DATA) != null) {
-      this.setTextValue(measureNode.selectSingleNode(DATA).getText());
-    } else {
-      this.setTextValue("");
-    }
-
-    if (measureNode.selectSingleNode(DATA) != null) {
-      this.setDataValue(measureNode.selectSingleNode(DATA).getText());
-    } else {
-      this.setDataValue("");
-    }
-  }
 }

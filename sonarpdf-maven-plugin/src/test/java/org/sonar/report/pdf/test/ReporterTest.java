@@ -29,54 +29,51 @@ import java.util.Properties;
 import org.sonar.report.pdf.PDFReporter;
 import org.sonar.report.pdf.TeamWorkbookPDFReporter;
 import org.sonar.report.pdf.entity.exception.ReportException;
-import org.sonar.report.pdf.util.SonarAccess;
-import org.testng.Assert;
+import org.sonar.report.pdf.util.Credentials;
 import org.testng.annotations.Test;
 
 import com.lowagie.text.DocumentException;
 
 public class ReporterTest {
 
-    /**
-     * Build a PDF report for the Sonar project on "sonar.base.url" instance of Sonar. The property "sonar.base.url" is
-     * set in report.properties, this file will be provided by the artifact consumer.
-     * 
-     * The key of the project is not place in properties, this is provided in execution time.
-     * 
-     * @throws ReportException
-     */
-    @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
-    public void getReportTest() throws DocumentException, IOException, org.dom4j.DocumentException, ReportException {
-        URL resource = this.getClass().getClassLoader().getResource("report.properties");
-        Properties config = new Properties();
-        config.load(resource.openStream());
-        config.setProperty("sonar.base.url", "http://localhost:9000");
+  /**
+   * Build a PDF report for the Sonar project on "sonar.base.url" instance of
+   * Sonar. The property "sonar.base.url" is set in report.properties, this file
+   * will be provided by the artifact consumer.
+   * 
+   * The key of the project is not place in properties, this is provided in
+   * execution time.
+   * 
+   * @throws ReportException
+   */
+  @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
+  public void getReportTest() throws DocumentException, IOException,
+      ReportException {
+    URL resource = this.getClass().getClassLoader()
+        .getResource("report.properties");
+    Properties config = new Properties();
+    config.load(resource.openStream());
+    String sonarUrl = config.getProperty("sonar.base.url");
 
-        URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
-        Properties configText = new Properties();
-        configText.load(resourceText.openStream());
+    URL resourceText = this.getClass().getClassLoader()
+        .getResource("report-texts-en.properties");
+    Properties configText = new Properties();
+    configText.load(resourceText.openStream());
 
-        PDFReporter reporter = new TeamWorkbookPDFReporter(this.getClass().getResource("/sonar.png"),
-                "org.apache.bcel:bcel", "http://nemo.sonarsource.org", config, configText);
+    Credentials credentials = new Credentials(sonarUrl, null, null);
 
-        ByteArrayOutputStream baos = reporter.getReport();
-        FileOutputStream fos = null;
+    PDFReporter reporter = new TeamWorkbookPDFReporter(credentials, this
+        .getClass().getResource("/sonar.png"), "net.java.openjdk:jdk7", config,
+        configText);
 
-        fos = new FileOutputStream("target/testReport.pdf");
+    ByteArrayOutputStream baos = reporter.getReport();
+    FileOutputStream fos = null;
 
-        baos.writeTo(fos);
-        fos.flush();
-        fos.close();
+    fos = new FileOutputStream("target/testReport.pdf");
 
-    }
+    baos.writeTo(fos);
+    fos.flush();
+    fos.close();
 
-    @Test(enabled = true)
-    public void hostAndPortShouldBeParsedCorrectly() throws ReportException {
-        SonarAccess sonar = new SonarAccess("http://localhost/sonar", null, null);
-        Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 80);
-        sonar = new SonarAccess("https://localhost/sonar", null, null);
-        Assert.assertTrue(sonar.getHost().equals("localhost") && sonar.getPort() == 443);
-        sonar = new SonarAccess("http://host:9000", null, null);
-        Assert.assertTrue(sonar.getHost().equals("host") && sonar.getPort() == 9000);
-    }
+  }
 }

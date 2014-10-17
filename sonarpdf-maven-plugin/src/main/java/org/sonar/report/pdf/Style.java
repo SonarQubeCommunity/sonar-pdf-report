@@ -33,72 +33,86 @@ public class Style {
   /**
    * Font used in main chapters title
    */
-  public static final Font CHAPTER_FONT = new Font(Font.TIMES_ROMAN, 18, Font.BOLD, Color.GRAY);
+  public static final Font CHAPTER_FONT = new Font(Font.TIMES_ROMAN, 18,
+      Font.BOLD, Color.GRAY);
 
   /**
    * Font used in sub-chapters title
    */
-  public static final Font TITLE_FONT = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.GRAY);
+  public static final Font TITLE_FONT = new Font(Font.TIMES_ROMAN, 14,
+      Font.BOLD, Color.GRAY);
 
   /**
    * Font used in graphics foots
    */
-  public static final Font FOOT_FONT = new Font(Font.TIMES_ROMAN, 10, Font.BOLD, Color.GRAY);
+  public static final Font FOOT_FONT = new Font(Font.TIMES_ROMAN, 10,
+      Font.BOLD, Color.GRAY);
 
   /**
    * Font used in general plain text
    */
-  public static final Font NORMAL_FONT = new Font(Font.TIMES_ROMAN, 11, Font.NORMAL, Color.BLACK);
+  public static final Font NORMAL_FONT = new Font(Font.TIMES_ROMAN, 11,
+      Font.NORMAL, Color.BLACK);
 
   /**
    * Font used in code text (bold)
    */
-  public static final Font MONOSPACED_BOLD_FONT = new Font(Font.COURIER, 11, Font.BOLD, Color.BLACK);
+  public static final Font MONOSPACED_BOLD_FONT = new Font(Font.COURIER, 11,
+      Font.BOLD, Color.BLACK);
 
   /**
    * Font used in code text
    */
-  public static final Font MONOSPACED_FONT = new Font(Font.COURIER, 10, Font.NORMAL, Color.BLACK);
+  public static final Font MONOSPACED_FONT = new Font(Font.COURIER, 10,
+      Font.NORMAL, Color.BLACK);
 
   /**
    * Font used in table of contents title
    */
-  public static final Font TOC_TITLE_FONT = new Font(Font.HELVETICA, 24, Font.BOLD, Color.GRAY);
+  public static final Font TOC_TITLE_FONT = new Font(Font.HELVETICA, 24,
+      Font.BOLD, Color.GRAY);
 
   /**
    * Font used in front page (Project name)
    */
-  public static final Font FRONTPAGE_FONT_1 = new Font(Font.HELVETICA, 22, Font.BOLD, Color.BLACK);
+  public static final Font FRONTPAGE_FONT_1 = new Font(Font.HELVETICA, 22,
+      Font.BOLD, Color.BLACK);
 
   /**
    * Font used in front page (Project description)
    */
-  public static final Font FRONTPAGE_FONT_2 = new Font(Font.HELVETICA, 18, Font.ITALIC, Color.BLACK);
+  public static final Font FRONTPAGE_FONT_2 = new Font(Font.HELVETICA, 18,
+      Font.ITALIC, Color.BLACK);
 
   /**
    * Font used in front page (Project date)
    */
-  public static final Font FRONTPAGE_FONT_3 = new Font(Font.HELVETICA, 16, Font.BOLDITALIC, Color.GRAY);
+  public static final Font FRONTPAGE_FONT_3 = new Font(Font.HELVETICA, 16,
+      Font.BOLDITALIC, Color.GRAY);
 
   /**
    * Underlined font
    */
-  public static final Font UNDERLINED_FONT = new Font(Font.HELVETICA, 14, Font.UNDERLINE, Color.BLACK);
+  public static final Font UNDERLINED_FONT = new Font(Font.HELVETICA, 14,
+      Font.UNDERLINE, Color.BLACK);
 
   /**
    * Dashboard metric title font
    */
-  public static final Font DASHBOARD_TITLE_FONT = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.BLACK);
+  public static final Font DASHBOARD_TITLE_FONT = new Font(Font.TIMES_ROMAN,
+      14, Font.BOLD, Color.BLACK);
 
   /**
    * Dashboard metric value font
    */
-  public static final Font DASHBOARD_DATA_FONT = new Font(Font.TIMES_ROMAN, 14, Font.BOLD, Color.GRAY);
+  public static final Font DASHBOARD_DATA_FONT = new Font(Font.TIMES_ROMAN, 14,
+      Font.BOLD, Color.GRAY);
 
   /**
    * Dashboard metric details font
    */
-  public static final Font DASHBOARD_DATA_FONT_2 = new Font(Font.TIMES_ROMAN, 10, Font.BOLD, new Color(100, 150, 190));
+  public static final Font DASHBOARD_DATA_FONT_2 = new Font(Font.TIMES_ROMAN,
+      10, Font.BOLD, new Color(100, 150, 190));
 
   /**
    * Tendency icons height + 2 (used in tables style)
@@ -115,14 +129,19 @@ public class Style {
 
   /**
    * This method makes a simple table with content.
-   *
-   * @param left Data for left column
-   * @param right Data for right column
-   * @param title The table title
-   * @param noData Showed when left or right are empty
+   * 
+   * @param left
+   *          Data for left column
+   * @param right
+   *          Data for right column
+   * @param title
+   *          The table title
+   * @param noData
+   *          Showed when left or right are empty
    * @return The table (iText table) ready to add to the document
    */
-  public static PdfPTable createSimpleTable(final List<String> left, final List<String> right, final String title, final String noData) {
+  public static PdfPTable createSimpleTable(final List<String> left,
+      final List<String> right, final String title, final String noData) {
     PdfPTable table = new PdfPTable(2);
     table.getDefaultCell().setColspan(2);
     table.addCell(new Phrase(title, Style.DASHBOARD_TITLE_FONT));
@@ -152,7 +171,8 @@ public class Style {
     return table;
   }
 
-  public static PdfPTable createTwoColumnsTitledTable(final List<String> titles, final List<String> content) {
+  public static PdfPTable createTwoColumnsTitledTable(
+      final List<String> titles, final List<String> content) {
     PdfPTable table = new PdfPTable(10);
     Iterator<String> itLeft = titles.iterator();
     Iterator<String> itRight = content.iterator();

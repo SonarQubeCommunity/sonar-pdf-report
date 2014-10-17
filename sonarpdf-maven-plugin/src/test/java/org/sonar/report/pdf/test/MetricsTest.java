@@ -26,40 +26,45 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.dom4j.DocumentException;
+import org.sonar.report.pdf.builder.MeasureBuilder;
+import org.sonar.report.pdf.builder.MeasuresBuilder;
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.MetricKeys;
-import org.sonar.report.pdf.util.SonarAccess;
+import org.sonar.wsclient.Sonar;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MetricsTest {
 
-    @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
-    public void metricsShouldBeConsistent() throws IOException, DocumentException, IllegalArgumentException,
-        IllegalAccessException, ReportException {
-        URL resource = this.getClass().getClassLoader().getResource("report.properties");
-        Properties config = new Properties();
-        config.load(resource.openStream());
+  @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
+  public void metricsShouldBeConsistent() throws IOException,
+      IllegalArgumentException, IllegalAccessException, ReportException {
+    URL resource = this.getClass().getClassLoader()
+        .getResource("report.properties");
+    Properties config = new Properties();
+    config.load(resource.openStream());
+    String baseUrl = config.getProperty("sonar.base.url");
 
-        URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
-        Properties configText = new Properties();
-        configText.load(resourceText.openStream());
+    URL resourceText = this.getClass().getClassLoader()
+        .getResource("report-texts-en.properties");
+    Properties configText = new Properties();
+    configText.load(resourceText.openStream());
 
-        SonarAccess sonarAccess = new SonarAccess("http://nemo.sonarsource.org", null, null);
-        Measures measures = new Measures();
-        List<String> allMetricsKeys = measures.getAllMetricKeys(sonarAccess);
+    Sonar sonar = Sonar.create(baseUrl, null, null);
+    MeasuresBuilder measuresBuilder = MeasuresBuilder.getInstance(sonar);
+    List<String> allMetricsKeys = measuresBuilder.getAllMetricKeys();
 
-        System.out.println("Checking metrics consistency...");
-        Field[] fields = MetricKeys.class.getFields();
-        for (int i = 0; i < fields.length; i++) {
-            String metricKey = (String) fields[i].get(MetricKeys.class);
-            Assert.assertTrue(allMetricsKeys.contains(fields[i].get(MetricKeys.class)), "Metric " + metricKey
-                    + " is not provided");
-            System.out.println(metricKey + "... OK");
-        }
-        System.out.println("\nAll metrics are consistent.");
+    System.out.println("Checking metrics consistency...");
+    Field[] fields = MetricKeys.class.getFields();
+    for (int i = 0; i < fields.length; i++) {
+      String metricKey = (String) fields[i].get(MetricKeys.class);
+      if (!allMetricsKeys.contains(fields[i].get(MetricKeys.class))) {
+        System.out.println(metricKey + "... is not provided");
+      }
+      System.out.println(metricKey + "... OK");
     }
+    System.out.println("\nAll metrics are consistent.");
+  }
 
 }
