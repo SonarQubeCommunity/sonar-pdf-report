@@ -20,15 +20,14 @@
 
 package org.sonar.report.pdf.batch;
 
-import org.sonar.api.batch.maven.MavenPluginHandler;
-import org.sonar.api.batch.maven.MavenPlugin;
-import org.sonar.api.resources.Project;
-import org.slf4j.LoggerFactory;
-import org.apache.commons.io.IOUtils;
-
-import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
+
+import org.slf4j.LoggerFactory;
+import org.sonar.api.batch.maven.MavenPlugin;
+import org.sonar.api.batch.maven.MavenPluginHandler;
+import org.sonar.api.resources.Project;
 
 public class PDFMavenPluginHandler implements MavenPluginHandler {
 
@@ -54,7 +53,13 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
       return null;
 
     } finally {
-      IOUtils.closeQuietly(input);
+        try {
+            if (input != null) {
+                input.close();
+            }
+        } catch (IOException ioe) {
+            // ignore
+        }
     }
   }
 
@@ -66,7 +71,7 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
     return new String[] { "generate" };
   }
 
-  public void configure(Project project, MavenPlugin plugin) {
+  public void configure(final Project project, final MavenPlugin plugin) {
     plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
         PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
     plugin.setParameter("username", project.getConfiguration().getString(PDFPostJob.USERNAME,
