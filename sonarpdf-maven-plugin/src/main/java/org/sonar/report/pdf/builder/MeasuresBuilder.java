@@ -1,3 +1,22 @@
+/*
+ * Sonar PDF Report (Maven plugin)
+ * Copyright (C) 2010 klicap - ingenieria del puzle
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
 package org.sonar.report.pdf.builder;
 
 import java.io.IOException;
@@ -27,11 +46,11 @@ public class MeasuresBuilder {
 
   private static Integer DEFAULT_SPLIT_LIMIT = 20;
 
-  public MeasuresBuilder(Sonar sonar) {
+  public MeasuresBuilder(final Sonar sonar) {
     this.sonar = sonar;
   }
 
-  public static MeasuresBuilder getInstance(Sonar sonar) {
+  public static MeasuresBuilder getInstance(final Sonar sonar) {
     if (builder == null) {
       return new MeasuresBuilder(sonar);
     }
@@ -51,7 +70,7 @@ public class MeasuresBuilder {
     return allMetricKeys;
   }
 
-  public Measures initMeasuresByProjectKey(String projectKey)
+  public Measures initMeasuresByProjectKey(final String projectKey)
       throws HttpException, IOException {
 
     Measures measures = new Measures();
@@ -75,7 +94,7 @@ public class MeasuresBuilder {
    * This method does the required requests to get all measures from Sonar, but
    * taking care to avoid too large requests (measures are taken by 20).
    */
-  private void initMeasuresSplittingRequests(Measures measures,
+  private void initMeasuresSplittingRequests(final Measures measures,
       final String projectKey) throws HttpException, IOException {
     Iterator<String> it = measuresKeys.iterator();
     Logger.debug("Getting " + measuresKeys.size()
@@ -102,7 +121,7 @@ public class MeasuresBuilder {
   /**
    * Add measures to this.
    */
-  private void addMeasures(Measures measures,
+  private void addMeasures(final Measures measures,
       final List<String> measuresAsString, final String projectKey)
       throws HttpException, IOException {
 
@@ -116,7 +135,7 @@ public class MeasuresBuilder {
     this.addAllMeasuresFromDocument(measures, resource);
   }
 
-  private void addAllMeasuresFromDocument(Measures measures, Resource resource) {
+  private void addAllMeasuresFromDocument(final Measures measures, final Resource resource) {
 
     List<org.sonar.wsclient.services.Measure> allNodes = resource.getMeasures();
     Iterator<org.sonar.wsclient.services.Measure> it = allNodes.iterator();
@@ -139,8 +158,8 @@ public class MeasuresBuilder {
     }
   }
 
-  private void addMeasureFromNode(Measures measures,
-      org.sonar.wsclient.services.Measure measureNode) {
+  private void addMeasureFromNode(final Measures measures,
+      final org.sonar.wsclient.services.Measure measureNode) {
     Measure measure = MeasureBuilder.initFromNode(measureNode);
     measures.addMeasure(measure.getKey(), measure);
   }

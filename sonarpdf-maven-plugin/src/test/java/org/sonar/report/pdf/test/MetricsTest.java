@@ -26,9 +26,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.sonar.report.pdf.builder.MeasureBuilder;
 import org.sonar.report.pdf.builder.MeasuresBuilder;
-import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.exception.ReportException;
 import org.sonar.report.pdf.util.MetricKeys;
 import org.sonar.wsclient.Sonar;
@@ -38,20 +36,18 @@ import org.testng.annotations.Test;
 public class MetricsTest {
 
   @Test(alwaysRun = true, enabled = true, groups = { "metrics" })
-  public void metricsShouldBeConsistent() throws IOException,
-      IllegalArgumentException, IllegalAccessException, ReportException {
-    URL resource = this.getClass().getClassLoader()
-        .getResource("report.properties");
+  public void metricsShouldBeConsistent() throws IOException, IllegalArgumentException, IllegalAccessException,
+      ReportException {
     Properties config = new Properties();
-    config.load(resource.openStream());
-    String baseUrl = config.getProperty("sonar.base.url");
+    config.setProperty("front.page.logo", "sonar.png");
+    String sonarUrl = "http://nemo.sonarsource.org";
+    config.setProperty("sonar.base.url", sonarUrl);
 
-    URL resourceText = this.getClass().getClassLoader()
-        .getResource("report-texts-en.properties");
+    URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
-    Sonar sonar = Sonar.create(baseUrl, null, null);
+    Sonar sonar = Sonar.create(sonarUrl, null, null);
     MeasuresBuilder measuresBuilder = MeasuresBuilder.getInstance(sonar);
     List<String> allMetricsKeys = measuresBuilder.getAllMetricKeys();
 
@@ -59,9 +55,7 @@ public class MetricsTest {
     Field[] fields = MetricKeys.class.getFields();
     for (int i = 0; i < fields.length; i++) {
       String metricKey = (String) fields[i].get(MetricKeys.class);
-      if (!allMetricsKeys.contains(fields[i].get(MetricKeys.class))) {
-        System.out.println(metricKey + "... is not provided");
-      }
+      Assert.assertTrue(allMetricsKeys.contains(fields[i].get(MetricKeys.class)), "Metric " + metricKey + " is not provided");
       System.out.println(metricKey + "... OK");
     }
     System.out.println("\nAll metrics are consistent.");

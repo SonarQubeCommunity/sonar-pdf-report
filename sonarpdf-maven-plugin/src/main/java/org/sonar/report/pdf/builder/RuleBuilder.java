@@ -1,3 +1,22 @@
+/*
+ * Sonar PDF Report (Maven plugin)
+ * Copyright (C) 2010 klicap - ingenieria del puzle
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
 package org.sonar.report.pdf.builder;
 
 import java.io.IOException;
@@ -29,12 +48,12 @@ public class RuleBuilder {
 
   private Sonar sonar;
 
-  public RuleBuilder(Credentials credentials, Sonar sonar) {
+  public RuleBuilder(final Credentials credentials, final Sonar sonar) {
     this.credentials = credentials;
     this.sonar = sonar;
   }
 
-  public static RuleBuilder getInstance(Credentials credentials, Sonar sonar) {
+  public static RuleBuilder getInstance(final Credentials credentials, final Sonar sonar) {
     if (builder == null) {
       return new RuleBuilder(credentials, sonar);
     }
@@ -66,18 +85,14 @@ public class RuleBuilder {
    * @throws IOException
    * @throws HttpException
    */
-  public void loadViolatedResources(Rule rule, String ruleKey,
-      final String projectKey) throws ReportException,
-      UnsupportedEncodingException {
+  public void loadViolatedResources(final Rule rule, final String ruleKey, final String projectKey)
+      throws ReportException, UnsupportedEncodingException {
 
     if (ruleKey == null) {
-      throw new ReportException(
-          "Rule not initialized. Forget call to initFromNode() previously?");
+      throw new ReportException("Rule not initialized. Forget call to initFromNode() previously?");
     } else {
       // ruleKey = URLEncoder.encode(ruleKey, "UTF8");
-      Logger
-          .debug("Accessing Sonar: getting violated resurces by one given rule ("
-              + ruleKey + ")");
+      Logger.debug("Accessing Sonar: getting violated resurces by one given rule (" + ruleKey + ")");
 
       SonarClient client = SonarClient.create(credentials.getUrl());
       IssueClient issueClient = client.issueClient();
@@ -100,6 +115,7 @@ public class RuleBuilder {
         if (rule.getMessage() == null) {
           rule.setMessage(resource.message());
         }
+        // resource key as: net.java.openjdk:jdk7:src/com/sun/rowset/internal/CachedRowSetReader.java
         String resourceKey = resource.componentKey();
         String line = "N/A";
         Integer resourceLine = resource.line();

@@ -1,3 +1,22 @@
+/*
+ * Sonar PDF Report (Maven plugin)
+ * Copyright (C) 2010 klicap - ingenieria del puzle
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
 package org.sonar.report.pdf.builder;
 
 import java.util.Iterator;
@@ -10,8 +29,8 @@ import org.sonar.wsclient.services.Resource;
 
 public class FileInfoBuilder {
 
-  public static List<FileInfo> initFromDocument(List<Resource> resources,
-      int content) {
+  public static List<FileInfo> initFromDocument(final List<Resource> resources,
+      final int content) {
     List<FileInfo> fileInfoList = new LinkedList<FileInfo>();
     if (resources != null) {
       Iterator<Resource> it = resources.iterator();
@@ -38,8 +57,8 @@ public class FileInfoBuilder {
    * @param content
    *          Type of content
    */
-  public static void initFromNode(FileInfo fileInfo, Resource fileNode,
-      int content) {
+  public static void initFromNode(final FileInfo fileInfo, final Resource fileNode,
+      final int content) {
     fileInfo.setKey(fileNode.getKey());
     fileInfo.setName(fileNode.getName());
 

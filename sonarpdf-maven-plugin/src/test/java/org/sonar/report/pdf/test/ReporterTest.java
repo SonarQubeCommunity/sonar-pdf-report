@@ -47,24 +47,20 @@ public class ReporterTest {
    * @throws ReportException
    */
   @Test(enabled = true, groups = { "report" }, dependsOnGroups = { "metrics" })
-  public void getReportTest() throws DocumentException, IOException,
-      ReportException {
-    URL resource = this.getClass().getClassLoader()
-        .getResource("report.properties");
+  public void getReportTest() throws DocumentException, IOException, ReportException {
     Properties config = new Properties();
-    config.load(resource.openStream());
-    String sonarUrl = config.getProperty("sonar.base.url");
+    config.setProperty("front.page.logo", "sonar.png");
+    String sonarUrl = "http://nemo.sonarsource.org";
+    config.setProperty("sonar.base.url", sonarUrl);
 
-    URL resourceText = this.getClass().getClassLoader()
-        .getResource("report-texts-en.properties");
+    URL resourceText = this.getClass().getClassLoader().getResource("report-texts-en.properties");
     Properties configText = new Properties();
     configText.load(resourceText.openStream());
 
     Credentials credentials = new Credentials(sonarUrl, null, null);
 
-    PDFReporter reporter = new TeamWorkbookPDFReporter(credentials, this
-        .getClass().getResource("/sonar.png"), "net.java.openjdk:jdk7", config,
-        configText);
+    PDFReporter reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"),
+        "net.java.openjdk:jdk7", config, configText);
 
     ByteArrayOutputStream baos = reporter.getReport();
     FileOutputStream fos = null;

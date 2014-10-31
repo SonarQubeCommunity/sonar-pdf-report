@@ -20,27 +20,8 @@
 
 package org.sonar.report.pdf.entity;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.httpclient.HttpException;
-import org.sonar.report.pdf.PDFReporter;
-import org.sonar.report.pdf.builder.FileInfoBuilder;
-import org.sonar.report.pdf.builder.MeasuresBuilder;
-import org.sonar.report.pdf.builder.RuleBuilder;
-import org.sonar.report.pdf.entity.exception.ReportException;
-import org.sonar.report.pdf.util.Credentials;
-import org.sonar.report.pdf.util.Logger;
-import org.sonar.report.pdf.util.MetricKeys;
-import org.sonar.report.pdf.util.UrlPath;
-import org.sonar.wsclient.Sonar;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
-
-import com.lowagie.text.DocumentException;
 
 /**
  * This class encapsulates the Project info.

@@ -1,3 +1,22 @@
+/*
+ * Sonar PDF Report (Maven plugin)
+ * Copyright (C) 2010 klicap - ingenieria del puzle
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
 package org.sonar.report.pdf.builder;
 
 import java.io.IOException;
@@ -34,15 +53,15 @@ public class ProjectBuilder {
 
   private PDFReporter pdfRefporter;
 
-  public ProjectBuilder(Credentials credentials, Sonar sonar,
-      PDFReporter pdfRefporter) {
+  public ProjectBuilder(final Credentials credentials, final Sonar sonar,
+      final PDFReporter pdfRefporter) {
     this.credentials = credentials;
     this.sonar = sonar;
     this.pdfRefporter = pdfRefporter;
   }
 
-  public static ProjectBuilder getInstance(Credentials credentials,
-      Sonar sonar, PDFReporter pdfRefporter) {
+  public static ProjectBuilder getInstance(final Credentials credentials,
+      final Sonar sonar, final PDFReporter pdfRefporter) {
     if (builder == null) {
       return new ProjectBuilder(credentials, sonar, pdfRefporter);
     }
@@ -61,7 +80,7 @@ public class ProjectBuilder {
    * @throws DocumentException
    * @throws ReportException
    */
-  public Project initializeProject(String key) throws IOException,
+  public Project initializeProject(final String key) throws IOException,
       ReportException {
     Project project = new Project(key);
 
@@ -111,7 +130,7 @@ public class ProjectBuilder {
   /**
    * Initialize project object and his childs (except categories violations).
    */
-  private void initFromNode(Project project, final Resource resourceNode) {
+  private void initFromNode(final Project project, final Resource resourceNode) {
     project.setName(resourceNode.getName());
     project.setDescription(resourceNode.getDescription());
     project.setLinks(new LinkedList<String>());
@@ -122,7 +141,7 @@ public class ProjectBuilder {
     project.setMostViolatedFiles(new LinkedList<FileInfo>());
   }
 
-  private void initMeasures(Project project) throws IOException {
+  private void initMeasures(final Project project) throws IOException {
     Logger.info("    Retrieving measures");
     MeasuresBuilder measuresBuilder = MeasuresBuilder.getInstance(sonar);
     Measures measures = measuresBuilder.initMeasuresByProjectKey(project
@@ -130,7 +149,7 @@ public class ProjectBuilder {
     project.setMeasures(measures);
   }
 
-  private void initMostViolatedRules(Project project) throws IOException,
+  private void initMostViolatedRules(final Project project) throws IOException,
       ReportException {
     Logger.info("    Retrieving most violated rules");
     Logger.debug("Accessing Sonar: getting most violated rules");
@@ -162,7 +181,7 @@ public class ProjectBuilder {
     }
   }
 
-  private void initMostViolatedFiles(Project project) throws IOException {
+  private void initMostViolatedFiles(final Project project) throws IOException {
     Logger.info("    Retrieving most violated files");
     Logger.debug("Accessing Sonar: getting most violated files");
 
@@ -178,7 +197,7 @@ public class ProjectBuilder {
 
   }
 
-  private void initMostComplexElements(Project project) throws IOException {
+  private void initMostComplexElements(final Project project) throws IOException {
     Logger.info("    Retrieving most complex elements");
     Logger.debug("Accessing Sonar: getting most complex elements");
 
@@ -192,7 +211,7 @@ public class ProjectBuilder {
         FileInfo.CCN_CONTENT));
   }
 
-  private void initMostDuplicatedFiles(Project project) throws IOException {
+  private void initMostDuplicatedFiles(final Project project) throws IOException {
     Logger.info("    Retrieving most duplicated files");
     Logger.debug("Accessing Sonar: getting most duplicated files");
 
@@ -206,7 +225,7 @@ public class ProjectBuilder {
         FileInfo.DUPLICATIONS_CONTENT));
   }
 
-  private int initMostViolatedRulesFromNode(Project project,
+  private int initMostViolatedRulesFromNode(final Project project,
       final Resource mostViolatedNode) throws ReportException, IOException {
 
     RuleBuilder ruleBuilder = RuleBuilder.getInstance(credentials, sonar);

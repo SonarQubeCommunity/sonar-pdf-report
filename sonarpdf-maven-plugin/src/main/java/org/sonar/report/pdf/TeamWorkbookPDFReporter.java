@@ -46,7 +46,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
 
   private static final String REPORT_TYPE_WORKBOOK = "workbook";
 
-  public TeamWorkbookPDFReporter(Credentials credentials, final URL logo,
+  public TeamWorkbookPDFReporter(final Credentials credentials, final URL logo,
       final String projectKey, final Properties configProperties,
       final Properties langProperties) {
     super(credentials, logo, projectKey, configProperties, langProperties);
@@ -111,7 +111,7 @@ public class TeamWorkbookPDFReporter extends ExecutivePDFReporter {
       Iterator<Violation> itViolations = rule.getTopViolations().iterator();
       while (itViolations.hasNext()) {
         Violation violation = itViolations.next();
-        String[] components = violation.getResource().split("\\.");
+        String[] components = violation.getResource().split("/");
         files.add(components[components.length - 1]);
         lines.add(violation.getLine());
       }

@@ -60,8 +60,8 @@ public class ExecutivePDFReporter extends PDFReporter {
   private Properties configProperties;
   private Properties langProperties;
 
-  public ExecutivePDFReporter(Credentials credentials, URL logo,
-      String projectKey, Properties configProperties, Properties langProperties) {
+  public ExecutivePDFReporter(final Credentials credentials, final URL logo,
+      final String projectKey, final Properties configProperties, final Properties langProperties) {
     super(credentials);
     this.logo = logo;
     this.projectKey = projectKey;
@@ -90,8 +90,8 @@ public class ExecutivePDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printFrontPage(Document frontPageDocument,
-      PdfWriter frontPageWriter) throws ReportException {
+  protected void printFrontPage(final Document frontPageDocument,
+      final PdfWriter frontPageWriter) throws ReportException {
     try {
       URL largeLogo;
       if (super.getConfigProperty("front.page.logo").startsWith("http://")) {
@@ -140,7 +140,7 @@ public class ExecutivePDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printPdfBody(Document document) throws DocumentException,
+  protected void printPdfBody(final Document document) throws DocumentException,
       IOException, ReportException {
     Project project = super.getProject();
     // Chapter 1: Report Overview (Parent project)
@@ -179,7 +179,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     }
   }
 
-  protected void printDashboard(Project project, Section section)
+  protected void printDashboard(final Project project, final Section section)
       throws DocumentException {
 
     // Static Analysis
@@ -320,31 +320,31 @@ public class ExecutivePDFReporter extends PDFReporter {
     PdfPTable codingRulesViolationsTable = new PdfPTable(3);
     Style.noBorderTable(codingRulesViolationsTable);
 
-    PdfPTable rulesCompliance = new PdfPTable(1);
-    Style.noBorderTable(rulesCompliance);
-    rulesCompliance
-        .addCell(new Phrase(getTextProperty("general.rules_compliance"),
+    PdfPTable technicalDebt = new PdfPTable(1);
+    Style.noBorderTable(technicalDebt);
+    technicalDebt
+        .addCell(new Phrase(getTextProperty("general.technical_debt"),
             Style.DASHBOARD_TITLE_FONT));
-    PdfPTable rulesComplianceTendency = new PdfPTable(2);
-    Style.noBorderTable(rulesComplianceTendency);
-    rulesComplianceTendency.getDefaultCell().setFixedHeight(
+    PdfPTable technicalDebtTendency = new PdfPTable(2);
+    Style.noBorderTable(technicalDebtTendency);
+    technicalDebtTendency.getDefaultCell().setFixedHeight(
         Style.TENDENCY_ICONS_HEIGHT);
-    rulesComplianceTendency.addCell(new Phrase(project.getMeasure(
-        MetricKeys.VIOLATIONS_DENSITY).getFormatValue(),
+    technicalDebtTendency.addCell(new Phrase(project.getMeasure(
+        MetricKeys.TECHNICAL_DEBT).getFormatValue(),
         Style.DASHBOARD_DATA_FONT));
 
     // Workarround for avoid resizing
-    Image tendencyRulesResize = getTendencyImage(
-        project.getMeasure(MetricKeys.VIOLATIONS_DENSITY)
+    Image tendencyTechnicalDebtResize = getTendencyImage(
+        project.getMeasure(MetricKeys.TECHNICAL_DEBT)
             .getQualitativeTendency(),
-        project.getMeasure(MetricKeys.VIOLATIONS_DENSITY)
+        project.getMeasure(MetricKeys.TECHNICAL_DEBT)
             .getQuantitativeTendency());
-    tendencyRulesResize.scaleAbsolute(Style.TENDENCY_ICONS_HEIGHT,
+    tendencyTechnicalDebtResize.scaleAbsolute(Style.TENDENCY_ICONS_HEIGHT,
         Style.TENDENCY_ICONS_HEIGHT);
-    PdfPCell tendencyRulesCell = new PdfPCell(tendencyRulesResize);
+    PdfPCell tendencyRulesCell = new PdfPCell(tendencyTechnicalDebtResize);
     tendencyRulesCell.setBorder(0);
-    rulesComplianceTendency.addCell(tendencyRulesCell);
-    rulesCompliance.addCell(rulesComplianceTendency);
+    technicalDebtTendency.addCell(tendencyRulesCell);
+    technicalDebt.addCell(technicalDebtTendency);
 
     PdfPTable violations = new PdfPTable(1);
     Style.noBorderTable(violations);
@@ -370,7 +370,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     violations.addCell(violationsTendency);
 
     codingRulesViolationsTable.setSpacingBefore(10);
-    codingRulesViolationsTable.addCell(rulesCompliance);
+    codingRulesViolationsTable.addCell(technicalDebt);
     codingRulesViolationsTable.addCell(violations);
     codingRulesViolationsTable.addCell("");
     codingRulesViolationsTable.setSpacingAfter(20);
@@ -384,7 +384,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(codingRulesViolationsTable);
   }
 
-  protected void printMostDuplicatedFiles(Project project, Section section) {
+  protected void printMostDuplicatedFiles(final Project project, final Section section) {
     List<FileInfo> files = project.getMostDuplicatedFiles();
     Iterator<FileInfo> it = files.iterator();
     List<String> left = new LinkedList<String>();
@@ -402,7 +402,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(mostDuplicatedFilesTable);
   }
 
-  protected void printMostComplexFiles(Project project, Section section) {
+  protected void printMostComplexFiles(final Project project, final Section section) {
     List<FileInfo> files = project.getMostComplexFiles();
     Iterator<FileInfo> it = files.iterator();
     List<String> left = new LinkedList<String>();
@@ -420,7 +420,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(mostComplexFilesTable);
   }
 
-  protected void printMostViolatedRules(Project project, Section section) {
+  protected void printMostViolatedRules(final Project project, final Section section) {
     List<Rule> mostViolatedRules = project.getMostViolatedRules();
     Iterator<Rule> it = mostViolatedRules.iterator();
 
@@ -440,7 +440,7 @@ public class ExecutivePDFReporter extends PDFReporter {
     section.add(mostViolatedRulesTable);
   }
 
-  protected void printMostViolatedFiles(Project project, Section section) {
+  protected void printMostViolatedFiles(final Project project, final Section section) {
     List<FileInfo> files = project.getMostViolatedFiles();
     Iterator<FileInfo> it = files.iterator();
     List<String> left = new LinkedList<String>();
@@ -459,7 +459,7 @@ public class ExecutivePDFReporter extends PDFReporter {
   }
 
   @Override
-  protected void printTocTitle(Toc tocDocument)
+  protected void printTocTitle(final Toc tocDocument)
       throws com.lowagie.text.DocumentException {
     Paragraph tocTitle = new Paragraph(
         super.getTextProperty("main.table.of.contents"), Style.TOC_TITLE_FONT);
