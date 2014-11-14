@@ -1,4 +1,6 @@
-<% if @snapshot.measure('pdf-data') %>
+<% measure=measure('pdf-data')
+   if measure
+%>
 <div class="yui-g">
     <div class="dashbox">
         <h3>PDF Report</h3>

@@ -101,8 +101,8 @@
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.jdbc.url>jdbc:mysql://localhost:3306/sonar</sonar.jdbc.url>
         <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
-        <sonar.jdbc.username>sonar</sonar.jdbc.username>
-        <sonar.jdbc.password>sonar</sonar.jdbc.password>
+        <sonar.jdbc.username>root</sonar.jdbc.username>
+        <sonar.jdbc.password>root</sonar.jdbc.password>
       </properties>
     </profile>
   </profiles>

@@ -21,8 +21,7 @@
 package org.sonar.report.pdf.util;
 
 /**
- * @author adgol01
- * 
+ * Credentials.
  */
 public class Credentials {
 
@@ -30,7 +29,7 @@ public class Credentials {
   private String username = null;
   private String password = null;
 
-  public Credentials(String url, String username, String password) {
+  public Credentials(final String url, final String username, final String password) {
     this.url = url;
     this.username = username;
     this.password = password;

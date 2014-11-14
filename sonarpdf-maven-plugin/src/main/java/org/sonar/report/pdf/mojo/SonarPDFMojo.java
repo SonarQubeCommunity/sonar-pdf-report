@@ -20,6 +20,12 @@
 
 package org.sonar.report.pdf.mojo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -31,12 +37,6 @@ import org.sonar.report.pdf.util.Credentials;
 import org.sonar.report.pdf.util.Logger;
 
 import com.lowagie.text.DocumentException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Generate a PDF report. WARNING, Sonar server must be started.
@@ -127,18 +127,14 @@ public class SonarPDFMojo extends AbstractMojo {
       } else {
         config.load(this.getClass().getResourceAsStream("/report.properties"));
       }
-      configLang.load(this.getClass().getResourceAsStream(
-          "/report-texts-en.properties"));
+      configLang.load(this.getClass().getResourceAsStream("/report-texts-en.properties"));
 
-      Credentials credentials = new Credentials(sonarHostUrl, username,
-          password);
+      Credentials credentials = new Credentials(config.getProperty("sonar.base.url"), username, password);
 
-      String sonarProjectId = project.getGroupId() + ":"
-          + project.getArtifactId();
+      String sonarProjectId = project.getGroupId() + ":" + project.getArtifactId();
       if (branch != null) {
         sonarProjectId += ":" + branch;
-        Logger
-            .warn("Use of branch parameter is deprecated, use sonar.branch instead");
+        Logger.warn("Use of branch parameter is deprecated, use sonar.branch instead");
         Logger.info("Branch " + branch + " selected");
       } else if (sonarBranch != null) {
         sonarProjectId += ":" + sonarBranch;
@@ -149,18 +145,17 @@ public class SonarPDFMojo extends AbstractMojo {
       if (reportType != null) {
         if (reportType.equals("executive")) {
           Logger.info("Executive report type selected");
-          reporter = new ExecutivePDFReporter(credentials, this.getClass()
-              .getResource("/sonar.png"), sonarProjectId, config, configLang);
+          reporter = new ExecutivePDFReporter(credentials, this.getClass().getResource("/sonar.png"), sonarProjectId,
+              config, configLang);
         } else if (reportType.equals("workbook")) {
           Logger.info("Team workbook report type selected");
-          reporter = new TeamWorkbookPDFReporter(credentials, this.getClass()
-              .getResource("/sonar.png"), sonarProjectId, config, configLang);
+          reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"),
+              sonarProjectId, config, configLang);
         }
       } else {
-        Logger
-            .info("No report type provided. Default report selected (Team workbook)");
-        reporter = new TeamWorkbookPDFReporter(credentials, this.getClass()
-            .getResource("/sonar.png"), sonarProjectId, config, configLang);
+        Logger.info("No report type provided. Default report selected (Team workbook)");
+        reporter = new TeamWorkbookPDFReporter(credentials, this.getClass().getResource("/sonar.png"), sonarProjectId,
+            config, configLang);
       }
 
       ByteArrayOutputStream baos = reporter.getReport();
@@ -168,14 +163,12 @@ public class SonarPDFMojo extends AbstractMojo {
       if (!outputDirectory.exists()) {
         outputDirectory.mkdirs();
       }
-      File reportFile = new File(outputDirectory, project.getArtifactId()
-          + ".pdf");
+      File reportFile = new File(outputDirectory, project.getArtifactId() + ".pdf");
       fos = new FileOutputStream(reportFile);
       baos.writeTo(fos);
       fos.flush();
       fos.close();
-      Logger.info("PDF report generated (see " + project.getArtifactId()
-          + ".pdf on build output directory)");
+      Logger.info("PDF report generated (see " + project.getArtifactId() + ".pdf on build output directory)");
     } catch (IOException e) {
       e.printStackTrace();
     } catch (DocumentException e) {
