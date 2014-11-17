@@ -19,14 +19,14 @@
  */
 package org.sonar.report.pdf.test;
 
-import org.testng.annotations.Test;
-import org.testng.Assert;
 import org.sonar.report.pdf.plugin.PDFReportPlugin;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class PDFReportPluginTest {
 
     @Test(groups = { "post-job" })
     public void shouldDefineExtensions() {
-        Assert.assertEquals(5, new PDFReportPlugin().getExtensions().size());
+        Assert.assertEquals(4, new PDFReportPlugin().getExtensions().size());
     }
 }
