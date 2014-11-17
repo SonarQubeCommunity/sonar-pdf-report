@@ -32,6 +32,7 @@
   </parent>
 
   <artifactId>sonar-pdfreport-plugin</artifactId>
+  <version>1.4-SNAPSHOT</version>
   <packaging>sonar-plugin</packaging>
 
   <url>http://docs.codehaus.org/display/SONAR/PDF+Plugin</url>
@@ -95,7 +96,6 @@
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-ws-client</artifactId>
-      <!-- It is recommended to use the same version as the requested SonarQube server -->
       <version>${sonar.version}</version>
     </dependency>
 
