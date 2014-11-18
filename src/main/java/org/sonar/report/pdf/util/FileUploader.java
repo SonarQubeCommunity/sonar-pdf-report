@@ -53,11 +53,9 @@ public class FileUploader {
         LOG.info("PDF uploaded.");
       } else {
         LOG.error("Something went wrong storing the PDF at server side. Status: " + status);
-        System.err.println("Something went wrong storing the PDF at server side. Status: " + status);
       }
     } catch (Exception ex) {
       LOG.error("Something went wrong storing the PDF at server side", ex);
-      System.err.println("Something went wrong storing the PDF at server side");
       ex.printStackTrace();
     } finally {
       filePost.releaseConnection();

@@ -77,7 +77,6 @@ public class PDFReportPlugin extends SonarPlugin {
   public List<Class< ? extends Extension>> getExtensions() {
     List<Class< ? extends Extension>> extensions = new ArrayList<Class< ? extends Extension>>();
     extensions.add(PDFPostJob.class);
-    extensions.add(ReportDataMetric.class);
     extensions.add(PdfReportWidget.class);
     return extensions;
   }
