@@ -18,8 +18,4 @@ class PdfReportController < ApplicationController
     end
     render :nothing => true, :status => 200
   end
-
-  def railsroot
-    render :text => Rails.root.to_s
-  end
 end
