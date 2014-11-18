@@ -5,6 +5,8 @@
         <groups>
             <define name="root">
                 <include name="post-job" />
+                <include name="metrics" />
+                <include name="report" />
             </define>
             <run>
                 <include name="root" />

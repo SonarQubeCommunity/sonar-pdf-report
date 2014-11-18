@@ -71,11 +71,11 @@ public class PDFMavenPluginHandler implements MavenPluginHandler {
   }
 
   public void configure(final Project project, final MavenPlugin plugin) {
-    plugin.setParameter("reportType", project.getConfiguration().getString(PDFStoreDecorator.REPORT_TYPE,
-        PDFStoreDecorator.REPORT_TYPE_DEFAULT_VALUE));
-    plugin.setParameter("username", project.getConfiguration().getString(PDFStoreDecorator.USERNAME,
-        PDFStoreDecorator.USERNAME_DEFAULT_VALUE));
-    plugin.setParameter("password", project.getConfiguration().getString(PDFStoreDecorator.PASSWORD,
-        PDFStoreDecorator.PASSWORD_DEFAULT_VALUE));
+    plugin.setParameter("reportType", project.getConfiguration().getString(PDFPostJob.REPORT_TYPE,
+        PDFPostJob.REPORT_TYPE_DEFAULT_VALUE));
+    plugin.setParameter("username", project.getConfiguration().getString(PDFPostJob.USERNAME,
+        PDFPostJob.USERNAME_DEFAULT_VALUE));
+    plugin.setParameter("password", project.getConfiguration().getString(PDFPostJob.PASSWORD,
+        PDFPostJob.PASSWORD_DEFAULT_VALUE));
   }
 }

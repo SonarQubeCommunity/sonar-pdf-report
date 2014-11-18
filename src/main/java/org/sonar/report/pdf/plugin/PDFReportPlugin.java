@@ -23,29 +23,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sonar.api.Extension;
-import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.PropertyType;
-import org.sonar.report.pdf.batch.PDFStoreDecorator;
-import org.sonar.report.pdf.web.ReportWebService;
+import org.sonar.api.SonarPlugin;
+import org.sonar.report.pdf.batch.PDFPostJob;
 
 @Properties({ 
   @Property(
-    key=PDFStoreDecorator.SKIP_PDF_KEY,
+    key=PDFPostJob.SKIP_PDF_KEY,
     name="Skip",
     description = "Skip generation of PDF report.",
-    defaultValue = "" + PDFStoreDecorator.SKIP_PDF_DEFAULT_VALUE,
+    defaultValue = "" + PDFPostJob.SKIP_PDF_DEFAULT_VALUE,
     global = true,
     project = true,
     module = false,
     type = PropertyType.BOOLEAN
   ),
   @Property(
-    key=PDFStoreDecorator.REPORT_TYPE,
+    key=PDFPostJob.REPORT_TYPE,
     name="Type",
     description = "Report type.",
-    defaultValue = PDFStoreDecorator.REPORT_TYPE_DEFAULT_VALUE,
+    defaultValue = PDFPostJob.REPORT_TYPE_DEFAULT_VALUE,
     global = true,
     project = true,
     module = false,
@@ -53,46 +52,32 @@ import org.sonar.report.pdf.web.ReportWebService;
     options = { "executive", "workbook" }
   ),
   @Property(
-    key=PDFStoreDecorator.USERNAME,
+    key=PDFPostJob.USERNAME,
     name="Username",
     description = "Username for WS API access.",
-    defaultValue = PDFStoreDecorator.USERNAME_DEFAULT_VALUE,
+    defaultValue = PDFPostJob.USERNAME_DEFAULT_VALUE,
     global = true,
     project = true,
     module = false
   ),
   @Property(
-    key=PDFStoreDecorator.PASSWORD,
+    key=PDFPostJob.PASSWORD,
     name="Password",
     description = "Password for WS API access.",
-    defaultValue = PDFStoreDecorator.PASSWORD_DEFAULT_VALUE,
+    defaultValue = PDFPostJob.PASSWORD_DEFAULT_VALUE,
     global = true,
     project = true,
     module = false,
     type = PropertyType.PASSWORD
   )
 })
-public class PDFReportPlugin implements Plugin {
+public class PDFReportPlugin extends SonarPlugin {
 
-  public static final String PLUGIN_KEY = "pdf-report";
-
-  public String getKey() {
-    return PLUGIN_KEY;
-  }
-
-  public String getName() {
-    return "PDF Report";
-  }
-
-  public String getDescription() {
-    return "Generate a PDF report that contains the most relevant information from project analysis.";
-  }
-
+  @Override
   public List<Class< ? extends Extension>> getExtensions() {
     List<Class< ? extends Extension>> extensions = new ArrayList<Class< ? extends Extension>>();
-    extensions.add(PDFStoreDecorator.class);
+    extensions.add(PDFPostJob.class);
     extensions.add(ReportDataMetric.class);
-    extensions.add(ReportWebService.class);
     extensions.add(PdfReportWidget.class);
     return extensions;
   }

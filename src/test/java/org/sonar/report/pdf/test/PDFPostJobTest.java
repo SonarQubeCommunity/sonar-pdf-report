@@ -26,7 +26,7 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.sonar.api.resources.Project;
-import org.sonar.report.pdf.batch.PDFStoreDecorator;
+import org.sonar.report.pdf.batch.PDFPostJob;
 import org.testng.annotations.Test;
 
 public class PDFPostJobTest {
@@ -34,12 +34,12 @@ public class PDFPostJobTest {
     @Test(groups = { "post-job" })
     public void doNotExecuteIfSkipParameter() {
         PropertiesConfiguration conf = new PropertiesConfiguration();
-        conf.setProperty(PDFStoreDecorator.SKIP_PDF_KEY, Boolean.TRUE);
+        conf.setProperty(PDFPostJob.SKIP_PDF_KEY, Boolean.TRUE);
 
         Project project = mock(Project.class);
         when(project.getConfiguration()).thenReturn(conf);
 
-        assertFalse(new PDFStoreDecorator().shouldExecuteOnProject(project));
+        assertFalse(new PDFPostJob().shouldExecuteOnProject(project));
     }
 
     @Test(groups = { "post-job" })
@@ -47,6 +47,6 @@ public class PDFPostJobTest {
         Project project = mock(Project.class);
         when(project.getConfiguration()).thenReturn(new PropertiesConfiguration());
 
-        assertTrue(new PDFStoreDecorator().shouldExecuteOnProject(project));
+        assertTrue(new PDFPostJob().shouldExecuteOnProject(project));
     }
 }

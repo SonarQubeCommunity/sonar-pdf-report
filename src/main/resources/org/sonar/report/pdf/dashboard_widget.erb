@@ -1,11 +1,14 @@
-<% measure=measure('pdf-data')
-   if measure
-%>
 <div class="yui-g">
     <div class="dashbox">
         <h3>PDF Report</h3>
+        <%
+          filename = Rails.root.join('pdf-files', @project.key.gsub(':', '-') + '.pdf')
+          if File.exists?(filename)
+        %>
         <h4>Get quality info in a pdf document</h4>
-        <a href="<%= ApplicationController.root_context -%>/api/plugins/Pdfreport/getReport?resource=<%= @snapshot.project_id %>">Download</a>
+        <a href="<%= ApplicationController.root_context -%>/pdf_report/get?resource=<%= @snapshot.project_id %>">Download</a>
+        <% else %>
+        <h4>Report is not available. At least one analysis is required after installing the plugin</h4>
+        <% end %>
     </div>
 </div>
-<% end %>

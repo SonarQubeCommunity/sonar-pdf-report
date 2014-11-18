@@ -27,6 +27,6 @@ public class PDFReportPluginTest {
 
     @Test(groups = { "post-job" })
     public void shouldDefineExtensions() {
-        Assert.assertEquals(4, new PDFReportPlugin().getExtensions().size());
+        Assert.assertEquals(new PDFReportPlugin().getExtensions().size(), 3);
     }
 }
