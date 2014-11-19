@@ -28,7 +28,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.utils.HttpDownloader.HttpException;
-import org.sonar.report.pdf.batch.PDFGenerator;
 import org.sonar.report.pdf.builder.ComplexityDistributionBuilder;
 import org.sonar.report.pdf.builder.ProjectBuilder;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
@@ -56,7 +55,7 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public abstract class PDFReporter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(PDFGenerator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PDFReporter.class);
 
   private Credentials credentials;
 
@@ -201,11 +200,11 @@ public abstract class PDFReporter {
       tendencyImage = Image.getInstance(this.getClass().getResource(
           "/tendency/" + iconName));
     } catch (BadElementException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate tendency image", e);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate tendency image", e);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate tendency image", e);
     }
     return tendencyImage;
   }

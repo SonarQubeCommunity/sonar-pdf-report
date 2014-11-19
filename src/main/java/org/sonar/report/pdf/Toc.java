@@ -22,6 +22,9 @@ package org.sonar.report.pdf;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -35,6 +38,8 @@ import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class Toc extends PdfPageEventHelper {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Events.class);
 
   private Document toc;
   private ByteArrayOutputStream tocOutputStream;
@@ -102,7 +107,7 @@ public class Toc extends PdfPageEventHelper {
     try {
       toc.add(content);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      LOG.error("Can not add TOC", e);
     }
   }
 
@@ -121,7 +126,7 @@ public class Toc extends PdfPageEventHelper {
       writer = PdfWriter.getInstance(toc, tocOutputStream);
       writer.setPageEvent(header);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      LOG.error("Can not add TOC", e);
     }
   }
 }

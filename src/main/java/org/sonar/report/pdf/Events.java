@@ -21,6 +21,9 @@ package org.sonar.report.pdf;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -33,6 +36,8 @@ import com.lowagie.text.pdf.PdfWriter;
  * Add the logo header to the PDF document.
  */
 public class Events extends PdfPageEventHelper {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Events.class);
 
   private Toc toc;
   private Header header;
@@ -79,9 +84,9 @@ public class Events extends PdfPageEventHelper {
       cb.setFontAndSize(
           BaseFont.createFont("Helvetica", BaseFont.WINANSI, false), 12);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      LOG.error("Can not print page number", e);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not print page number", e);
     }
     cb.beginText();
     cb.setTextMatrix(document.right() - 10, textBase);

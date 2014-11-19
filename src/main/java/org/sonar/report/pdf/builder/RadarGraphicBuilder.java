@@ -68,11 +68,11 @@ public class RadarGraphicBuilder {
       image = Image.getInstance(requestUrl);
       image.setAlignment(Image.ALIGN_MIDDLE);
     } catch (BadElementException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate radar graphic", e);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate radar graphic", e);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate radar graphic", e);
     }
     return image;
   }

@@ -28,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.FileInfo;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.Rule;
@@ -51,6 +53,8 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class ExecutivePDFReporter extends PDFReporter {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ExecutivePDFReporter.class);
 
   private static final String REPORT_TYPE_EXECUTIVE = "executive";
 
@@ -130,11 +134,11 @@ public class ExecutivePDFReporter extends PDFReporter {
           frontPageWriter.getDirectContent());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate front page", e);
     } catch (BadElementException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate front page", e);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate front page", e);
     }
   }
 

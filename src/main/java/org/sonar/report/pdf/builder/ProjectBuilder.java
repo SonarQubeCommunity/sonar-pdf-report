@@ -45,7 +45,7 @@ import org.sonar.wsclient.services.ResourceQuery;
 
 public class ProjectBuilder {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ProjectBuilder.class);
+  private static final Logger LOG = LoggerFactory.getLogger("org.sonar.PDF");
 
   private static ProjectBuilder builder;
 

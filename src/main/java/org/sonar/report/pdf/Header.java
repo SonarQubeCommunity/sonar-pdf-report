@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.Project;
 
 import com.lowagie.text.BadElementException;
@@ -38,6 +40,8 @@ import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class Header extends PdfPageEventHelper {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Header.class);
 
   private URL logo;
   private Project project;
@@ -70,11 +74,11 @@ public class Header extends PdfPageEventHelper {
           page.getHeight() - 20, writer.getDirectContent());
       head.setSpacingAfter(10);
     } catch (BadElementException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate PDF header", e);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate PDF header", e);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate PDF header", e);
     }
   }
 

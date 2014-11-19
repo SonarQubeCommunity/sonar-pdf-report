@@ -157,7 +157,7 @@ public class MeasuresBuilder {
         measures.setVersion(versionNode);
       }
     } catch (ParseException e) {
-      e.printStackTrace();
+      LOG.error("Can not parse date", e);
     }
   }
 

@@ -22,12 +22,16 @@ package org.sonar.report.pdf.builder;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.ComplexityDistribution;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Image;
 
 public class ComplexityDistributionBuilder {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ComplexityDistributionBuilder.class);
 
   private static ComplexityDistributionBuilder builder;
 
@@ -59,11 +63,11 @@ public class ComplexityDistributionBuilder {
         image.setAlignment(Image.ALIGN_MIDDLE);
       }
     } catch (BadElementException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate complexity distribution image", e);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate complexity distribution image", e);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate complexity distribution image", e);
     }
     return image;
   }

@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.report.pdf.entity.Measures;
 import org.sonar.report.pdf.entity.Project;
 import org.sonar.report.pdf.entity.exception.ReportException;
@@ -55,6 +57,8 @@ import com.lowagie.text.pdf.PdfWriter;
  * extend PDFReport.
  */
 public class DefaultPDFReporter extends PDFReporter {
+
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultPDFReporter.class);
 
   private static final String REPORT_TYPE_WORKBOOK = "workbook";
 
@@ -342,11 +346,11 @@ public class DefaultPDFReporter extends PDFReporter {
           frontPageWriter.getDirectContent());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate front page", e);
     } catch (BadElementException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate front page", e);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      LOG.error("Can not generate front page", e);
     }
   }
 
