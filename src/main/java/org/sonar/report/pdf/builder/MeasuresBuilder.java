@@ -135,7 +135,11 @@ public class MeasuresBuilder {
     query.setDepth(0);
     query.setIncludeTrends(true);
     Resource resource = sonar.find(query);
-    this.addAllMeasuresFromDocument(measures, resource);
+    if (resource != null) {
+      this.addAllMeasuresFromDocument(measures, resource);
+    } else {
+      LOG.warn("Empty response when looking for measures: " + measuresAsString.toString());
+    }
   }
 
   private void addAllMeasuresFromDocument(final Measures measures, final Resource resource) {
