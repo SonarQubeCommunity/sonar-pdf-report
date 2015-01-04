@@ -138,7 +138,7 @@ public class MeasuresBuilder {
     if (resource != null) {
       this.addAllMeasuresFromDocument(measures, resource);
     } else {
-      LOG.warn("Empty response when looking for measures: " + measuresAsString.toString());
+      LOG.debug("Empty response when looking for measures: " + measuresAsString.toString());
     }
   }
 
