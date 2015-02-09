@@ -32,7 +32,7 @@
   </parent>
 
   <artifactId>sonar-pdfreport-plugin</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
   <packaging>sonar-plugin</packaging>
 
   <url>http://docs.codehaus.org/display/SONAR/PDF+Plugin</url>
@@ -69,6 +69,7 @@
     <connection>scm:git:git@github.com:SonarCommunity/sonar-pdf-report.git</connection>
     <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-pdf-report.git</developerConnection>
     <url>https://github.com/SonarCommunity/sonar-pdf-report</url>
+    <tag>1.4</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
