@@ -1,7 +1,7 @@
 Sonar PDF Report Plugin
 =========================
 
-[Download information](http://update.sonarsource.org/plugins/pdfreport-confluence.html).
+[Compatibility and download information](http://update.sonarsource.org/plugins/pdfreport-confluence.html).
 
 ## Description / Features
 
