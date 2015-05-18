@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.resources.Project;
 import org.sonar.report.pdf.ExecutivePDFReporter;
 import org.sonar.report.pdf.PDFReporter;
@@ -41,20 +42,18 @@ public class PDFGenerator {
   private static final Logger LOG = LoggerFactory.getLogger(PDFGenerator.class);
 
   private String sonarHostUrl;
-
   private String username;
-
   private String password;
-
   private String sonarBranch;
-
   private String reportType;
 
   private Project project;
+  private FileSystem fs;
 
-  public PDFGenerator(final Project project, final String sonarHostUrl, final String username, final String password,
+  public PDFGenerator(final Project project, final FileSystem fs, final String sonarHostUrl, final String username, final String password,
       final String sonarBranch, final String reportType) {
     this.project = project;
+    this.fs = fs;
     this.sonarHostUrl = sonarHostUrl;
     this.username = username;
     this.password = password;
@@ -81,8 +80,7 @@ public class PDFGenerator {
       Credentials credentials = new Credentials(config.getProperty("sonar.base.url"), username, password);
 
       String sonarProjectId = project.getEffectiveKey();
-      String path = project.getFileSystem().getSonarWorkingDirectory().getAbsolutePath() + "/"
-          + sonarProjectId.replace(':', '-') + ".pdf";
+      String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-') + ".pdf";
 
       if (sonarBranch != null) {
         sonarProjectId += ":" + sonarBranch;

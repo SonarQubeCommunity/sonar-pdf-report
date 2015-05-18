@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.CheckProject;
 import org.sonar.api.batch.PostJob;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
 import org.sonar.report.pdf.util.FileUploader;
 
@@ -51,26 +53,33 @@ public class PDFPostJob implements PostJob, CheckProject {
 
   public static final String SONAR_BRANCH = "sonar.branch";
   public static final String SONAR_BRANCH_DEFAULT_VALUE = null;
+  
+  private final Settings settings;
+  private final FileSystem fs;
+  
+  public PDFPostJob(Settings settings, FileSystem fs) {
+    this.settings = settings;
+    this.fs = fs;
+  }
 
   @Override
   public boolean shouldExecuteOnProject(final Project project) {
-    return !project.getConfiguration().getBoolean(SKIP_PDF_KEY, SKIP_PDF_DEFAULT_VALUE);
+    return settings.hasKey(SKIP_PDF_KEY) ? !settings.getBoolean(SKIP_PDF_KEY) : !SKIP_PDF_DEFAULT_VALUE;
   }
 
   @Override
   public void executeOn(final Project project, final SensorContext context) {
     LOG.info("Executing decorator: PDF Report");
-    String sonarHostUrl = project.getConfiguration().getString(SONAR_HOST_URL, SONAR_HOST_URL_DEFAULT_VALUE);
-    String username = project.getConfiguration().getString(USERNAME, USERNAME_DEFAULT_VALUE);
-    String password = project.getConfiguration().getString(PASSWORD, PASSWORD_DEFAULT_VALUE);
-    String branch = project.getConfiguration().getString(SONAR_BRANCH, SONAR_BRANCH_DEFAULT_VALUE);
-    String reportType = project.getConfiguration().getString(REPORT_TYPE, REPORT_TYPE_DEFAULT_VALUE);
-    PDFGenerator generator = new PDFGenerator(project, sonarHostUrl, username, password, branch, reportType);
+    String sonarHostUrl = settings.hasKey(SONAR_HOST_URL) ? settings.getString(SONAR_HOST_URL) : SONAR_HOST_URL_DEFAULT_VALUE;
+    String username = settings.hasKey(USERNAME) ? settings.getString(USERNAME) : USERNAME_DEFAULT_VALUE;
+    String password = settings.hasKey(PASSWORD) ? settings.getString(PASSWORD) : PASSWORD_DEFAULT_VALUE;
+    String branch = settings.hasKey(SONAR_BRANCH) ? settings.getString(SONAR_BRANCH) : SONAR_BRANCH_DEFAULT_VALUE;
+    String reportType = settings.hasKey(REPORT_TYPE) ? settings.getString(REPORT_TYPE) : REPORT_TYPE_DEFAULT_VALUE;
+    PDFGenerator generator = new PDFGenerator(project, fs, sonarHostUrl, username, password, branch, reportType);
 
     generator.execute();
 
-    String path = project.getFileSystem().getSonarWorkingDirectory().getAbsolutePath() + "/"
-        + project.getEffectiveKey().replace(':', '-') + ".pdf";
+    String path = fs.workDir().getAbsolutePath() + "/" + project.getEffectiveKey().replace(':', '-') + ".pdf";
 
     File pdf = new File(path);
     if (pdf.exists()) {
