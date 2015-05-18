@@ -35,7 +35,7 @@
   <version>1.5-SNAPSHOT</version>
   <packaging>sonar-plugin</packaging>
 
-  <url>http://docs.codehaus.org/display/SONAR/PDF+Plugin</url>
+  <url>https://github.com/SonarCommunity/sonar-pdf-report</url>
   <name>SonarQube PDF Report</name>
   <description>SonarQube plugin for PDF reporting</description>
   <inceptionYear>2010</inceptionYear>
