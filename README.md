@@ -20,7 +20,7 @@ The report contains:
 
 ## Installation
 
-1. Install the plugin through the Update Center or download it into the SONARQUBE_HOME/extensions/plugins directory
+1. Install the plugin through the [Update Center](http://docs.sonarqube.org/display/SONAR/Update+Center) or download it into the SONARQUBE_HOME/extensions/plugins directory
 1. Restart SonarQube
 
 ## Usage
