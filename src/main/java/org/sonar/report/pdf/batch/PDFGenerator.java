@@ -44,20 +44,18 @@ public class PDFGenerator {
   private String sonarHostUrl;
   private String username;
   private String password;
-  private String sonarBranch;
   private String reportType;
 
   private Project project;
   private FileSystem fs;
 
   public PDFGenerator(final Project project, final FileSystem fs, final String sonarHostUrl, final String username, final String password,
-      final String sonarBranch, final String reportType) {
+      final String reportType) {
     this.project = project;
     this.fs = fs;
     this.sonarHostUrl = sonarHostUrl;
     this.username = username;
     this.password = password;
-    this.sonarBranch = sonarBranch;
     this.reportType = reportType;
   }
 
@@ -81,11 +79,6 @@ public class PDFGenerator {
 
       String sonarProjectId = project.getEffectiveKey();
       String path = fs.workDir().getAbsolutePath() + "/" + sonarProjectId.replace(':', '-') + ".pdf";
-
-      if (sonarBranch != null) {
-        sonarProjectId += ":" + sonarBranch;
-        LOG.info("Branch " + sonarBranch + " selected");
-      }
 
       PDFReporter reporter = null;
       if (reportType != null) {

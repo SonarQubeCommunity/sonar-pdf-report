@@ -51,9 +51,6 @@ public class PDFPostJob implements PostJob, CheckProject {
   public static final String SONAR_HOST_URL = "sonar.host.url";
   public static final String SONAR_HOST_URL_DEFAULT_VALUE = "http://localhost:9000";
 
-  public static final String SONAR_BRANCH = "sonar.branch";
-  public static final String SONAR_BRANCH_DEFAULT_VALUE = null;
-  
   private final Settings settings;
   private final FileSystem fs;
   
@@ -73,9 +70,8 @@ public class PDFPostJob implements PostJob, CheckProject {
     String sonarHostUrl = settings.hasKey(SONAR_HOST_URL) ? settings.getString(SONAR_HOST_URL) : SONAR_HOST_URL_DEFAULT_VALUE;
     String username = settings.hasKey(USERNAME) ? settings.getString(USERNAME) : USERNAME_DEFAULT_VALUE;
     String password = settings.hasKey(PASSWORD) ? settings.getString(PASSWORD) : PASSWORD_DEFAULT_VALUE;
-    String branch = settings.hasKey(SONAR_BRANCH) ? settings.getString(SONAR_BRANCH) : SONAR_BRANCH_DEFAULT_VALUE;
     String reportType = settings.hasKey(REPORT_TYPE) ? settings.getString(REPORT_TYPE) : REPORT_TYPE_DEFAULT_VALUE;
-    PDFGenerator generator = new PDFGenerator(project, fs, sonarHostUrl, username, password, branch, reportType);
+    PDFGenerator generator = new PDFGenerator(project, fs, sonarHostUrl, username, password, reportType);
 
     generator.execute();
 
