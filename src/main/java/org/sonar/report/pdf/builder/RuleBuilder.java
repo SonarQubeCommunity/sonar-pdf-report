@@ -93,7 +93,10 @@ public class RuleBuilder {
       // ruleKey = URLEncoder.encode(ruleKey, "UTF8");
       LOG.debug("Accessing Sonar: getting violated resurces by one given rule (" + ruleKey + ")");
 
-      SonarClient client = SonarClient.create(credentials.getUrl());
+      SonarClient client = SonarClient.builder().url(credentials.getUrl())
+                                                .login(credentials.getUsername())
+                                                .password(credentials.getPassword())
+                                                .build();
       IssueClient issueClient = client.issueClient();
 
       IssueQuery issueQuery = IssueQuery.create();
