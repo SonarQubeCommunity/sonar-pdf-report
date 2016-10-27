@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
+import java.io.File;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
@@ -42,7 +43,7 @@ public class PDFPostJobTest {
   public void before() {
     project = mock(Project.class);
     settings = mock(Settings.class);
-    fs = new DefaultFileSystem();
+    fs = new DefaultFileSystem(new File("/"));
     pdfPostJob = new PDFPostJob(settings, fs);
   }
 

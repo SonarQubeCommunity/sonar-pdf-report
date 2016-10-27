@@ -100,7 +100,7 @@ public class RuleBuilder {
       IssueClient issueClient = client.issueClient();
 
       IssueQuery issueQuery = IssueQuery.create();
-      issueQuery.componentRoots(projectKey);
+      issueQuery.components(projectKey);
       issueQuery.pageSize(20);
       issueQuery.rules(ruleKey);
       // "&scopes=FIL&depth=-1&limit=20
