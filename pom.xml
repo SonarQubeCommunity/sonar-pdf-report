@@ -79,7 +79,7 @@
   <properties>
     <sonar.pluginName>PDF Report</sonar.pluginName>
     <sonar.pluginClass>org.sonar.report.pdf.plugin.PDFReportPlugin</sonar.pluginClass>
-    <sonar.version>4.5.1</sonar.version>
+    <sonar.version>4.5.7</sonar.version>
   </properties>
 
   <dependencies>
